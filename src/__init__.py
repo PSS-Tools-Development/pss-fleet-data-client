@@ -6,4 +6,4 @@ __all__ = [
     PssTournamentDataClient.__name__,
 ]
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
