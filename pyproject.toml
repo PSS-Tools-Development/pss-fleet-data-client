@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pss-fleet-data-client"
+description = "Client for the PSS Fleet Data module"
+version = "1.0.1"
+license = "MIT"
+authors = [
+    "The worst. <theworstpss@gmail.com>",
+]
+readme = "README.md"
+homepage = "https://github.com/PSS-Tools-Development/pss-fleet-data-client"
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Developers',
+    'Topic :: Software Development :: Libraries',
+    'Programming Language :: Python :: 3.11',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+]
+
+[build-system]
+requires = ["setuptools ~= 58.0", "cython ~= 0.29.0"]
