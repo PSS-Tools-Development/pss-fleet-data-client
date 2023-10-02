@@ -7,7 +7,7 @@ name = "pss-fleet-data-client"
 description = "Client for the PSS Fleet Data module"
 requires-python = "3.11"
 dynamic = ["version"]
-license = "MIT"
+license = {text = "MIT"}
 authors = [
     {name = "The worst.", email = "The worst. <theworstpss@gmail.com>"},
 ]
@@ -24,3 +24,7 @@ dependencies = [
     "pssapi==0.2.1",
     "PyDrive",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+packages = ["pss-fleet-data-client"]
