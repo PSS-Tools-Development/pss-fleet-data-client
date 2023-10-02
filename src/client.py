@@ -46,7 +46,6 @@ class PssTournamentDataClient():
 
         self.__cache: Dict[int, Dict[int, Dict[int, PssTournamentData]]] = {}
 
-        self.__initialized = False
         self.__initialize()
 
 
@@ -132,11 +131,6 @@ class PssTournamentDataClient():
             self.__reader_count = self.__reader_count + 1
 
 
-    def __assert_initialized(self) -> None:
-        if self.__drive is None:
-            raise Exception('The __drive object has not been initialized, yet!')
-
-
     def __cache_data(self, tourney_data: PssTournamentData) -> bool:
         if tourney_data:
             self.__request_write()
@@ -160,14 +154,14 @@ class PssTournamentDataClient():
             self.__initialize()
 
 
-    def __get_first_file(self, file_name: str) -> pydrive.files.GoogleDriveFile:
-        file_list = self.__drive.ListFile({'q': f"'{self._folder_id}' in parents and title = '{file_name}'"}).GetList()
-        for file_def in file_list:
-            return file_def
-        return None
-
-
     def __get_latest_file(self, year: int, month: int, day: Optional[int] = None, initializing: bool = False) -> pydrive.files.GoogleDriveFile:
+        if not year or year < 0:
+            raise ValueError(f'Parameter \'year\' received an invalid value: {year}')
+        if not month or month < 0 or month > 12:
+            raise ValueError(f'Parameter \'month\' received an invalid value: {month}')
+        if day and (day < 0 or day > 31):
+            raise ValueError(f'Parameter \'day\' received an invalid value: {day}')
+        
         if not initializing:
             self.__ensure_initialized()
         file_name_part: str = f'{year:04d}{month:02d}'
@@ -202,7 +196,6 @@ class PssTournamentDataClient():
         self.get_latest_monthly_data(initializing=True)
         self.get_latest_daily_data(initializing=True)
         self.get_second_latest_daily_data(initializing=True)
-        self.__initialized = True
 
 
     def __read_data(self, year: int, month: int, day: Optional[int] = None) -> PssTournamentData:
@@ -288,27 +281,6 @@ class PssTournamentDataClient():
 
 
     @staticmethod
-    def __fix_filename_datetime(dt: datetime) -> datetime:
-        dt = datetime(dt.year, dt.month, 1, tzinfo=timezone.utc)
-        dt = dt - timedelta(minutes=1)
-        return dt
-
-
-    @staticmethod
-    def __get_latest_file_name(dt: datetime) -> str:
-        dt = PssTournamentDataClient.__fix_filename_datetime(dt)
-        timestamp = dt.strftime('%Y%m%d-%H%M%S')
-        result = f'pss-top-100_{timestamp}.json'
-        return result
-
-
-    @staticmethod
-    def __get_last_tourney_year_and_month(dt: datetime) -> Tuple[int, int]:
-        dt = PssTournamentDataClient.__fix_filename_datetime(dt)
-        return dt.year, dt.month
-
-
-    @staticmethod
     def retrieve_past_day_month_year(month: str, year: str, utc_now: datetime) -> Tuple[int, int]:
         if not utc_now:
             utc_now = utils.get_utc_now()
@@ -320,8 +292,7 @@ class PssTournamentDataClient():
             temp_month = temp_month % 12 + 1
         else:
             month = str(month)
-            temp_month = utils.MONTH_NAME_TO_NUMBER.get(month.lower(), None)
-            temp_month = temp_month or utils.MONTH_SHORT_NAME_TO_NUMBER.get(month.lower(), None)
+            temp_month = utils.MONTH_NAME_TO_NUMBER.get(month.lower(), utils.MONTH_SHORT_NAME_TO_NUMBER.get(month.lower(), None))
             if temp_month is None:
                 try:
                     temp_month = int(month)
@@ -334,3 +305,16 @@ class PssTournamentDataClient():
         year = int(year)
         _, day = calendar.monthrange(year, temp_month)
         return day, temp_month, int(year)
+
+
+    @staticmethod
+    def __fix_filename_datetime(dt: datetime) -> datetime:
+        dt = datetime(dt.year, dt.month, 1, tzinfo=timezone.utc)
+        dt = dt - timedelta(minutes=1)
+        return dt
+
+
+    @staticmethod
+    def __get_last_tourney_year_and_month(dt: datetime) -> Tuple[int, int]:
+        dt = PssTournamentDataClient.__fix_filename_datetime(dt)
+        return dt.year, dt.month
