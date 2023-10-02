@@ -27,4 +27,3 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
-packages = ["pss-fleet-data-client"]
