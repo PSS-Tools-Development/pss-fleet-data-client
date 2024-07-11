@@ -1,0 +1,36 @@
+# Check the code with flake8 and if successful, run set up postgres database and run tests.
+
+name: Check and Test
+
+on:
+  push:
+    branches: ["main", "release/*", "hotfix/*"]
+  pull_request:
+    branches: ["main", "release/*", "hotfix/*"]
+
+permissions:
+  contents: read
+
+jobs:
+  check-and-test:
+    runs-on: ubuntu-latest
+    container: python:3.11.7-slim
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.lock
+        shell: bash
+
+      - name: Check with flake8
+        run: |
+          flake8 ./src
+          vulture ./src
+
+      - name: Test with pytest
+        run: |
+          pytest ./tests -x
