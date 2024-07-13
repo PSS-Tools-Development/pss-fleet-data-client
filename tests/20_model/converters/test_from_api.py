@@ -1,111 +1,43 @@
+from typing import Callable
+
 import pytest
 from pssapi.entities import Alliance as PssAlliance
-from pssapi.entities import User as PssUser
 
-from client.model import Collection, CollectionMetadata
+from client.model import Collection
 from client.model.api import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
 from client.model.converters import FromAPI
 
 
 @pytest.mark.usefixtures("api_alliance")
-def test_to_pss_alliance(api_alliance: ApiAlliance):
+@pytest.mark.usefixtures("assert_pss_alliance_valid")
+def test_to_pss_alliance(api_alliance: ApiAlliance, assert_pss_alliance_valid: Callable[[PssAlliance], None]):
     pss_alliance = FromAPI.to_pss_alliance(api_alliance)
-    _check_pss_alliance(pss_alliance)
+    assert_pss_alliance_valid(pss_alliance)
 
 
 @pytest.mark.usefixtures("api_collection")
-def test_to_collection(api_collection: ApiCollection):
+@pytest.mark.usefixtures("assert_collection_valid")
+def test_to_collection(api_collection: ApiCollection, assert_collection_valid: Callable[[Collection], None]):
     collection = FromAPI.to_collection(api_collection)
-    _check_collection(collection)
+    assert_collection_valid(collection)
 
 
 @pytest.mark.usefixtures("api_collection_metadata_3")
-def test_to_collection_metadata_3(api_collection_metadata_3: ApiCollectionMetadata):
+@pytest.mark.usefixtures("assert_collection_metadata_valid")
+def test_to_collection_metadata_3(api_collection_metadata_3: ApiCollectionMetadata, assert_collection_metadata_valid: Callable[[Collection], None]):
     collection_metadata = FromAPI.to_collection_metadata(api_collection_metadata_3)
-    _check_collection_metadata(collection_metadata)
+    assert_collection_metadata_valid(collection_metadata)
 
 
 @pytest.mark.usefixtures("api_collection_metadata_9")
-def test_to_collection_metadata_9(api_collection_metadata_9: ApiCollectionMetadata):
+@pytest.mark.usefixtures("assert_collection_metadata_valid")
+def test_to_collection_metadata_9(api_collection_metadata_9: ApiCollectionMetadata, assert_collection_metadata_valid: Callable[[Collection], None]):
     collection_metadata = FromAPI.to_collection_metadata(api_collection_metadata_9)
-    _check_collection_metadata(collection_metadata)
+    assert_collection_metadata_valid(collection_metadata)
 
 
 @pytest.mark.usefixtures("api_user")
-def test_to_pss_user(api_user: ApiUser):
+@pytest.mark.usefixtures("assert_pss_user_valid")
+def test_to_pss_user(api_user: ApiUser, assert_pss_user_valid: Callable[[PssAlliance], None]):
     pss_user = FromAPI.to_pss_user(api_user)
-    _check_pss_user(pss_user)
-
-
-# Helpers
-
-
-def _check_pss_alliance(pss_alliance: PssAlliance):
-    assert pss_alliance
-    assert isinstance(pss_alliance, PssAlliance)
-
-    assert pss_alliance.alliance_id is not None
-    assert pss_alliance.alliance_name is not None
-    assert pss_alliance.score is not None
-    assert pss_alliance.division_design_id is not None
-    assert pss_alliance.trophy is not None
-    assert pss_alliance.championship_score is not None
-    assert pss_alliance.number_of_members is not None
-    assert pss_alliance.number_of_approved_members is not None
-
-
-def _check_collection(collection: Collection):
-    assert collection
-    assert isinstance(collection, Collection)
-
-    _check_collection_metadata(collection.metadata)
-
-    assert collection.alliances
-    assert isinstance(collection.alliances, list)
-    for alliance in collection.alliances:
-        assert alliance
-        assert isinstance(alliance, PssAlliance)
-
-    assert collection.users
-    assert isinstance(collection.users, list)
-    for user in collection.users:
-        assert user
-        assert isinstance(user, PssUser)
-
-
-def _check_collection_metadata(metadata: CollectionMetadata):
-    assert metadata.timestamp is not None
-    assert metadata.duration is not None
-    assert metadata.fleet_count is not None
-    assert metadata.user_count is not None
-    assert metadata.tournament_running is not None
-    assert metadata.schema_version is not None
-    assert metadata.data_version is not None
-
-    if metadata.data_version == 9:
-        assert metadata.max_tournament_battle_attempts is not None
-
-
-def _check_pss_user(pss_user: PssUser):
-    assert pss_user
-    assert isinstance(pss_user, PssUser)
-
-    assert pss_user.id is not None
-    assert pss_user.name is not None
-    assert pss_user.alliance_id is not None
-    assert pss_user.trophy is not None
-    assert pss_user.alliance_score is not None
-    assert pss_user.alliance_membership is not None
-    assert pss_user.alliance_join_date is not None
-    assert pss_user.last_login_date is not None
-    assert pss_user.crew_donated is not None
-    assert pss_user.crew_received is not None
-    assert pss_user.pvp_attack_wins is not None
-    assert pss_user.pvp_attack_losses is not None
-    assert pss_user.pvp_attack_draws is not None
-    assert pss_user.pvp_defence_wins is not None
-    assert pss_user.pvp_defence_losses is not None
-    assert pss_user.pvp_defence_draws is not None
-    assert pss_user.championship_score is not None
-    assert pss_user.highest_trophy is not None
-    assert pss_user.tournament_bonus_score is not None
+    assert_pss_user_valid(pss_user)
