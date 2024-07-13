@@ -1,136 +1,72 @@
 from datetime import timezone
-from typing import Union
 
 import pytest
-from src.api.database.models import AllianceDB, AllianceHistoryDB, CollectionDB, UserDB, UserHistoryDB
-from src.api.models import (
-    AllianceHistoryOut,
-    AllianceOut,
-    CollectionMetadataOut,
-    CollectionOut,
-    CollectionWithFleetsOut,
-    CollectionWithUsersOut,
-    UserHistoryOut,
-    UserOut,
-)
-from src.api.models.converters import FromDB
+from pssapi.entities import Alliance as PssAlliance
+from pssapi.entities import User as PssUser
+
+from client.model import Collection, CollectionMetadata
+from client.model.api import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
+from client.model.converters import ToAPI
 
 
-@pytest.mark.usefixtures("alliance_db")
-def test_to_alliance(alliance_db: AllianceDB):
-    alliance = FromDB.to_alliance(alliance_db)
+@pytest.mark.usefixtures("pss_alliance")
+def test_from_pss_alliance(pss_alliance: PssAlliance):
+    api_alliance = ToAPI.from_pss_alliance(pss_alliance)
 
-    _check_alliance_out(alliance)
-
-
-@pytest.mark.usefixtures("alliance_history_db")
-def test_to_alliance_history(alliance_history_db: AllianceHistoryDB):
-    alliance_history = FromDB.to_alliance_history(alliance_history_db)
-
-    assert isinstance(alliance_history, AllianceHistoryOut)
-
-    _check_collection_metatadata_out(alliance_history.collection)
-    _check_alliance_out(alliance_history.fleet)
-
-    assert isinstance(alliance_history.users, list)
-    for user in alliance_history.users:
-        _check_user_out(user)
+    _check_api_alliance(api_alliance)
 
 
-@pytest.mark.usefixtures("collection_db")
-def test_to_collection(collection: CollectionDB):
-    collection = FromDB.to_collection(collection, True, True)
+@pytest.mark.usefixtures("collection")
+def test_from_collection(collection: Collection):
+    api_collection = ToAPI.from_collection(collection)
 
-    _check_collection_out(collection)
-
-
-@pytest.mark.usefixtures("collection_db")
-def test_to_collection_with_fleets(collection: CollectionDB):
-    collection = FromDB.to_collection_with_fleets(collection)
-
-    _check_collection_with_fleets_out(collection)
+    _check_api_collection(api_collection)
 
 
-@pytest.mark.usefixtures("collection_db")
-def test_to_collection_with_users(collection: CollectionDB):
-    collection = FromDB.to_collection_with_users(collection)
+@pytest.mark.usefixtures("collection_metadata_9")
+def test_from_collection_metadata(collection_metadata_9: CollectionMetadata):
+    api_collection_metadata = ToAPI.from_collection_metadata(collection_metadata_9)
 
-    _check_collection_with_users_out(collection)
-
-
-@pytest.mark.usefixtures("user_db")
-def test_to_user(user_db: UserDB):
-    user = FromDB.to_user(user_db)
-
-    _check_user_out(user)
+    _check_api_collection_metadata(api_collection_metadata)
 
 
-@pytest.mark.usefixtures("user_history_db")
-def test_to_user_history(user_history_db: UserHistoryDB):
-    user_history = FromDB.to_user_history(user_history_db)
+@pytest.mark.usefixtures("pss_user")
+def test_from_pss_user(pss_user: PssUser):
+    api_user = ToAPI.from_pss_user(pss_user)
 
-    assert isinstance(user_history, UserHistoryOut)
-
-    _check_collection_metatadata_out(user_history.collection)
-    _check_user_out(user_history.user)
-    if user_history.fleet:
-        _check_alliance_out(user_history.fleet)
+    _check_api_user(api_user)
 
 
 # Helpers
 
 
-def _check_alliance_out(alliance: AllianceOut):
-    assert alliance
-    assert isinstance(alliance, tuple)
-    assert len(alliance) == 8
+def _check_api_alliance(api_alliance: ApiAlliance):
+    assert api_alliance
+    assert isinstance(api_alliance, tuple)
+    assert len(api_alliance) == 8
 
 
-def _check_collection_out(collection: Union[CollectionOut, CollectionWithFleetsOut, CollectionWithUsersOut]):
-    assert collection
-    assert isinstance(collection, CollectionOut)
-    _check_collection_metatadata_out(collection.metadata)
+def _check_api_collection(api_collection: ApiCollection):
+    assert api_collection
+    assert isinstance(api_collection, ApiCollection)
+    _check_api_collection_metadata(api_collection.metadata)
 
-    assert isinstance(collection.fleets, list)
-    for fleet in collection.fleets:
-        _check_alliance_out(fleet)
+    assert isinstance(api_collection.fleets, list)
+    for fleet in api_collection.fleets:
+        _check_api_alliance(fleet)
 
-    assert isinstance(collection.users, list)
-    for user in collection.users:
-        _check_user_out(user)
-
-
-def _check_collection_with_fleets_out(collection: CollectionWithFleetsOut):
-    assert collection
-    assert isinstance(collection, CollectionWithFleetsOut)
-    _check_collection_metatadata_out(collection.metadata)
-
-    assert isinstance(collection.fleets, list)
-    for fleet in collection.fleets:
-        _check_alliance_out(fleet)
-
-    assert not hasattr(collection, "users")
+    assert isinstance(api_collection.users, list)
+    for user in api_collection.users:
+        _check_api_user(user)
 
 
-def _check_collection_with_users_out(collection: CollectionWithUsersOut):
-    assert collection
-    assert isinstance(collection, CollectionWithUsersOut)
-    _check_collection_metatadata_out(collection.metadata)
-
-    assert not hasattr(collection, "fleets")
-
-    assert isinstance(collection.users, list)
-    for user in collection.users:
-        _check_user_out(user)
+def _check_api_collection_metadata(api_collection_metadata: ApiCollectionMetadata):
+    assert api_collection_metadata
+    assert isinstance(api_collection_metadata, ApiCollectionMetadata)
+    assert api_collection_metadata.timestamp.tzinfo == timezone.utc
 
 
-def _check_collection_metatadata_out(collection_metadata: CollectionMetadataOut):
-    assert collection_metadata
-    assert isinstance(collection_metadata, CollectionMetadataOut)
-    assert collection_metadata.timestamp.tzinfo == timezone.utc
-
-
-def _check_user_out(user: UserOut):
-    assert user
-    assert isinstance(user, tuple)
-    assert len(user) == 20
+def _check_api_user(api_user: ApiUser):
+    assert api_user
+    assert isinstance(api_user, tuple)
+    assert len(api_user) == 20

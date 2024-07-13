@@ -9,7 +9,7 @@ from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
 from ..config import CONFIG
-from .api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiLink, ApiUser, ApiUserHistory
+from .api import ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUserHistory
 from .converters import FromAPI, ToAPI
 from .enums import ErrorCode, ParameterInterval
 from .exceptions import (
@@ -50,7 +50,7 @@ from .exceptions import (
     UnsupportedSchemaError,
     UserNotFoundError,
 )
-from .models import AllianceHistory, Collection, UserHistory
+from .models import Collection
 
 
 @dataclass(frozen=True)
@@ -164,7 +164,7 @@ class PssFleetDataClient:
     ) -> list[Collection]:
         parameters = get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(
-            f"/collections",
+            "/collections",
             params=parameters,
         )
 

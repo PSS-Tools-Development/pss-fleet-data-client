@@ -5,8 +5,6 @@ from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 from pydantic import BaseModel, ConfigDict
 
-from .api import ApiCollectionMetadata
-
 
 class AllianceHistory(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)

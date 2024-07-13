@@ -1,9 +1,6 @@
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Union
+from dataclasses import dataclass
 
 from .api import ApiLink
-from .enums import ErrorCode
 
 
 # Base Exception

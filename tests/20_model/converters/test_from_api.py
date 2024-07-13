@@ -1,12 +1,10 @@
-from datetime import datetime
-
 import pytest
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from src.client.model import AllianceHistory, Collection, CollectionMetadata, UserHistory
-from src.client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
-from src.client.model.converters import FromAPI
+from client.model import Collection, CollectionMetadata
+from client.model.api import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
+from client.model.converters import FromAPI
 
 
 @pytest.mark.usefixtures("api_alliance")
@@ -36,7 +34,7 @@ def test_to_collection_metadata_9(api_collection_metadata_9: ApiCollectionMetada
 @pytest.mark.usefixtures("api_user")
 def test_to_pss_user(api_user: ApiUser):
     pss_user = FromAPI.to_pss_user(api_user)
-    _check_api_user(pss_user)
+    _check_pss_user(pss_user)
 
 
 # Helpers
@@ -88,7 +86,7 @@ def _check_collection_metadata(metadata: CollectionMetadata):
         assert metadata.max_tournament_battle_attempts is not None
 
 
-def _check_api_user(pss_user: PssUser):
+def _check_pss_user(pss_user: PssUser):
     assert pss_user
     assert isinstance(pss_user, PssUser)
 

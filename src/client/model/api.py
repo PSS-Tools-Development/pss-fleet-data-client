@@ -1,10 +1,11 @@
-from datetime import datetime, timezone
-from typing import Annotated, Optional, Union
+from datetime import datetime
+from typing import Annotated, Any, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
+from .. import utils
 from ..config import CONFIG
-from .enums import ErrorCode, UserAllianceMembershipEncoded
+from .enums import UserAllianceMembershipEncoded
 
 
 DATETIME = Annotated[datetime, Field(ge=CONFIG.pss_start_date)]
@@ -77,12 +78,34 @@ class ApiCollectionMetadata(BaseModel):
     """Determines, whether a monthly fleet tournament was running at the time of recording the data in this Collection."""
     data_version: Optional[int]
     """The schema version with which this data was first collected and stored."""
-    collection_id: int
+    collection_id: Optional[int]
     """The ID of the collection in the database."""
     schema_version: int
     """The version of the schema of the data in this Collection."""
     max_tournament_battle_attempts: Optional[int]
     """The maximum number of tournament battles any given player can do on a given monthly fleet tournament day."""
+
+    @field_validator("timestamp", mode="before")
+    @staticmethod
+    def transform_timestamp(value: Any) -> Union[datetime, Any]:
+        """Takes the value provided to set the property `timestamp`, parses it, localizes it to UTC and then removes the timezone information.
+
+        Args:
+            value (Any): The value to set. Will be transformed, if it's of type `datetime`, `int` or `str`.
+
+        Raises:
+            ValueError: Raised, if the parsed datetime is lower than the PSS start date.
+
+        Returns:
+            Union[datetime, Any]: The transformed datetime or the original value, if it's not been transformed.
+        """
+        if isinstance(value, (datetime, int, str)):
+            result = utils.localize_to_utc(utils.parse_datetime(value))
+            if result < CONFIG.pss_start_date:
+                raise ValueError
+            return result
+        else:
+            return value
 
 
 class ApiErrorResponse(BaseModel):

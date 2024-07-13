@@ -1,11 +1,12 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from src.client.model import AllianceHistory, Collection, CollectionMetadata, UserHistory
-from src.client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
+from client import utils
+from client.model import AllianceHistory, Collection, CollectionMetadata, UserHistory
+from client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
 
 
 # API objects
@@ -177,7 +178,7 @@ def _create_collection() -> Collection:
 def _create_collection_metadata_3() -> CollectionMetadata:
     return CollectionMetadata(
         collection_id=1,
-        timestamp=datetime(2016, 1, 6, 23, 59),
+        timestamp=datetime(2016, 1, 6, 23, 59, tzinfo=timezone.utc),
         duration=11.2,
         fleet_count=1,
         user_count=1,
@@ -197,9 +198,9 @@ def _create_pss_user() -> PssUser:
             "Trophy": 1000,
             "AllianceScore": 0,
             "AllianceMembership": "FleetAdmiral",
-            "AllianceJoinDate": datetime(2016, 1, 6, 8, 12, 34),
-            "LastLoginDate": datetime(2016, 1, 6, 23, 58),
-            "LastHeartBeatDate": datetime(2016, 1, 6, 23, 58),
+            "AllianceJoinDate": utils.format_datetime(datetime(2016, 1, 6, 8, 12, 34)),
+            "LastLoginDate": utils.format_datetime(datetime(2016, 1, 6, 23, 58)),
+            "LastHeartBeatDate": utils.format_datetime(datetime(2016, 1, 6, 23, 58)),
             "CrewDonated": 0,
             "CrewReceived": 0,
             "PVPAttackWins": 5,
