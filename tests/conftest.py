@@ -97,7 +97,7 @@ def user_history() -> UserHistory:
 
 
 def _create_api_alliance() -> ApiAlliance:
-    return (1, "A1", 0, 0, 1000, 0, 1, 0)
+    return (1, "A1", 0, 0, 5000, 0, 1, 0)
 
 
 def _create_api_collection() -> ApiCollection:
@@ -132,9 +132,9 @@ def _create_api_user() -> ApiUser:
         1000,
         0,
         0,
-        int((datetime(2016, 6, 1, 8, 12, 34) - datetime(2016, 1, 6)).total_seconds()),
-        int((datetime(2016, 6, 1, 23, 58) - datetime(2016, 1, 6)).total_seconds()),
-        int((datetime(2016, 6, 1, 23, 58) - datetime(2016, 1, 6)).total_seconds()),
+        int((datetime(2016, 1, 6, 8, 12, 34) - datetime(2016, 1, 6)).total_seconds()),
+        int((datetime(2016, 1, 6, 23, 58) - datetime(2016, 1, 6)).total_seconds()),
+        int((datetime(2016, 1, 6, 23, 58) - datetime(2016, 1, 6)).total_seconds()),
         0,
         0,
         5,
