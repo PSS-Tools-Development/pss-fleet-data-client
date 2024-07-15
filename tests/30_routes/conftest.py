@@ -21,14 +21,19 @@ def base_url() -> str:
     # return "http://127.0.0.1:8000"
 
 
+@pytest.fixture(scope="session")
+def vcr_config_match_on() -> list[str]:
+    return ["method", "query"]
+
+
 @pytest.fixture(scope="module")
-def vcr_config():
+def vcr_config(vcr_config_match_on: list[str]):
     return {
-        "match_on": ["method", "query"],
+        "match_on": vcr_config_match_on,
         "record_mode": "once",
         # "record_mode": "rewrite",  # Use this record mode to create new cassettes while testing, when an endpoint has their parameters or responses updated.
-        "filter_query_parameters": ["accessToken", "checksum"],
-        "filter_post_data_parameters": ["accessToken", "checksum"],
+        "filter_query_parameters": [],
+        "filter_post_data_parameters": [],
         "record_on_exception": False,
         "before_record_request": before_record_request,
         "before_record_response": before_record_response,

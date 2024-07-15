@@ -9,6 +9,8 @@ from client import utils
 from client.model import AllianceHistory, Collection, CollectionMetadata, UserHistory
 from client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
 
+from .fixtures import *  # noqa: F401,F403
+
 
 ### Fixtures
 
@@ -23,8 +25,12 @@ def api_alliance() -> ApiAlliance:
 
 
 @pytest.fixture(scope="function")
-def api_alliance_history() -> ApiAllianceHistory:
-    return (_create_api_collection(), _create_api_alliance())
+def api_alliance_history(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance, api_user: ApiUser) -> ApiAllianceHistory:
+    return ApiAllianceHistory(
+        collection=api_collection_metadata_9,
+        fleet=api_alliance,
+        users=[api_user],
+    )
 
 
 @pytest.fixture(scope="function")
@@ -64,8 +70,12 @@ def pss_alliance() -> PssAlliance:
 
 
 @pytest.fixture(scope="function")
-def alliance_history() -> AllianceHistory:
-    return (_create_collection(), _create_pss_alliance())
+def alliance_history(collection_metadata_9: CollectionMetadata, pss_alliance: PssAlliance, pss_user: PssUser) -> AllianceHistory:
+    return AllianceHistory(
+        collection=collection_metadata_9,
+        alliance=pss_alliance,
+        users=[pss_user],
+    )
 
 
 @pytest.fixture(scope="function")
@@ -207,6 +217,52 @@ def assert_api_users_equal() -> Callable[[ApiUser, ApiUser], None]:
 
 
 # Local entities
+
+
+@pytest.fixture(scope="function")
+def assert_alliance_histories_equal(
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata], None],
+    assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance], None],
+    assert_pss_users_equal: Callable[[PssUser, PssUser], None],
+) -> Callable[[Collection], None]:
+    def _assert_alliance_histories_equal(alliance_history_1: AllianceHistory, alliance_history_2: AllianceHistory):
+        assert alliance_history_1
+        assert alliance_history_2
+        assert isinstance(alliance_history_1, AllianceHistory)
+        assert isinstance(alliance_history_2, AllianceHistory)
+
+        assert id(alliance_history_1) != id(alliance_history_2)
+        assert alliance_history_1.model_dump() == alliance_history_2.model_dump()
+
+        assert_collection_metadatas_equal(alliance_history_1.collection, alliance_history_2.collection)
+        assert_pss_alliances_equal(alliance_history_1.alliance, alliance_history_2.alliance)
+
+        assert len(alliance_history_1.users) == len(alliance_history_2.users)
+        for i, pss_user in enumerate(alliance_history_1.users):
+            assert_pss_users_equal(pss_user, alliance_history_2.users[i])
+
+    return _assert_alliance_histories_equal
+
+
+@pytest.fixture(scope="function")
+def assert_alliance_history_valid(
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_pss_alliance_valid: Callable[[PssAlliance], None],
+    assert_pss_user_valid: Callable[[PssUser], None],
+) -> Callable[[Collection], None]:
+    def _assert_alliance_history_valid(alliance_history: AllianceHistory):
+        assert alliance_history
+        assert isinstance(alliance_history, AllianceHistory)
+
+        assert_collection_metadata_valid(alliance_history.collection)
+        assert_pss_alliance_valid(alliance_history.alliance)
+
+        assert alliance_history.users
+        assert isinstance(alliance_history.users, list)
+        for user in alliance_history.users:
+            assert_pss_user_valid(user)
+
+    return _assert_alliance_history_valid
 
 
 @pytest.fixture(scope="function")
