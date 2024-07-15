@@ -50,7 +50,7 @@ from .exceptions import (
     UnsupportedSchemaError,
     UserNotFoundError,
 )
-from .models import Collection
+from .models import AllianceHistory, Collection
 
 
 @dataclass(frozen=True)
@@ -114,7 +114,7 @@ class PssFleetDataClient:
         desc: Optional[bool] = None,
         skip: Optional[int] = None,
         take: Optional[int] = None,
-    ) -> list[tuple[Collection, PssAlliance]]:
+    ) -> list[AllianceHistory]:
         parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(
             f"/allianceHistory/{alliance_id}",
@@ -123,8 +123,7 @@ class PssFleetDataClient:
 
         api_alliance_histories = [ApiAllianceHistory(**item) for item in response.json()]
         alliance_histories = [FromAPI.to_alliance_history(alliance_history) for alliance_history in api_alliance_histories]
-        result = [(alliance_history.collection, alliance_history.alliance) for alliance_history in alliance_histories]
-        return result
+        return alliance_histories
 
     async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[Collection, PssAlliance]:
         response = await self._get(
