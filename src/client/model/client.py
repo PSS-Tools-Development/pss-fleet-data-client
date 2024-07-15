@@ -121,6 +121,9 @@ class PssFleetDataClient:
             params=parameters,
         )
 
+        if not response:
+            return []
+
         api_alliance_histories = [ApiAllianceHistory(**item) for item in response]
         alliance_histories = [FromAPI.to_alliance_history(alliance_history) for alliance_history in api_alliance_histories]
         return alliance_histories
