@@ -93,7 +93,7 @@ class PssFleetDataClient:
             headers=headers,
         )
 
-        api_collection_metadata = ApiCollectionMetadata(**response.json())
+        api_collection_metadata = ApiCollectionMetadata(**response)
         result = Collection(metadata=FromAPI.to_collection_metadata(api_collection_metadata))
         return result
 
@@ -121,7 +121,7 @@ class PssFleetDataClient:
             params=parameters,
         )
 
-        api_alliance_histories = [ApiAllianceHistory(**item) for item in response.json()]
+        api_alliance_histories = [ApiAllianceHistory(**item) for item in response]
         alliance_histories = [FromAPI.to_alliance_history(alliance_history) for alliance_history in api_alliance_histories]
         return alliance_histories
 
@@ -130,16 +130,19 @@ class PssFleetDataClient:
             f"/collections/{collection_id}/alliances/{alliance_id}",
         )
 
-        api_alliance_history = ApiAllianceHistory(**response.json())
+        api_alliance_history = ApiAllianceHistory(**response)
         alliance_history = FromAPI.to_alliance_history(api_alliance_history)
         return (alliance_history.collection, alliance_history.alliance)
 
-    async def get_alliances_from_collection(self, collection_id: int) -> tuple[CollectionMetadata, list[PssAlliance]]:
+    async def get_alliances_from_collection(self, collection_id: int) -> tuple[Optional[CollectionMetadata], list[PssAlliance]]:
         response = await self._get(
             f"/collections/{collection_id}/alliances",
         )
 
-        api_collection = ApiCollection(**response.json())
+        if not response:
+            return None, []
+
+        api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.alliances)
 
@@ -148,7 +151,7 @@ class PssFleetDataClient:
             f"/collections/{collection_id}",
         )
 
-        api_collection = ApiCollection(**response.json())
+        api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
         return collection
 
@@ -167,7 +170,7 @@ class PssFleetDataClient:
             params=parameters,
         )
 
-        api_collections = [ApiCollection(**item) for item in response.json()]
+        api_collections = [ApiCollection(**item) for item in response]
         result = [FromAPI.to_collection(collection) for collection in api_collections]
         return result
 
@@ -176,7 +179,7 @@ class PssFleetDataClient:
             f"/collections/{collection_id}/top100Users",
         )
 
-        api_collection = ApiCollection(**response.json())
+        api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.users)
 
@@ -185,7 +188,7 @@ class PssFleetDataClient:
             f"/collections/{collection_id}/users/{user_id}",
         )
 
-        api_user_history = ApiUserHistory(**response.json())
+        api_user_history = ApiUserHistory(**response)
         user_history = FromAPI.to_user_history(api_user_history)
         return (user_history.collection, user_history.user)
 
@@ -194,7 +197,7 @@ class PssFleetDataClient:
             f"/collections/{collection_id}/users",
         )
 
-        api_collection = ApiCollection(**response.json())
+        api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.users)
 
@@ -237,19 +240,19 @@ class PssFleetDataClient:
                 headers=headers,
             )
 
-        api_collection_metadata = ApiCollectionMetadata(**response.json())
+        api_collection_metadata = ApiCollectionMetadata(**response)
         result = Collection(metadata=FromAPI.to_collection_metadata(api_collection_metadata))
         return result
 
     async def _delete(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         response = await self.__client.delete(path, params=params, headers=headers)
         _raise_if_error(response)
-        return response
+        return response.json()
 
     async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         response = await self.__client.get(path, params=params, headers=headers)
         _raise_if_error(response)
-        return response
+        return response.json()
 
     async def _post(
         self,
@@ -261,7 +264,7 @@ class PssFleetDataClient:
     ) -> Response:
         response = await self.__client.post(path, json=json, files=files, params=params, headers=headers)
         _raise_if_error(response)
-        return response
+        return response.json()
 
 
 def _get_parameter_dict(
@@ -332,7 +335,7 @@ def _raise_if_error(response: Response):
     if response.status_code not in (401, 403, 404, 405, 409, 415, 422, 429, 500):
         return
 
-    api_error = ApiErrorResponse(**response.json())
+    api_error = ApiErrorResponse(**response)
     exception = _error_code_lookup.get(api_error.code, ApiError)
 
     raise exception(api_error.code, api_error.message, api_error.details, api_error.timestamp, api_error.suggestion, api_error.links)

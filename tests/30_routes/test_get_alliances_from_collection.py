@@ -18,9 +18,9 @@ async def test_get_alliances_from_collection_200(
     assert_pss_alliance_valid: Callable[[PssAlliance], None],
     assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance], None],
 ):
-    collection_response, alliances = await test_client.get_alliances_from_collection(1)
-    assert_collection_metadata_valid(collection_response)
-    assert_collection_metadatas_equal(collection.metadata, collection_response)
+    response_collection, alliances = await test_client.get_alliances_from_collection(1)
+    assert_collection_metadata_valid(response_collection)
+    assert_collection_metadatas_equal(collection.metadata, response_collection)
 
     assert alliances
     assert isinstance(alliances, list)
@@ -30,6 +30,16 @@ async def test_get_alliances_from_collection_200(
     assert len(alliances) == len(collection.alliances)
     for i, alliance in enumerate(alliances):
         assert_pss_alliances_equal(alliance, collection.alliances[i])
+
+
+@pytest.mark.usefixtures("collection", "mock_response_empty_get_204")
+async def test_get_alliances_from_collection_204(
+    test_client: PssFleetDataClient,
+):
+    collection_response, alliances = await test_client.get_alliances_from_collection(1)
+    assert collection_response is None
+    assert not alliances
+    assert isinstance(alliances, list)
 
 
 @pytest.mark.usefixtures("mock_response_collection_not_found")
