@@ -338,7 +338,7 @@ def _raise_if_error(response: Response):
     if response.status_code not in (401, 403, 404, 405, 409, 415, 422, 429, 500):
         return
 
-    api_error = ApiErrorResponse(**response)
+    api_error = ApiErrorResponse(**response.json())
     exception = _error_code_lookup.get(api_error.code, ApiError)
 
     raise exception(api_error.code, api_error.message, api_error.details, api_error.timestamp, api_error.suggestion, api_error.links)
