@@ -2,6 +2,8 @@ from typing import Any, Callable
 
 import pytest
 import test_cases
+import vcr
+from pytest import FixtureRequest
 
 from client import PssFleetDataClient
 from client.model import Collection
@@ -36,9 +38,9 @@ async def test_get_collections_204(
 @pytest.mark.vcr()
 @pytest.mark.parametrize(["parameters", "expected_exception"], test_cases.invalid_filter_parameters)
 async def test_get_collections_422(
-    parameters: dict[str, Any],
-    expected_exception: ApiError,
-    test_client: PssFleetDataClient,
+    parameters: dict[str, Any], expected_exception: ApiError, test_client: PssFleetDataClient, request: FixtureRequest
 ):
-    with pytest.raises(expected_exception):
-        _ = await test_client.get_collections(**parameters)
+    cassette_path = f"tests/30_routes/cassettes/test_get_422_{request.node.callspec.id}.yaml"
+    with vcr.use_cassette(cassette_path):
+        with pytest.raises(expected_exception):
+            _ = await test_client.get_collections(**parameters)

@@ -2,8 +2,6 @@ interactions:
 - request:
     body: ''
     headers:
-      Authorization:
-      - ''
       accept:
       - '*/*'
       accept-encoding:
@@ -15,20 +13,24 @@ interactions:
       user-agent:
       - python-httpx/0.27.0
     method: GET
-    uri: https://fleetdata.dolores2.xyz/collections/
+    uri: https://fleetdata.dolores2.xyz/collections/?take=101
   response:
     body:
       string: !!binary |
-        H4sIAEbrlGYC/4uOBQApu0wNAgAAAA==
+        H4sIANL7lGYC/x2OW0vEMBCF/8rQV902rV1XAyIF+1C8IEvxRWQ3NrNt2LSpyWTxgv/dqY9z+M53
+        5ifpnMZEJs/Vtnqs23q7a6v7etc8vVQPzV1ynowYguoXpB0QZu9ORqOGk7IR4eA80BIrr0Yk9LAn
+        dcQ9mABmYsbolB0aSRkb2NFMcyQIg4tWwzuCZTsb1ARswo+oLJCDXAhukeFtUuPMvUIU5UpsVvm6
+        zYW82EhxmV6V5Vpcnwkh//HoLYMD0Syz7GARSStSqXbWeQxF+vn1nXXOWuzIuClkt8unN7nIuRti
+        3/MW56zg25rpyO++vv3+AaftN7UhAQAA
     headers:
       Connection:
       - keep-alive
       Content-Length:
-      - '22'
+      - '252'
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jul 2024 09:26:30 GMT
+      - Mon, 15 Jul 2024 10:37:06 GMT
       Server:
       - nginx
       content-encoding:
@@ -36,6 +38,6 @@ interactions:
       vary:
       - Accept-Encoding
     status:
-      code: 200
-      message: OK
+      code: 422
+      message: Unprocessable Entity
 version: 1
