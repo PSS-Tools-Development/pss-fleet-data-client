@@ -168,6 +168,9 @@ class PssFleetDataClient:
     async def get_top_100_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
         response = await self._get(f"/collections/{collection_id}/top100Users")
 
+        if not response:
+            return None, []
+
         api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.users)
