@@ -20,7 +20,7 @@ class ApiError(Exception):
     links: list["ApiLink"]
 
     def __str__(self) -> str:
-        return self.__repr__
+        return repr(self)
 
     def __repr__(self) -> str:
         message = f"The API raised {self.code} at {self.timestamp}: {self.message}\n\t{self.details}\n\tSuggestion: {self.suggestion}"
