@@ -27,17 +27,13 @@ async def test_get_alliance_history_200(
 
 
 @pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_404")
-async def test_get_alliance_history_404(
-    test_client: PssFleetDataClient,
-):
+async def test_get_alliance_history_404(test_client: PssFleetDataClient):
     with pytest.raises(AllianceNotFoundError):
         _ = await test_client.get_alliance_history(1)
 
 
 @pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_422")
-async def test_get_alliance_history_invalid_allianceId_422(
-    test_client: PssFleetDataClient,
-):
+async def test_get_alliance_history_invalid_allianceId_422(test_client: PssFleetDataClient):
     with pytest.raises(InvalidAllianceIdError):
         _ = await test_client.get_alliance_history("f")
 
@@ -46,7 +42,11 @@ async def test_get_alliance_history_invalid_allianceId_422(
 @pytest.mark.usefixtures("vcr_config_match_on")
 @pytest.mark.parametrize(["parameters", "expected_exception"], test_cases.invalid_filter_parameters)
 async def test_get_alliance_history_422(
-    parameters: dict[str, Any], expected_exception: ApiError, vcr_config_match_on: list[str], test_client: PssFleetDataClient, request: FixtureRequest
+    parameters: dict[str, Any],
+    expected_exception: ApiError,
+    vcr_config_match_on: list[str],
+    test_client: PssFleetDataClient,
+    request: FixtureRequest,
 ):
     cassette_path = f"tests/30_routes/cassettes/test_get_422_{request.node.callspec.id}.yaml"
 
