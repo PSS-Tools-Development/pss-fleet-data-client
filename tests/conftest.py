@@ -2,14 +2,13 @@ from datetime import datetime, timezone
 from typing import Callable
 
 import pytest
+from fixtures import *  # noqa: F401,F403
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
 from client import utils
 from client.model import AllianceHistory, Collection, CollectionMetadata, UserHistory
 from client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
-
-from .fixtures import *  # noqa: F401,F403
 
 
 ### Fixtures
