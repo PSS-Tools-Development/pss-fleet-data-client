@@ -4,7 +4,7 @@ from client import PssFleetDataClient
 from client.model.exceptions import CollectionNotDeletedError, CollectionNotFoundError, InvalidCollectionIdError
 
 
-@pytest.mark.usefixtures("mock_response_collections_collectionId_delete_204")
+@pytest.mark.usefixtures("mock_response_empty_get_204")
 async def test_delete_collection_204(test_client: PssFleetDataClient):
     response = await test_client.delete_collection(1)
     assert response is True

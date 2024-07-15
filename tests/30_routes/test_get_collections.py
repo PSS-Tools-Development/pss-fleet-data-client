@@ -26,7 +26,7 @@ async def test_get_collections_200(
     assert_collections_equal(collection, response[0], True, True)
 
 
-@pytest.mark.usefixtures("mock_response_get_collections_204")
+@pytest.mark.usefixtures("mock_response_empty_collection_get_204")
 async def test_get_collections_204(test_client: PssFleetDataClient):
     response = await test_client.get_collections()
     assert isinstance(response, list)
