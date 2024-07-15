@@ -32,7 +32,7 @@ async def test_get_alliances_from_collection_200(
         assert_pss_alliances_equal(alliance, collection.alliances[i])
 
 
-@pytest.mark.usefixtures("collection", "mock_response_empty_get_204")
+@pytest.mark.usefixtures("collection", "mock_response_empty_collection_get_204")
 async def test_get_alliances_from_collection_204(
     test_client: PssFleetDataClient,
 ):
