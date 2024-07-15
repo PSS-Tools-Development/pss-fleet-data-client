@@ -1,8 +1,6 @@
 import pytest
 from pytest_httpx import HTTPXMock
 
-from client.model.api import ApiCollection
-
 
 @pytest.fixture(scope="function")
 def mock_response_collections_collectionId_delete_500(get_collection_1_url: str, httpx_mock: HTTPXMock):

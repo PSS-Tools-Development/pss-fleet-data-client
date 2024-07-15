@@ -1,26 +1,31 @@
-from typing import Any, Callable
+from typing import Callable
 
 import pytest
-import test_cases
-import vcr
-from pytest import FixtureRequest
+from pssapi.entities import Alliance as PssAlliance
 
 from client import PssFleetDataClient
-from client.model import Collection
+from client.model import AllianceHistory, CollectionMetadata
 from client.model.exceptions import AllianceNotFoundError, CollectionNotFoundError, InvalidAllianceIdError, InvalidCollectionIdError
 
 
-@pytest.mark.usefixtures("alliance", "mock_response_collections_collectionId_alliances_allianceId_get_200")
-@pytest.mark.usefixtures("assert_collection_valid", "assert_collections_equal")
+@pytest.mark.usefixtures("pss_alliance", "mock_response_collections_collectionId_alliances_allianceId_get_200")
+@pytest.mark.usefixtures("assert_alliance_history_valid", "assert_collections_equal")
 async def test_get_alliance_from_collection_200(
-    alliance: Collection,
+    pss_alliance: PssAlliance,
+    collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_pss_alliance_valid: Callable[[Collection], None],
-    assert_pss_alliances_equal: Callable[[Collection, Collection, bool, bool], None],
+    assert_pss_alliance_valid: Callable[[AllianceHistory], None],
+    assert_pss_alliances_equal: Callable[[AllianceHistory, AllianceHistory, bool, bool], None],
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
-    response = await test_client.get_alliance_from_collection(1, 1)
-    assert_pss_alliance_valid(response)
-    assert_pss_alliances_equal(alliance, response)
+    collection_metadata, alliance = await test_client.get_alliance_from_collection(1, 1)
+
+    assert_collection_metadata_valid(collection_metadata)
+    assert_collection_metadatas_equal(collection_metadata_9, collection_metadata)
+
+    assert_pss_alliance_valid(alliance)
+    assert_pss_alliances_equal(pss_alliance, alliance)
 
 
 @pytest.mark.usefixtures("mock_response_alliance_not_found")
