@@ -164,7 +164,7 @@ class PssFleetDataClient:
     ) -> list[Collection]:
         parameters = get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(
-            "/collections",
+            "/collections/",
             params=parameters,
         )
 
