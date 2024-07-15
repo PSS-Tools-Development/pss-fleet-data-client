@@ -115,7 +115,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[tuple[Collection, PssAlliance]]:
-        parameters = get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(
             f"/allianceHistory/{alliance_id}",
             params=parameters,
@@ -162,7 +162,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[Collection]:
-        parameters = get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(
             "/collections/",
             params=parameters,
@@ -209,7 +209,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[tuple[Collection, PssUser]]:
-        parameters = get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(
             f"/userHistory/{user_id}",
             params=parameters,
@@ -244,12 +244,12 @@ class PssFleetDataClient:
 
     async def _delete(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         response = await self.__client.delete(path, params=params, headers=headers)
-        raise_if_error(response)
+        _raise_if_error(response)
         return response
 
     async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         response = await self.__client.get(path, params=params, headers=headers)
-        raise_if_error(response)
+        _raise_if_error(response)
         return response
 
     async def _post(
@@ -261,11 +261,11 @@ class PssFleetDataClient:
         headers: Optional[dict[str, Any]] = None,
     ) -> Response:
         response = await self.__client.post(path, json=json, files=files, params=params, headers=headers)
-        raise_if_error(response)
+        _raise_if_error(response)
         return response
 
 
-def get_parameter_dict(
+def _get_parameter_dict(
     *,
     from_date: Optional[datetime] = None,
     to_date: Optional[datetime] = None,
@@ -290,83 +290,56 @@ def get_parameter_dict(
     return parameters
 
 
-def raise_if_error(response: Response):
+_error_code_lookup = {
+    ErrorCode.ALLIANCE_NOT_FOUND: AllianceNotFoundError,
+    ErrorCode.COLLECTION_NOT_DELETED: CollectionNotDeletedError,
+    ErrorCode.COLLECTION_NOT_FOUND: CollectionNotFoundError,
+    ErrorCode.CONFLICT: ConflictError,
+    ErrorCode.FORBIDDEN: MissingAccessError,
+    ErrorCode.FROM_DATE_AFTER_TO_DATE: FromDateAfterToDateError,
+    ErrorCode.INVALID_BOOL: InvalidBoolError,
+    ErrorCode.INVALID_DATETIME: InvalidDateTimeError,
+    ErrorCode.INVALID_JSON_FORMAT: InvalidJsonUpload,
+    ErrorCode.INVALID_NUMBER: InvalidNumberError,
+    ErrorCode.INVALID_PARAMETER: ParameterValidationError,
+    ErrorCode.INVALID_PARAMETER_FORMAT: ParameterFormatError,
+    ErrorCode.INVALID_PARAMETER_VALUE: ParameterValueError,
+    ErrorCode.METHOD_NOT_ALLOWED: MethodNotAllowedError,
+    ErrorCode.NON_UNIQUE_COLLECTION_ID: NonUniqueCollectionIdError,
+    ErrorCode.NON_UNIQUE_TIMESTAMP: NonUniqueTimestampError,
+    ErrorCode.NOT_AUTHENTICATED: NotAuthenticatedError,
+    ErrorCode.NOT_FOUND: NotFoundError,
+    ErrorCode.PARAMETER_ALLIANCE_ID_INVALID: InvalidAllianceIdError,
+    ErrorCode.PARAMETER_COLLECTION_ID_INVALID: InvalidCollectionIdError,
+    ErrorCode.PARAMETER_DESC_INVALID: InvalidDescError,
+    ErrorCode.PARAMETER_FROM_DATE_INVALID: InvalidFromDateError,
+    ErrorCode.PARAMETER_FROM_DATE_TOO_EARLY: FromDateTooEarlyError,
+    ErrorCode.PARAMETER_INTERVAL_INVALID: InvalidIntervalError,
+    ErrorCode.PARAMETER_SKIP_INVALID: InvalidSkipError,
+    ErrorCode.PARAMETER_TAKE_INVALID: InvalidTakeError,
+    ErrorCode.PARAMETER_TO_DATE_INVALID: InvalidToDateError,
+    ErrorCode.PARAMETER_TO_DATE_TOO_EARLY: ToDateTooEarlyError,
+    ErrorCode.PARAMETER_USER_ID_INVALID: InvalidUserIdError,
+    ErrorCode.RATE_LIMITED: TooManyRequestsError,
+    ErrorCode.SCHEMA_VERSION_MISMATCH: SchemaVersionMismatch,
+    ErrorCode.SERVER_ERROR: ServerError,
+    ErrorCode.UNSUPPORTED_MEDIA_TYPE: UnsupportedMediaTypeError,
+    ErrorCode.UNSUPPORTED_SCHEMA: UnsupportedSchemaError,
+    ErrorCode.USER_NOT_FOUND: UserNotFoundError,
+}
+
+
+def _raise_if_error(response: Response):
     if response.status_code not in (401, 403, 404, 405, 409, 415, 422, 429, 500):
         return
 
     api_error = ApiErrorResponse(**response.json())
-    args = (api_error.code, api_error.message, api_error.details, api_error.timestamp, api_error.suggestion, api_error.links)
+    exception = _error_code_lookup.get(api_error.code, ApiError)
 
-    match api_error.code:
-        case ErrorCode.ALLIANCE_NOT_FOUND:
-            raise AllianceNotFoundError(*args)
-        case ErrorCode.COLLECTION_NOT_DELETED:
-            raise CollectionNotDeletedError(*args)
-        case ErrorCode.COLLECTION_NOT_FOUND:
-            raise CollectionNotFoundError(*args)
-        case ErrorCode.CONFLICT:
-            raise ConflictError(*args)
-        case ErrorCode.FORBIDDEN:
-            raise MissingAccessError(*args)
-        case ErrorCode.FROM_DATE_AFTER_TO_DATE:
-            raise FromDateAfterToDateError(*args)
-        case ErrorCode.INVALID_BOOL:
-            raise InvalidBoolError(*args)
-        case ErrorCode.INVALID_DATETIME:
-            raise InvalidDateTimeError(*args)
-        case ErrorCode.INVALID_JSON_FORMAT:
-            return InvalidJsonUpload
-        case ErrorCode.INVALID_NUMBER:
-            raise InvalidNumberError(*args)
-        case ErrorCode.INVALID_PARAMETER:
-            raise ParameterValidationError(*args)
-        case ErrorCode.INVALID_PARAMETER_FORMAT:
-            raise ParameterFormatError(*args)
-        case ErrorCode.INVALID_PARAMETER_VALUE:
-            raise ParameterValueError(*args)
-        case ErrorCode.METHOD_NOT_ALLOWED:
-            raise MethodNotAllowedError(*args)
-        case ErrorCode.NON_UNIQUE_COLLECTION_ID:
-            raise NonUniqueCollectionIdError(*args)
-        case ErrorCode.NON_UNIQUE_TIMESTAMP:
-            raise NonUniqueTimestampError(*args)
-        case ErrorCode.NOT_AUTHENTICATED:
-            raise NotAuthenticatedError(*args)
-        case ErrorCode.NOT_FOUND:
-            raise NotFoundError(*args)
-        case ErrorCode.PARAMETER_ALLIANCE_ID_INVALID:
-            raise InvalidAllianceIdError(*args)
-        case ErrorCode.PARAMETER_COLLECTION_ID_INVALID:
-            raise InvalidCollectionIdError(*args)
-        case ErrorCode.PARAMETER_DESC_INVALID:
-            raise InvalidDescError(*args)
-        case ErrorCode.PARAMETER_FROM_DATE_INVALID:
-            raise InvalidFromDateError(*args)
-        case ErrorCode.PARAMETER_FROM_DATE_TOO_EARLY:
-            raise FromDateTooEarlyError(*args)
-        case ErrorCode.PARAMETER_INTERVAL_INVALID:
-            raise InvalidIntervalError(*args)
-        case ErrorCode.PARAMETER_SKIP_INVALID:
-            raise InvalidSkipError(*args)
-        case ErrorCode.PARAMETER_TAKE_INVALID:
-            raise InvalidTakeError(*args)
-        case ErrorCode.PARAMETER_TO_DATE_INVALID:
-            raise InvalidToDateError(*args)
-        case ErrorCode.PARAMETER_TO_DATE_TOO_EARLY:
-            raise ToDateTooEarlyError(*args)
-        case ErrorCode.PARAMETER_USER_ID_INVALID:
-            raise InvalidUserIdError(*args)
-        case ErrorCode.RATE_LIMITED:
-            raise TooManyRequestsError(*args)
-        case ErrorCode.SCHEMA_VERSION_MISMATCH:
-            return SchemaVersionMismatch
-        case ErrorCode.SERVER_ERROR:
-            raise ServerError(*args)
-        case ErrorCode.UNSUPPORTED_MEDIA_TYPE:
-            raise UnsupportedMediaTypeError(*args)
-        case ErrorCode.UNSUPPORTED_SCHEMA:
-            raise UnsupportedSchemaError(*args)
-        case ErrorCode.USER_NOT_FOUND:
-            raise UserNotFoundError(*args)
+    raise exception(api_error.code, api_error.message, api_error.details, api_error.timestamp, api_error.suggestion, api_error.links)
 
-    raise ApiError(*args)
+
+__all__ = [
+    ClientConfig.__name__,
+    PssFleetDataClient.__name__,
+]
