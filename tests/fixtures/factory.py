@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from typing import Callable
 
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
@@ -16,13 +15,9 @@ def create_api_alliance() -> ApiAlliance:
     return (1, "A1", 0, 0, 5000, 0, 1, 0)
 
 
-def create_api_collection(
-    create_api_collection_metadata_3: Callable[[], ApiCollectionMetadata],
-    create_api_alliance: Callable[[], ApiAlliance],
-    create_api_user: Callable[[], ApiUser],
-) -> ApiCollection:
+def create_api_collection_9() -> ApiCollection:
     return ApiCollection(
-        metadata=create_api_collection_metadata_3(),
+        metadata=create_api_collection_metadata_9(),
         fleets=[create_api_alliance()],
         users=[
             create_api_user(),
@@ -44,7 +39,7 @@ def create_api_collection_metadata_3() -> ApiCollectionMetadata:
     )
 
 
-def create_api_collection_metadata_9(create_api_collection_metadata_3: Callable[[], CollectionMetadata]) -> ApiCollectionMetadata:
+def create_api_collection_metadata_9() -> ApiCollectionMetadata:
     result = create_api_collection_metadata_3()
     result.data_version = 9
     result.max_tournament_battle_attempts = 6
@@ -94,11 +89,7 @@ def create_pss_alliance() -> PssAlliance:
     )
 
 
-def create_collection(
-    create_collection_metadata_9: Callable[[], CollectionMetadata],
-    create_pss_alliance: Callable[[], PssAlliance],
-    create_pss_user: Callable[[], PssUser],
-) -> Collection:
+def create_collection_9() -> Collection:
     return Collection(
         metadata=create_collection_metadata_9(),
         alliances=[create_pss_alliance()],
@@ -119,7 +110,7 @@ def create_collection_metadata_3() -> CollectionMetadata:
     )
 
 
-def create_collection_metadata_9(create_collection_metadata_3: Callable[[], CollectionMetadata]) -> CollectionMetadata:
+def create_collection_metadata_9() -> CollectionMetadata:
     result = create_collection_metadata_3()
     result.data_version = 9
     result.max_tournament_battle_attempts = 6

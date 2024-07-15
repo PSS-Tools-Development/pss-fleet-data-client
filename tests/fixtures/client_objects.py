@@ -4,7 +4,7 @@ from pssapi.entities import User as PssUser
 
 from client.model import AllianceHistory, Collection, CollectionMetadata, UserHistory
 
-from .factory import create_collection, create_collection_metadata_3, create_collection_metadata_9, create_pss_alliance, create_pss_user
+from .factory import create_collection_9, create_collection_metadata_3, create_collection_metadata_9, create_pss_alliance, create_pss_user
 
 
 # Client objects
@@ -26,7 +26,7 @@ def alliance_history(collection_metadata_9: CollectionMetadata, pss_alliance: Ps
 
 @pytest.fixture(scope="function")
 def collection() -> Collection:
-    return create_collection()
+    return create_collection_9()
 
 
 @pytest.fixture(scope="function")

@@ -4,7 +4,7 @@ import pytest
 
 from client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
 
-from .factory import create_api_alliance, create_api_collection, create_api_collection_metadata_3, create_api_collection_metadata_9, create_api_user
+from .factory import create_api_alliance, create_api_collection_9, create_api_collection_metadata_3, create_api_collection_metadata_9, create_api_user
 
 
 @pytest.fixture(scope="function")
@@ -23,7 +23,7 @@ def api_alliance_history(api_collection_metadata_9: ApiCollectionMetadata, api_a
 
 @pytest.fixture(scope="function")
 def api_collection() -> ApiCollection:
-    return create_api_collection()
+    return create_api_collection_9()
 
 
 @pytest.fixture(scope="function")
