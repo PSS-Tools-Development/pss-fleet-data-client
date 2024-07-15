@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 
 import pytest
 from pssapi.entities import Alliance as PssAlliance
@@ -40,8 +40,10 @@ def assert_collections_equal(
     assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata], None],
     assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance], None],
     assert_pss_users_equal: Callable[[PssUser, PssUser], None],
-) -> Callable[[Collection, Collection], None]:
-    def _assert_collections_equal(collection_1: Collection, collection_2: Collection):
+) -> Callable[[Collection, Collection, Optional[bool], Optional[bool]], None]:
+    def _assert_collections_equal(
+        collection_1: Collection, collection_2: Collection, skip_fleets: Optional[bool] = False, skip_users: Optional[bool] = False
+    ):
         assert collection_1
         assert collection_2
         assert isinstance(collection_1, Collection)
@@ -52,13 +54,15 @@ def assert_collections_equal(
 
         assert_collection_metadatas_equal(collection_1.metadata, collection_2.metadata)
 
-        assert len(collection_1.alliances) == len(collection_2.alliances)
-        for i, pss_alliance in enumerate(collection_1.alliances):
-            assert_pss_alliances_equal(pss_alliance, collection_2.alliances[i])
+        if not skip_fleets:
+            assert len(collection_1.alliances) == len(collection_2.alliances)
+            for i, pss_alliance in enumerate(collection_1.alliances):
+                assert_pss_alliances_equal(pss_alliance, collection_2.alliances[i])
 
-        assert len(collection_1.users) == len(collection_2.users)
-        for i, pss_user in enumerate(collection_1.users):
-            assert_pss_users_equal(pss_user, collection_2.users[i])
+        if not skip_users:
+            assert len(collection_1.users) == len(collection_2.users)
+            for i, pss_user in enumerate(collection_1.users):
+                assert_pss_users_equal(pss_user, collection_2.users[i])
 
     return _assert_collections_equal
 
@@ -150,24 +154,26 @@ def assert_alliance_history_valid(
 
 
 @pytest.fixture(scope="function")
-def assert_collection_valid(assert_collection_metadata_valid: Callable[[CollectionMetadata], None]) -> Callable[[Collection], None]:
-    def _assert_collection_valid(collection: Collection):
+def assert_collection_valid(assert_collection_metadata_valid: Callable[[CollectionMetadata], None]) -> Callable[[Collection, bool, bool], None]:
+    def _assert_collection_valid(collection: Collection, assert_fleets: bool, assert_users: bool):
         assert collection
         assert isinstance(collection, Collection)
 
         assert_collection_metadata_valid(collection.metadata)
 
-        assert collection.alliances
-        assert isinstance(collection.alliances, list)
-        for alliance in collection.alliances:
-            assert alliance
-            assert isinstance(alliance, PssAlliance)
+        if assert_fleets:
+            assert collection.alliances
+            assert isinstance(collection.alliances, list)
+            for alliance in collection.alliances:
+                assert alliance
+                assert isinstance(alliance, PssAlliance)
 
-        assert collection.users
-        assert isinstance(collection.users, list)
-        for user in collection.users:
-            assert user
-            assert isinstance(user, PssUser)
+        if assert_users:
+            assert collection.users
+            assert isinstance(collection.users, list)
+            for user in collection.users:
+                assert user
+                assert isinstance(user, PssUser)
 
     return _assert_collection_valid
 

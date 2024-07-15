@@ -54,9 +54,9 @@ class ApiCollection(BaseModel):
 
     metadata: "ApiCollectionMetadata"
     """The metadata of this Collection."""
-    fleets: list[ApiAlliance]
+    fleets: list[ApiAlliance] = Field(default_factory=lambda: list())
     """The fleets recorded in this Collection."""
-    users: list["ApiUser"]
+    users: list["ApiUser"] = Field(default_factory=lambda: list())
     """The players recorded in this Collection."""
 
 

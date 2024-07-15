@@ -13,11 +13,11 @@ async def test_get_collection_200(
     collection: Collection,
     test_client: PssFleetDataClient,
     assert_collection_valid: Callable[[Collection], None],
-    assert_collections_equal: Callable[[Collection, Collection], None],
+    assert_collections_equal: Callable[[Collection, Collection, bool, bool], None],
 ):
     response = await test_client.get_collection(1)
-    assert_collection_valid(response)
-    assert_collections_equal(collection, response)
+    assert_collection_valid(response, True, True)
+    assert_collections_equal(collection, response, True, True)
 
 
 @pytest.mark.usefixtures("mock_response_collection_not_found")

@@ -25,15 +25,17 @@ def test_to_from_api_alliance(
 @pytest.mark.usefixtures("collection")
 @pytest.mark.usefixtures("assert_collection_valid", "assert_collections_equal")
 def test_to_from_api_collection(
-    collection: Collection, assert_collection_valid: Callable[[Collection], None], assert_collections_equal: Callable[[Collection, Collection], None]
+    collection: Collection,
+    assert_collection_valid: Callable[[Collection], None],
+    assert_collections_equal: Callable[[Collection, Collection, bool, bool], None],
 ):
     api_collection = ToAPI.from_collection(collection)
     collection_after = FromAPI.to_collection(api_collection)
 
-    assert_collection_valid(collection_after)
+    assert_collection_valid(collection_after, True, True)
 
     collection.metadata.collection_id = None
-    assert_collections_equal(collection, collection_after)
+    assert_collections_equal(collection, collection_after, True, True)
 
 
 @pytest.mark.usefixtures("collection_metadata_9")

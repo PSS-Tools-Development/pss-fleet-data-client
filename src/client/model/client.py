@@ -50,7 +50,7 @@ from .exceptions import (
     UnsupportedSchemaError,
     UserNotFoundError,
 )
-from .models import AllianceHistory, Collection
+from .models import AllianceHistory, Collection, CollectionMetadata
 
 
 @dataclass(frozen=True)
@@ -125,7 +125,7 @@ class PssFleetDataClient:
         alliance_histories = [FromAPI.to_alliance_history(alliance_history) for alliance_history in api_alliance_histories]
         return alliance_histories
 
-    async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[Collection, PssAlliance]:
+    async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[CollectionMetadata, PssAlliance]:
         response = await self._get(
             f"/collections/{collection_id}/alliances/{alliance_id}",
         )
@@ -134,14 +134,14 @@ class PssFleetDataClient:
         alliance_history = FromAPI.to_alliance_history(api_alliance_history)
         return (alliance_history.collection, alliance_history.alliance)
 
-    async def get_alliances_from_collection(self, collection_id: int) -> tuple[Collection, list[PssAlliance]]:
+    async def get_alliances_from_collection(self, collection_id: int) -> tuple[CollectionMetadata, list[PssAlliance]]:
         response = await self._get(
             f"/collections/{collection_id}/alliances",
         )
 
         api_collection = ApiCollection(**response.json())
         collection = FromAPI.to_collection(api_collection)
-        return (collection.metadata, collection.users)
+        return (collection.metadata, collection.alliances)
 
     async def get_collection(self, collection_id: int) -> Collection:
         response = await self._get(
@@ -178,7 +178,7 @@ class PssFleetDataClient:
 
         api_collection = ApiCollection(**response.json())
         collection = FromAPI.to_collection(api_collection)
-        return (collection.collection, collection.users)
+        return (collection.metadata, collection.users)
 
     async def get_user_from_collection(self, collection_id: int, user_id: int) -> tuple[Collection, PssUser]:
         response = await self._get(

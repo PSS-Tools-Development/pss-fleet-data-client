@@ -108,6 +108,40 @@ def assert_api_collection_metadata_valid() -> Callable[[ApiCollectionMetadata], 
 
 
 @pytest.fixture(scope="session")
+def assert_api_collection_with_fleets_valid(
+    assert_api_alliance_valid: Callable[[ApiAlliance], None],
+    assert_api_collection_metadata_valid: Callable[[ApiCollectionMetadata], None],
+) -> Callable[[ApiCollection], None]:
+    def _assert_api_collection_with_fleets_valid(api_collection: ApiCollection):
+        assert api_collection
+        assert isinstance(api_collection, ApiCollection)
+        assert_api_collection_metadata_valid(api_collection.metadata)
+
+        assert isinstance(api_collection.fleets, list)
+        for fleet in api_collection.fleets:
+            assert_api_alliance_valid(fleet)
+
+    return _assert_api_collection_with_fleets_valid
+
+
+@pytest.fixture(scope="session")
+def assert_api_collection_with_fleets_valid(
+    assert_api_collection_metadata_valid: Callable[[ApiCollectionMetadata], None],
+    assert_api_user_valid: Callable[[ApiUser], None],
+) -> Callable[[ApiCollection], None]:
+    def _assert_api_collection_with_users_valid(api_collection: ApiCollection):
+        assert api_collection
+        assert isinstance(api_collection, ApiCollection)
+        assert_api_collection_metadata_valid(api_collection.metadata)
+
+        assert isinstance(api_collection.users, list)
+        for user in api_collection.users:
+            assert_api_user_valid(user)
+
+    return _assert_api_collection_with_users_valid
+
+
+@pytest.fixture(scope="session")
 def assert_api_user_valid() -> Callable[[ApiUser], None]:
     def _assert_api_user_valid(api_user: ApiUser):
         assert api_user

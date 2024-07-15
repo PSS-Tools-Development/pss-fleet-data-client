@@ -19,7 +19,7 @@ def test_to_pss_alliance(api_alliance: ApiAlliance, assert_pss_alliance_valid: C
 @pytest.mark.usefixtures("assert_collection_valid")
 def test_to_collection(api_collection: ApiCollection, assert_collection_valid: Callable[[Collection], None]):
     collection = FromAPI.to_collection(api_collection)
-    assert_collection_valid(collection)
+    assert_collection_valid(collection, True, True)
 
 
 @pytest.mark.usefixtures("api_collection_metadata_3")

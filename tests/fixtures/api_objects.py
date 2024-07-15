@@ -27,6 +27,22 @@ def api_collection() -> ApiCollection:
 
 
 @pytest.fixture(scope="function")
+def api_collection_with_fleets() -> ApiCollection:
+    return ApiCollection(
+        metadata=create_api_collection_metadata_9(),
+        fleets=[create_api_alliance()],
+    )
+
+
+@pytest.fixture(scope="function")
+def api_collection_with_users() -> ApiCollection:
+    return ApiCollection(
+        metadata=create_api_collection_metadata_9(),
+        users=[create_api_user()],
+    )
+
+
+@pytest.fixture(scope="function")
 def api_collection_metadata_3() -> ApiCollectionMetadata:
     return create_api_collection_metadata_3()
 
