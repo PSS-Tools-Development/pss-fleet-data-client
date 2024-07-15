@@ -271,7 +271,7 @@ def assert_collection_metadata_valid() -> Callable[[CollectionMetadata], None]:
         assert metadata.schema_version is not None
         assert metadata.data_version is not None
 
-        if metadata.data_version == 9:
+        if metadata.data_version >= 9:
             assert metadata.max_tournament_battle_attempts is not None
 
     return _assert_collection_metadata_valid
