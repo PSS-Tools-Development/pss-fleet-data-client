@@ -20,13 +20,13 @@ async def test_get_collection_200(
     assert_collections_equal(collection, response)
 
 
-@pytest.mark.usefixtures("mock_response_collections_collectionId_404")
+@pytest.mark.usefixtures("mock_response_collection_not_found")
 async def test_get_collection_404(test_client: PssFleetDataClient):
     with pytest.raises(CollectionNotFoundError):
         _ = await test_client.get_collection(1)
 
 
-@pytest.mark.usefixtures("mock_response_collections_collectionId_422")
+@pytest.mark.usefixtures("mock_response_collection_id_invalid")
 async def test_get_collection_422(test_client: PssFleetDataClient):
     with pytest.raises(InvalidCollectionIdError):
         _ = await test_client.get_collection("f")

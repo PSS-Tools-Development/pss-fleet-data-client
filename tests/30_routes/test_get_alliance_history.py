@@ -26,13 +26,13 @@ async def test_get_alliance_history_200(
     assert_alliance_histories_equal(alliance_history, response[0])
 
 
-@pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_404")
+@pytest.mark.usefixtures("mock_response_alliance_not_found")
 async def test_get_alliance_history_404(test_client: PssFleetDataClient):
     with pytest.raises(AllianceNotFoundError):
         _ = await test_client.get_alliance_history(1)
 
 
-@pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_422")
+@pytest.mark.usefixtures("mock_response_alliance_id_invalid")
 async def test_get_alliance_history_invalid_allianceId_422(test_client: PssFleetDataClient):
     with pytest.raises(InvalidAllianceIdError):
         _ = await test_client.get_alliance_history("f")
