@@ -16,7 +16,16 @@ def pss_alliance() -> PssAlliance:
 
 
 @pytest.fixture(scope="function")
-def alliance_history(collection_metadata_9: CollectionMetadata, pss_alliance: PssAlliance, pss_user: PssUser) -> AllianceHistory:
+def alliance_history(collection_metadata_9: CollectionMetadata, pss_alliance: PssAlliance) -> AllianceHistory:
+    return AllianceHistory(
+        collection=collection_metadata_9,
+        alliance=pss_alliance,
+        users=[],
+    )
+
+
+@pytest.fixture(scope="function")
+def alliance_history_with_members(collection_metadata_9: CollectionMetadata, pss_alliance: PssAlliance, pss_user: PssUser) -> AllianceHistory:
     return AllianceHistory(
         collection=collection_metadata_9,
         alliance=pss_alliance,

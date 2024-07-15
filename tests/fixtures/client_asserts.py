@@ -136,6 +136,24 @@ def assert_pss_users_equal() -> Callable[[PssUser, PssUser], None]:
 def assert_alliance_history_valid(
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
     assert_pss_alliance_valid: Callable[[PssAlliance], None],
+) -> Callable[[Collection], None]:
+    def _assert_alliance_history_valid(alliance_history: AllianceHistory):
+        assert alliance_history
+        assert isinstance(alliance_history, AllianceHistory)
+
+        assert_collection_metadata_valid(alliance_history.collection)
+        assert_pss_alliance_valid(alliance_history.alliance)
+
+        assert not alliance_history.users
+        assert isinstance(alliance_history.users, list)
+
+    return _assert_alliance_history_valid
+
+
+@pytest.fixture(scope="function")
+def assert_alliance_history_with_members_valid(
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_pss_alliance_valid: Callable[[PssAlliance], None],
     assert_pss_user_valid: Callable[[PssUser], None],
 ) -> Callable[[Collection], None]:
     def _assert_alliance_history_valid(alliance_history: AllianceHistory):

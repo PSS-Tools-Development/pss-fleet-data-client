@@ -13,7 +13,18 @@ def api_alliance() -> ApiAlliance:
 
 
 @pytest.fixture(scope="function")
-def api_alliance_history(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance, api_user: ApiUser) -> ApiAllianceHistory:
+def api_alliance_history(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance) -> ApiAllianceHistory:
+    return ApiAllianceHistory(
+        collection=api_collection_metadata_9,
+        fleet=api_alliance,
+        users=[],
+    )
+
+
+@pytest.fixture(scope="function")
+def api_alliance_history_with_members(
+    api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance, api_user: ApiUser
+) -> ApiAllianceHistory:
     return ApiAllianceHistory(
         collection=api_collection_metadata_9,
         fleet=api_alliance,

@@ -14,6 +14,17 @@ def mock_response_allianceHistory_allianceId_get_200(api_alliance_history: ApiAl
 
 
 @pytest.fixture(scope="function")
+def mock_response_allianceHistory_allianceId_get_200_with_members(
+    api_alliance_history_with_members: ApiAllianceHistory, get_allianceHistory_1_url: str, httpx_mock: HTTPXMock
+):
+    httpx_mock.add_response(
+        method="GET",
+        url=get_allianceHistory_1_url,
+        text=f"[{api_alliance_history_with_members.model_dump_json()}]",
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_response_get_collections_200(api_collection: ApiCollection, get_collections_url: str, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         method="GET",
@@ -44,6 +55,16 @@ def mock_response_collections_collectionId_alliances_allianceId_get_200(api_alli
     httpx_mock.add_response(
         method="GET",
         text=api_alliance_history.model_dump_json(),
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_response_collections_collectionId_alliances_allianceId_get_200_with_members(
+    api_alliance_history_with_members: ApiAllianceHistory, httpx_mock: HTTPXMock
+):
+    httpx_mock.add_response(
+        method="GET",
+        text=api_alliance_history_with_members.model_dump_json(),
     )
 
 

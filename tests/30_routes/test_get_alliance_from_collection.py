@@ -9,8 +9,26 @@ from client.model.exceptions import AllianceNotFoundError, CollectionNotFoundErr
 
 
 @pytest.mark.usefixtures("pss_alliance", "mock_response_collections_collectionId_alliances_allianceId_get_200")
-@pytest.mark.usefixtures("assert_alliance_history_valid", "assert_collections_equal")
 async def test_get_alliance_from_collection_200(
+    pss_alliance: PssAlliance,
+    collection_metadata_9: CollectionMetadata,
+    test_client: PssFleetDataClient,
+    assert_pss_alliance_valid: Callable[[AllianceHistory], None],
+    assert_pss_alliances_equal: Callable[[AllianceHistory, AllianceHistory, bool, bool], None],
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
+):
+    collection_metadata, alliance = await test_client.get_alliance_from_collection(1, 1)
+
+    assert_collection_metadata_valid(collection_metadata)
+    assert_collection_metadatas_equal(collection_metadata_9, collection_metadata)
+
+    assert_pss_alliance_valid(alliance)
+    assert_pss_alliances_equal(pss_alliance, alliance)
+
+
+@pytest.mark.usefixtures("pss_alliance", "mock_response_collections_collectionId_alliances_allianceId_get_200_with_members")
+async def test_get_alliance_from_collection_200_with_members(
     pss_alliance: PssAlliance,
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,

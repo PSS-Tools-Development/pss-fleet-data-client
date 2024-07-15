@@ -10,8 +10,7 @@ from client.model import AllianceHistory
 from client.model.exceptions import AllianceNotFoundError, ApiError, InvalidAllianceIdError
 
 
-@pytest.mark.usefixtures("alliance_history", "mock_response_allianceHistory_allianceId_get_200")
-@pytest.mark.usefixtures("assert_alliance_history_valid", "assert_alliance_histories_equal")
+@pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_get_200")
 async def test_get_alliance_history_200(
     alliance_history: AllianceHistory,
     test_client: PssFleetDataClient,
@@ -24,6 +23,21 @@ async def test_get_alliance_history_200(
 
     assert_alliance_history_valid(response[0])
     assert_alliance_histories_equal(alliance_history, response[0])
+
+
+@pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_get_200_with_members")
+async def test_get_alliance_history_200_with_members(
+    alliance_history_with_members: AllianceHistory,
+    test_client: PssFleetDataClient,
+    assert_alliance_history_with_members_valid: Callable[[AllianceHistory], None],
+    assert_alliance_histories_equal: Callable[[AllianceHistory, AllianceHistory], None],
+):
+    response = await test_client.get_alliance_history(1)
+    assert response
+    assert isinstance(response, list)
+
+    assert_alliance_history_with_members_valid(response[0])
+    assert_alliance_histories_equal(alliance_history_with_members, response[0])
 
 
 @pytest.mark.usefixtures("mock_response_empty_collection_get_204")
