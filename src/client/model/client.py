@@ -250,9 +250,13 @@ class PssFleetDataClient:
     async def _delete(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         response = await self.__client.delete(path, params=params, headers=headers)
         _raise_if_error(response)
+
+        if not response.text:
+            return response.text
+
         return response.json()
 
-    async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
+    async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Any:
         response = await self.__client.get(path, params=params, headers=headers)
         _raise_if_error(response)
         return response.json()
@@ -264,7 +268,7 @@ class PssFleetDataClient:
         files: Optional[dict[str, tuple]] = None,
         params: Optional[dict[str, Any]] = None,
         headers: Optional[dict[str, Any]] = None,
-    ) -> Response:
+    ) -> Any:
         response = await self.__client.post(path, json=json, files=files, params=params, headers=headers)
         _raise_if_error(response)
         return response.json()
