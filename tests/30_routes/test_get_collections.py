@@ -36,11 +36,13 @@ async def test_get_collections_204(
 
 
 @pytest.mark.vcr()
+@pytest.mark.usefixtures("vcr_config_match_on")
 @pytest.mark.parametrize(["parameters", "expected_exception"], test_cases.invalid_filter_parameters)
 async def test_get_collections_422(
-    parameters: dict[str, Any], expected_exception: ApiError, test_client: PssFleetDataClient, request: FixtureRequest
+    parameters: dict[str, Any], expected_exception: ApiError, vcr_config_match_on: list[str], test_client: PssFleetDataClient, request: FixtureRequest
 ):
     cassette_path = f"tests/30_routes/cassettes/test_get_422_{request.node.callspec.id}.yaml"
-    with vcr.use_cassette(cassette_path):
+
+    with vcr.use_cassette(cassette_path, match_on=vcr_config_match_on):
         with pytest.raises(expected_exception):
             _ = await test_client.get_collections(**parameters)
