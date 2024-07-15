@@ -48,4 +48,4 @@ class UserHistory(BaseModel):
 
     collection: "CollectionMetadata"
     user: PssUser
-    alliance: PssAlliance
+    alliance: Optional[PssAlliance]

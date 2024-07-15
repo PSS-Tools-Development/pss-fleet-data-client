@@ -45,3 +45,19 @@ def mock_response_collections_collectionId_alliances_allianceId_get_200(api_alli
         method="GET",
         text=api_alliance_history.model_dump_json(),
     )
+
+
+@pytest.fixture(scope="function")
+def mock_response_collections_collectionId_users_userId_get_200(api_user_history: ApiAllianceHistory, httpx_mock: HTTPXMock):
+    httpx_mock.add_response(
+        method="GET",
+        text=api_user_history.model_dump_json(),
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_response_collections_collectionId_users_userId_get_200_with_fleet(api_user_history_with_fleet: ApiAllianceHistory, httpx_mock: HTTPXMock):
+    httpx_mock.add_response(
+        method="GET",
+        text=api_user_history_with_fleet.model_dump_json(),
+    )

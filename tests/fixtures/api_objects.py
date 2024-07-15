@@ -58,7 +58,18 @@ def api_user() -> ApiUser:
 
 
 @pytest.fixture(scope="function")
-def api_user_history(api_collection_metadata_9: Callable[[], ApiCollectionMetadata], api_alliance: ApiAlliance, api_user: ApiUser) -> ApiUserHistory:
+def api_user_history(api_collection_metadata_9: Callable[[], ApiCollectionMetadata], api_user: ApiUser) -> ApiUserHistory:
+    return ApiUserHistory(
+        collection=api_collection_metadata_9,
+        user=api_user,
+        fleet=None,
+    )
+
+
+@pytest.fixture(scope="function")
+def api_user_history_with_fleet(
+    api_collection_metadata_9: Callable[[], ApiCollectionMetadata], api_alliance: ApiAlliance, api_user: ApiUser
+) -> ApiUserHistory:
     return ApiUserHistory(
         collection=api_collection_metadata_9,
         user=api_user,

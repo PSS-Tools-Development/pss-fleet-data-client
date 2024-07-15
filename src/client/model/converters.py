@@ -96,7 +96,7 @@ class FromAPI:
         return UserHistory(
             collection=FromAPI.to_collection_metadata(source.collection),
             user=FromAPI.to_pss_user(source.user),
-            alliance=FromAPI.to_pss_alliance(source.fleet),
+            alliance=FromAPI.to_pss_alliance(source.fleet) if source.fleet else None,
         )
 
 
