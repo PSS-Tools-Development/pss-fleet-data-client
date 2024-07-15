@@ -1,12 +1,11 @@
+import os
+
 import pytest
+import vcr
+import vcr.request
+from mock_responses import *  # noqa: F401,F403
 
 from client import PssFleetDataClient
-from client.model.api import ApiCollection
-
-
-@pytest.fixture(scope="function")
-def response_get_collection_200(api_collection: ApiCollection):
-    return api_collection.model_dump_json()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -24,51 +23,31 @@ def base_url() -> str:
     # return "http://127.0.0.1:8000"
 
 
-@pytest.fixture(scope="function")
-def get_collection_url(base_url) -> str:
-    return f"{base_url}/collections/1"
+@pytest.fixture(scope="module")
+def vcr_config():
+    return {
+        "match_on": ["host", "method", "path", "scheme"],
+        "record_mode": "once",
+        # "record_mode": "rewrite",  # Use this record mode to create new cassettes while testing, when an endpoint has their parameters or responses updated.
+        "filter_query_parameters": ["accessToken", "checksum"],
+        "filter_post_data_parameters": ["accessToken", "checksum"],
+        "record_on_exception": False,
+        "before_record_request": before_record_request,
+        "before_record_response": before_record_response,
+    }
 
 
-@pytest.fixture(scope="function")
-def mock_response_get_collection_200(api_collection: ApiCollection, base_url: str, httpx_mock):
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{base_url}/collections/1",
-        text=api_collection.model_dump_json(),
-    )
+def before_record_request(request: vcr.request.Request):
+    request.headers["Authorization"] = ""
+    return request
 
 
-@pytest.fixture(scope="function")
-def mock_response_get_collection_404(base_url: str, httpx_mock):
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{base_url}/collections/1",
-        status_code=404,
-        json={
-            "code": "COLLECTION_NOT_FOUND",
-            "message": "The requested Collection could not be found.",
-            "details": "There is no Collection with the ID '1'.",
-            "timestamp": "2024-07-13T14:04:30.696117+00:00",
-            "url": f"{base_url}/collections/1",
-            "suggestion": "Check the provided `collectionId` parameter in the path.",
-            "links": [],
-        },
-    )
+def before_record_response(response):
+    return response
 
 
-@pytest.fixture(scope="function")
-def mock_response_get_collection_422(base_url: str, httpx_mock):
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{base_url}/collections/f",
-        status_code=422,
-        json={
-            "code": "PARAMETER_COLLECTION_ID_INVALID",
-            "message": "The provided value for the parameter `collectionId` is invalid.",
-            "details": "Input should be a valid integer, unable to parse string as an integer",
-            "timestamp": "2024-07-13T14:07:26.955843+00:00",
-            "url": f"{base_url}/collections/f",
-            "suggestion": "",
-            "links": [],
-        },
-    )
+@pytest.fixture(scope="module")
+def vcr_cassette_dir(request: pytest.FixtureRequest):
+    module_name: str = request.module.__name__
+    folder_name = os.path.splitext(module_name)[0].removeprefix("test_")
+    return f"tests/30_routes/cassettes/{folder_name}"
