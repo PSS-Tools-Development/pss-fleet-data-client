@@ -1,4 +1,5 @@
 import pytest
+from pytest_httpx import HTTPXMock
 
 from client.model.api import ApiCollection
 
@@ -9,7 +10,7 @@ def get_collection_1_url(base_url) -> str:
 
 
 @pytest.fixture(scope="function")
-def mock_response_get_collection_200(api_collection: ApiCollection, get_collection_1_url: str, httpx_mock):
+def mock_response_get_collection_200(api_collection: ApiCollection, get_collection_1_url: str, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         method="GET",
         url=get_collection_1_url,
@@ -18,7 +19,7 @@ def mock_response_get_collection_200(api_collection: ApiCollection, get_collecti
 
 
 @pytest.fixture(scope="function")
-def mock_response_get_collection_404(get_collection_1_url: str, httpx_mock):
+def mock_response_get_collection_404(get_collection_1_url: str, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         method="GET",
         url=get_collection_1_url,
@@ -36,7 +37,7 @@ def mock_response_get_collection_404(get_collection_1_url: str, httpx_mock):
 
 
 @pytest.fixture(scope="function")
-def mock_response_get_collection_422(base_url: str, httpx_mock):
+def mock_response_get_collection_422(base_url: str, httpx_mock: HTTPXMock):
     get_collection_url = f"{base_url}/collections/f"
     httpx_mock.add_response(
         method="GET",
