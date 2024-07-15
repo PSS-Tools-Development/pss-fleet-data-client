@@ -28,8 +28,8 @@ async def test_get_alliances_from_collection_200(
         assert_pss_alliance_valid(alliance)
 
     assert len(alliances) == len(collection.alliances)
-    for i, alliance in enumerate(alliances):
-        assert_pss_alliances_equal(alliance, collection.alliances[i])
+    for alliance_1, alliance_2 in zip(alliances, collection.alliances, strict=True):
+        assert_pss_alliances_equal(alliance_1, alliance_2)
 
 
 @pytest.mark.usefixtures("collection", "mock_response_empty_collection_get_204")
