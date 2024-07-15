@@ -4,7 +4,7 @@ import pytest
 from pssapi.entities import Alliance as PssAlliance
 
 from client import PssFleetDataClient
-from client.model import AllianceHistory, CollectionMetadata
+from client.model import CollectionMetadata
 from client.model.exceptions import AllianceNotFoundError, CollectionNotFoundError, InvalidAllianceIdError, InvalidCollectionIdError
 
 
@@ -13,8 +13,8 @@ async def test_get_alliance_from_collection_200(
     pss_alliance: PssAlliance,
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_pss_alliance_valid: Callable[[AllianceHistory], None],
-    assert_pss_alliances_equal: Callable[[AllianceHistory, AllianceHistory, bool, bool], None],
+    assert_pss_alliance_valid: Callable[[PssAlliance], None],
+    assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance, bool, bool], None],
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
     assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
@@ -32,8 +32,8 @@ async def test_get_alliance_from_collection_200_with_members(
     pss_alliance: PssAlliance,
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_pss_alliance_valid: Callable[[AllianceHistory], None],
-    assert_pss_alliances_equal: Callable[[AllianceHistory, AllianceHistory, bool, bool], None],
+    assert_pss_alliance_valid: Callable[[PssAlliance], None],
+    assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance, bool, bool], None],
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
     assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):

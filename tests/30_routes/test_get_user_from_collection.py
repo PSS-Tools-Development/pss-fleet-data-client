@@ -1,20 +1,20 @@
 from typing import Callable
 
 import pytest
-from pssapi.entities import Alliance as PssAlliance
+from pssapi.entities import User as PssUser
 
 from client import PssFleetDataClient
-from client.model import AllianceHistory, CollectionMetadata
+from client.model import CollectionMetadata
 from client.model.exceptions import CollectionNotFoundError, InvalidCollectionIdError, InvalidUserIdError, UserNotFoundError
 
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_users_userId_get_200")
 async def test_get_user_from_collection_200(
-    pss_user: PssAlliance,
+    pss_user: PssUser,
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_pss_user_valid: Callable[[AllianceHistory], None],
-    assert_pss_users_equal: Callable[[AllianceHistory, AllianceHistory, bool, bool], None],
+    assert_pss_user_valid: Callable[[PssUser], None],
+    assert_pss_users_equal: Callable[[PssUser, PssUser, bool, bool], None],
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
     assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
@@ -29,11 +29,11 @@ async def test_get_user_from_collection_200(
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_users_userId_get_200_with_fleet")
 async def test_get_user_from_collection_200_with_fleet(
-    pss_user: PssAlliance,
+    pss_user: PssUser,
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_pss_user_valid: Callable[[AllianceHistory], None],
-    assert_pss_users_equal: Callable[[AllianceHistory, AllianceHistory, bool, bool], None],
+    assert_pss_user_valid: Callable[[PssUser], None],
+    assert_pss_users_equal: Callable[[PssUser, PssUser, bool, bool], None],
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
     assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
