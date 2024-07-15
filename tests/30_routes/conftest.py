@@ -1,5 +1,3 @@
-import os
-
 import pytest
 import vcr
 import vcr.request
@@ -26,7 +24,7 @@ def base_url() -> str:
 @pytest.fixture(scope="module")
 def vcr_config():
     return {
-        "match_on": ["host", "method", "path", "scheme"],
+        "match_on": ["method", "query"],
         "record_mode": "once",
         # "record_mode": "rewrite",  # Use this record mode to create new cassettes while testing, when an endpoint has their parameters or responses updated.
         "filter_query_parameters": ["accessToken", "checksum"],
@@ -34,6 +32,7 @@ def vcr_config():
         "record_on_exception": False,
         "before_record_request": before_record_request,
         "before_record_response": before_record_response,
+        "decode_compressed_response": True,
     }
 
 
@@ -44,10 +43,3 @@ def before_record_request(request: vcr.request.Request):
 
 def before_record_response(response):
     return response
-
-
-@pytest.fixture(scope="module")
-def vcr_cassette_dir(request: pytest.FixtureRequest):
-    module_name: str = request.module.__name__
-    folder_name = os.path.splitext(module_name)[0].removeprefix("test_")
-    return f"tests/30_routes/cassettes/{folder_name}"
