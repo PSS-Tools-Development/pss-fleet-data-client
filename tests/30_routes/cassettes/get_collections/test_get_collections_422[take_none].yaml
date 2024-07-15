@@ -1,0 +1,41 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      Authorization:
+      - ''
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - fleetdata.dolores2.xyz
+      user-agent:
+      - python-httpx/0.27.0
+    method: GET
+    uri: https://fleetdata.dolores2.xyz/collections/
+  response:
+    body:
+      string: !!binary |
+        H4sIAEbrlGYC/4uOBQApu0wNAgAAAA==
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 15 Jul 2024 09:26:30 GMT
+      Server:
+      - nginx
+      content-encoding:
+      - gzip
+      vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+version: 1
