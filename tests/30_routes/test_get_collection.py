@@ -7,7 +7,7 @@ from client.model import Collection
 from client.model.exceptions import CollectionNotFoundError, InvalidCollectionIdError
 
 
-@pytest.mark.usefixtures("collection", "mock_response_get_collection_200")
+@pytest.mark.usefixtures("collection", "mock_response_collections_collectionId_get_200")
 @pytest.mark.usefixtures("assert_collection_valid", "assert_collections_equal")
 async def test_get_collection_200(
     collection: Collection,
@@ -20,7 +20,7 @@ async def test_get_collection_200(
     assert_collections_equal(collection, response)
 
 
-@pytest.mark.usefixtures("mock_response_get_collection_404")
+@pytest.mark.usefixtures("mock_response_collections_collectionId_404")
 async def test_get_collection_404(
     test_client: PssFleetDataClient,
 ):
@@ -28,7 +28,7 @@ async def test_get_collection_404(
         _ = await test_client.get_collection(1)
 
 
-@pytest.mark.usefixtures("mock_response_get_collection_422")
+@pytest.mark.usefixtures("mock_response_collections_collectionId_422")
 async def test_get_collection_422(
     test_client: PssFleetDataClient,
 ):
