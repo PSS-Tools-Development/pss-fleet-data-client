@@ -12,7 +12,10 @@ invalid_filter_parameters = [
     pytest.param({"to_date": "2016-13-01T00:00:00"}, InvalidToDateError, id="to_date_not_a_valid_date"),
     pytest.param({"to_date": "2016-01-01T00:00:00"}, ToDateTooEarlyError, id="to_date_too_early"),
     pytest.param(
-        {"from_date": "2020-02-01T00:00:00Z", "to_date": "2020-01-01T00:00:00Z"},
+        {
+            "from_date": "2020-02-01T00:00:00Z",
+            "to_date": "2020-01-01T00:00:00Z",
+        },
         FromDateAfterToDateError,
         id="from_date_after_to_date",
     ),
