@@ -69,6 +69,14 @@ def mock_response_collections_collectionId_alliances_allianceId_get_200_with_mem
 
 
 @pytest.fixture(scope="function")
+def mock_response_collections_collectionId_users_get_200(api_collection_with_users: ApiCollection, httpx_mock: HTTPXMock):
+    httpx_mock.add_response(
+        method="GET",
+        text=api_collection_with_users.model_dump_json(),
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_response_collections_collectionId_users_userId_get_200(api_user_history: ApiAllianceHistory, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         method="GET",

@@ -116,10 +116,7 @@ class PssFleetDataClient:
         take: Optional[int] = None,
     ) -> list[AllianceHistory]:
         parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
-        response = await self._get(
-            f"/allianceHistory/{alliance_id}",
-            params=parameters,
-        )
+        response = await self._get(f"/allianceHistory/{alliance_id}", params=parameters)
 
         if not response:
             return []
@@ -129,18 +126,14 @@ class PssFleetDataClient:
         return alliance_histories
 
     async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[CollectionMetadata, PssAlliance]:
-        response = await self._get(
-            f"/collections/{collection_id}/alliances/{alliance_id}",
-        )
+        response = await self._get(f"/collections/{collection_id}/alliances/{alliance_id}")
 
         api_alliance_history = ApiAllianceHistory(**response)
         alliance_history = FromAPI.to_alliance_history(api_alliance_history)
         return (alliance_history.collection, alliance_history.alliance)
 
     async def get_alliances_from_collection(self, collection_id: int) -> tuple[Optional[CollectionMetadata], list[PssAlliance]]:
-        response = await self._get(
-            f"/collections/{collection_id}/alliances",
-        )
+        response = await self._get(f"/collections/{collection_id}/alliances")
 
         if not response:
             return None, []
@@ -150,9 +143,7 @@ class PssFleetDataClient:
         return (collection.metadata, collection.alliances)
 
     async def get_collection(self, collection_id: int) -> Collection:
-        response = await self._get(
-            f"/collections/{collection_id}",
-        )
+        response = await self._get(f"/collections/{collection_id}")
 
         api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
@@ -168,37 +159,31 @@ class PssFleetDataClient:
         take: Optional[int] = None,
     ) -> list[Collection]:
         parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
-        response = await self._get(
-            "/collections/",
-            params=parameters,
-        )
+        response = await self._get("/collections/", params=parameters)
 
         api_collections = [ApiCollection(**item) for item in response]
         result = [FromAPI.to_collection(collection) for collection in api_collections]
         return result
 
     async def get_top_100_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
-        response = await self._get(
-            f"/collections/{collection_id}/top100Users",
-        )
+        response = await self._get(f"/collections/{collection_id}/top100Users")
 
         api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.users)
 
     async def get_user_from_collection(self, collection_id: int, user_id: int) -> tuple[Collection, PssUser]:
-        response = await self._get(
-            f"/collections/{collection_id}/users/{user_id}",
-        )
+        response = await self._get(f"/collections/{collection_id}/users/{user_id}")
 
         api_user_history = ApiUserHistory(**response)
         user_history = FromAPI.to_user_history(api_user_history)
         return (user_history.collection, user_history.user)
 
     async def get_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
-        response = await self._get(
-            f"/collections/{collection_id}/users",
-        )
+        response = await self._get(f"/collections/{collection_id}/users")
+
+        if not response:
+            return None, []
 
         api_collection = ApiCollection(**response)
         collection = FromAPI.to_collection(api_collection)
