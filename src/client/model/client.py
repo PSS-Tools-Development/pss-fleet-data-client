@@ -367,6 +367,6 @@ def raise_if_error(response: Response):
         case ErrorCode.UNSUPPORTED_SCHEMA:
             raise UnsupportedSchemaError(*args)
         case ErrorCode.USER_NOT_FOUND:
-            raise UserNotFoundError(*args)  #
+            raise UserNotFoundError(*args)
 
     raise ApiError(*args)
