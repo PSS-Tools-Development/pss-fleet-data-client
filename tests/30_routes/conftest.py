@@ -1,7 +1,7 @@
 import pytest
 import vcr
 import vcr.request
-from mock_responses import *  # noqa: F401,F403
+from responses import *  # noqa: F401,F403
 
 from client import PssFleetDataClient
 
