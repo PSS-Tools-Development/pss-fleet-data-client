@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from .api import ApiLink
-
 
 # Base Exception
 
@@ -17,7 +15,7 @@ class ApiError(Exception):
     details: str
     timestamp: str
     suggestion: str
-    links: list["ApiLink"]
+    links: dict[str, str]  # Url: description
 
     def __str__(self) -> str:
         return repr(self)
@@ -25,7 +23,7 @@ class ApiError(Exception):
     def __repr__(self) -> str:
         message = f"The API raised {self.code} at {self.timestamp}: {self.message}\n\t{self.details}\n\tSuggestion: {self.suggestion}"
         if self.links:
-            message += "\n\tSee also:\n\t- " + "\n\t- ".join(str(link) for link in self.links)
+            message += "\n\tSee also:\n\t- " + "\n\t- ".join(f"{description}: {url}" for url, description in self.links.items())
         return message
 
 

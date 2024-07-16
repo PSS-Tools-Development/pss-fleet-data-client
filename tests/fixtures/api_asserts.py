@@ -3,7 +3,7 @@ from typing import Callable
 
 import pytest
 
-from client.model.api import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
+from client.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
 
 
 # Equal

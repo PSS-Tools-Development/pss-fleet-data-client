@@ -1,7 +1,7 @@
 import pytest
 
 from client import PssFleetDataClient
-from client.model.exceptions import CollectionNotDeletedError, CollectionNotFoundError, InvalidCollectionIdError
+from client.core.exceptions import CollectionNotDeletedError, CollectionNotFoundError, InvalidCollectionIdError
 
 
 @pytest.mark.usefixtures("mock_response_empty_get_204")

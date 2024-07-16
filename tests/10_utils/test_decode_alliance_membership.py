@@ -3,8 +3,8 @@ from datetime import datetime
 import pytest
 from pssapi.enums import AllianceMembership
 
-from client.model.enums import UserAllianceMembershipEncoded
-from client.utils import decode_alliance_membership
+from client.core.enums import UserAllianceMembershipEncoded
+from client.core.utils import decode_alliance_membership
 
 
 test_cases_invalid = [

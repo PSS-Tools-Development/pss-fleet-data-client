@@ -3,9 +3,48 @@ from typing import Optional
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from .. import utils
-from .api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
-from .models import AllianceHistory, Collection, CollectionMetadata, UserHistory
+from ..core import utils
+from ..core.enums import ErrorCode
+from ..core.exceptions import (
+    AllianceNotFoundError,
+    ApiError,
+    CollectionNotDeletedError,
+    CollectionNotFoundError,
+    ConflictError,
+    FromDateAfterToDateError,
+    FromDateTooEarlyError,
+    InvalidAllianceIdError,
+    InvalidBoolError,
+    InvalidCollectionIdError,
+    InvalidDateTimeError,
+    InvalidDescError,
+    InvalidFromDateError,
+    InvalidIntervalError,
+    InvalidJsonUpload,
+    InvalidNumberError,
+    InvalidSkipError,
+    InvalidTakeError,
+    InvalidToDateError,
+    InvalidUserIdError,
+    MethodNotAllowedError,
+    MissingAccessError,
+    NonUniqueCollectionIdError,
+    NonUniqueTimestampError,
+    NotAuthenticatedError,
+    NotFoundError,
+    ParameterFormatError,
+    ParameterValidationError,
+    ParameterValueError,
+    SchemaVersionMismatch,
+    ServerError,
+    ToDateTooEarlyError,
+    TooManyRequestsError,
+    UnsupportedMediaTypeError,
+    UnsupportedSchemaError,
+    UserNotFoundError,
+)
+from .api_models import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUser, ApiUserHistory
+from .client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 
 
 class FromAPI:
@@ -60,6 +99,19 @@ class FromAPI:
             max_tournament_battle_attempts=source.max_tournament_battle_attempts,
             data_version=source.data_version,
         )
+
+    @staticmethod
+    def to_error(source: ApiErrorResponse) -> ApiError:
+        exception_class = _error_code_lookup.get(source.code, ApiError)
+        result = exception_class(
+            source.code,
+            source.message,
+            source.details,
+            source.timestamp,
+            source.suggestion,
+            {link.path: link.description for link in source.links},
+        )
+        return result
 
     @staticmethod
     def to_pss_user(source: Optional[ApiUser]) -> PssUser:
@@ -180,3 +232,42 @@ class ToAPI:
             source.highest_trophy,
             source.tournament_bonus_score,
         )
+
+
+_error_code_lookup = {
+    ErrorCode.ALLIANCE_NOT_FOUND: AllianceNotFoundError,
+    ErrorCode.COLLECTION_NOT_DELETED: CollectionNotDeletedError,
+    ErrorCode.COLLECTION_NOT_FOUND: CollectionNotFoundError,
+    ErrorCode.CONFLICT: ConflictError,
+    ErrorCode.FORBIDDEN: MissingAccessError,
+    ErrorCode.FROM_DATE_AFTER_TO_DATE: FromDateAfterToDateError,
+    ErrorCode.INVALID_BOOL: InvalidBoolError,
+    ErrorCode.INVALID_DATETIME: InvalidDateTimeError,
+    ErrorCode.INVALID_JSON_FORMAT: InvalidJsonUpload,
+    ErrorCode.INVALID_NUMBER: InvalidNumberError,
+    ErrorCode.INVALID_PARAMETER: ParameterValidationError,
+    ErrorCode.INVALID_PARAMETER_FORMAT: ParameterFormatError,
+    ErrorCode.INVALID_PARAMETER_VALUE: ParameterValueError,
+    ErrorCode.METHOD_NOT_ALLOWED: MethodNotAllowedError,
+    ErrorCode.NON_UNIQUE_COLLECTION_ID: NonUniqueCollectionIdError,
+    ErrorCode.NON_UNIQUE_TIMESTAMP: NonUniqueTimestampError,
+    ErrorCode.NOT_AUTHENTICATED: NotAuthenticatedError,
+    ErrorCode.NOT_FOUND: NotFoundError,
+    ErrorCode.PARAMETER_ALLIANCE_ID_INVALID: InvalidAllianceIdError,
+    ErrorCode.PARAMETER_COLLECTION_ID_INVALID: InvalidCollectionIdError,
+    ErrorCode.PARAMETER_DESC_INVALID: InvalidDescError,
+    ErrorCode.PARAMETER_FROM_DATE_INVALID: InvalidFromDateError,
+    ErrorCode.PARAMETER_FROM_DATE_TOO_EARLY: FromDateTooEarlyError,
+    ErrorCode.PARAMETER_INTERVAL_INVALID: InvalidIntervalError,
+    ErrorCode.PARAMETER_SKIP_INVALID: InvalidSkipError,
+    ErrorCode.PARAMETER_TAKE_INVALID: InvalidTakeError,
+    ErrorCode.PARAMETER_TO_DATE_INVALID: InvalidToDateError,
+    ErrorCode.PARAMETER_TO_DATE_TOO_EARLY: ToDateTooEarlyError,
+    ErrorCode.PARAMETER_USER_ID_INVALID: InvalidUserIdError,
+    ErrorCode.RATE_LIMITED: TooManyRequestsError,
+    ErrorCode.SCHEMA_VERSION_MISMATCH: SchemaVersionMismatch,
+    ErrorCode.SERVER_ERROR: ServerError,
+    ErrorCode.UNSUPPORTED_MEDIA_TYPE: UnsupportedMediaTypeError,
+    ErrorCode.UNSUPPORTED_SCHEMA: UnsupportedSchemaError,
+    ErrorCode.USER_NOT_FOUND: UserNotFoundError,
+}

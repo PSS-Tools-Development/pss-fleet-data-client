@@ -3,8 +3,8 @@ from typing import Callable
 
 import pytest
 
-from client import utils
-from client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
+from client.core import utils
+from client.models.api_models import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
 
 
 @pytest.fixture(scope="function")

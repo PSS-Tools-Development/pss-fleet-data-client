@@ -5,7 +5,7 @@ import dateutil
 from pssapi.enums import AllianceMembership
 
 from .config import CONFIG
-from .model.enums import UserAllianceMembershipEncoded
+from .enums import UserAllianceMembershipEncoded
 
 
 def add_timezone_utc(dt: Optional[datetime]) -> datetime:

@@ -2,8 +2,8 @@ from typing import Callable
 
 import pytest
 
-from client.model.api import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
-from client.model.converters import FromAPI, ToAPI
+from client.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
+from client.models.converters import FromAPI, ToAPI
 
 
 @pytest.mark.usefixtures("api_alliance")

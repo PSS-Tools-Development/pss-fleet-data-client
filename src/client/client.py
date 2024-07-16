@@ -8,49 +8,11 @@ from httpx import AsyncClient, Response
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from ..config import CONFIG
-from .api import ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUserHistory
-from .converters import FromAPI, ToAPI
-from .enums import ErrorCode, ParameterInterval
-from .exceptions import (
-    AllianceNotFoundError,
-    ApiError,
-    CollectionNotDeletedError,
-    CollectionNotFoundError,
-    ConflictError,
-    FromDateAfterToDateError,
-    FromDateTooEarlyError,
-    InvalidAllianceIdError,
-    InvalidBoolError,
-    InvalidCollectionIdError,
-    InvalidDateTimeError,
-    InvalidDescError,
-    InvalidFromDateError,
-    InvalidIntervalError,
-    InvalidJsonUpload,
-    InvalidNumberError,
-    InvalidSkipError,
-    InvalidTakeError,
-    InvalidToDateError,
-    InvalidUserIdError,
-    MethodNotAllowedError,
-    MissingAccessError,
-    NonUniqueCollectionIdError,
-    NonUniqueTimestampError,
-    NotAuthenticatedError,
-    NotFoundError,
-    ParameterFormatError,
-    ParameterValidationError,
-    ParameterValueError,
-    SchemaVersionMismatch,
-    ServerError,
-    ToDateTooEarlyError,
-    TooManyRequestsError,
-    UnsupportedMediaTypeError,
-    UnsupportedSchemaError,
-    UserNotFoundError,
-)
-from .models import AllianceHistory, Collection, CollectionMetadata
+from .core.config import CONFIG
+from .core.enums import ParameterInterval
+from .models.api_models import ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUserHistory
+from .models.client_models import AllianceHistory, Collection, CollectionMetadata
+from .models.converters import FromAPI, ToAPI
 
 
 @dataclass(frozen=True)
@@ -287,53 +249,14 @@ def _get_parameter_dict(
     return parameters
 
 
-_error_code_lookup = {
-    ErrorCode.ALLIANCE_NOT_FOUND: AllianceNotFoundError,
-    ErrorCode.COLLECTION_NOT_DELETED: CollectionNotDeletedError,
-    ErrorCode.COLLECTION_NOT_FOUND: CollectionNotFoundError,
-    ErrorCode.CONFLICT: ConflictError,
-    ErrorCode.FORBIDDEN: MissingAccessError,
-    ErrorCode.FROM_DATE_AFTER_TO_DATE: FromDateAfterToDateError,
-    ErrorCode.INVALID_BOOL: InvalidBoolError,
-    ErrorCode.INVALID_DATETIME: InvalidDateTimeError,
-    ErrorCode.INVALID_JSON_FORMAT: InvalidJsonUpload,
-    ErrorCode.INVALID_NUMBER: InvalidNumberError,
-    ErrorCode.INVALID_PARAMETER: ParameterValidationError,
-    ErrorCode.INVALID_PARAMETER_FORMAT: ParameterFormatError,
-    ErrorCode.INVALID_PARAMETER_VALUE: ParameterValueError,
-    ErrorCode.METHOD_NOT_ALLOWED: MethodNotAllowedError,
-    ErrorCode.NON_UNIQUE_COLLECTION_ID: NonUniqueCollectionIdError,
-    ErrorCode.NON_UNIQUE_TIMESTAMP: NonUniqueTimestampError,
-    ErrorCode.NOT_AUTHENTICATED: NotAuthenticatedError,
-    ErrorCode.NOT_FOUND: NotFoundError,
-    ErrorCode.PARAMETER_ALLIANCE_ID_INVALID: InvalidAllianceIdError,
-    ErrorCode.PARAMETER_COLLECTION_ID_INVALID: InvalidCollectionIdError,
-    ErrorCode.PARAMETER_DESC_INVALID: InvalidDescError,
-    ErrorCode.PARAMETER_FROM_DATE_INVALID: InvalidFromDateError,
-    ErrorCode.PARAMETER_FROM_DATE_TOO_EARLY: FromDateTooEarlyError,
-    ErrorCode.PARAMETER_INTERVAL_INVALID: InvalidIntervalError,
-    ErrorCode.PARAMETER_SKIP_INVALID: InvalidSkipError,
-    ErrorCode.PARAMETER_TAKE_INVALID: InvalidTakeError,
-    ErrorCode.PARAMETER_TO_DATE_INVALID: InvalidToDateError,
-    ErrorCode.PARAMETER_TO_DATE_TOO_EARLY: ToDateTooEarlyError,
-    ErrorCode.PARAMETER_USER_ID_INVALID: InvalidUserIdError,
-    ErrorCode.RATE_LIMITED: TooManyRequestsError,
-    ErrorCode.SCHEMA_VERSION_MISMATCH: SchemaVersionMismatch,
-    ErrorCode.SERVER_ERROR: ServerError,
-    ErrorCode.UNSUPPORTED_MEDIA_TYPE: UnsupportedMediaTypeError,
-    ErrorCode.UNSUPPORTED_SCHEMA: UnsupportedSchemaError,
-    ErrorCode.USER_NOT_FOUND: UserNotFoundError,
-}
-
-
 def _raise_if_error(response: Response):
     if response.status_code not in (401, 403, 404, 405, 409, 415, 422, 429, 500):
         return
 
     api_error = ApiErrorResponse(**response.json())
-    exception = _error_code_lookup.get(api_error.code, ApiError)
+    exception = FromAPI.to_error(api_error)
 
-    raise exception(api_error.code, api_error.message, api_error.details, api_error.timestamp, api_error.suggestion, api_error.links)
+    raise exception
 
 
 __all__ = [

@@ -4,7 +4,7 @@ import pytest
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from client.model import AllianceHistory, Collection, CollectionMetadata
+from client.models import AllianceHistory, Collection, CollectionMetadata
 
 
 # Equal

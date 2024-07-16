@@ -1,7 +1,7 @@
 import pytest
 from pytest_httpx import HTTPXMock
 
-from client.model.api import ApiAllianceHistory, ApiCollection
+from client.models.api_models import ApiAllianceHistory, ApiCollection
 
 
 @pytest.fixture(scope="function")

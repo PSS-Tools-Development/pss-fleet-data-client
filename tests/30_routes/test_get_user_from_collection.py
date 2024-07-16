@@ -4,8 +4,8 @@ import pytest
 from pssapi.entities import User as PssUser
 
 from client import PssFleetDataClient
-from client.model import CollectionMetadata
-from client.model.exceptions import CollectionNotFoundError, InvalidCollectionIdError, InvalidUserIdError, UserNotFoundError
+from client.core.exceptions import CollectionNotFoundError, InvalidCollectionIdError, InvalidUserIdError, UserNotFoundError
+from client.models import CollectionMetadata
 
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_users_userId_get_200")

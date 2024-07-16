@@ -1,6 +1,6 @@
 import pytest
 
-from client.model.exceptions import *
+from client.core.exceptions import *
 
 
 invalid_filter_parameters = [

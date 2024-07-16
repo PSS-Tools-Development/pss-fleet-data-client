@@ -3,7 +3,7 @@ from typing import Union
 
 import pytest
 
-from client.utils import parse_datetime
+from client.core.utils import parse_datetime
 
 
 test_cases_invalid = [

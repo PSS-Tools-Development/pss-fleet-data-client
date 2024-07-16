@@ -4,8 +4,8 @@ import pytest
 from pssapi.entities import Alliance as PssAlliance
 
 from client import PssFleetDataClient
-from client.model import Collection
-from client.model.exceptions import CollectionNotFoundError, InvalidCollectionIdError
+from client.core.exceptions import CollectionNotFoundError, InvalidCollectionIdError
+from client.models import Collection
 
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_alliances_get_200")
