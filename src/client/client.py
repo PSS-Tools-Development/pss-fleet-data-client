@@ -40,7 +40,7 @@ class PssFleetDataClient:
     # Operations
 
     async def get_home_page(self) -> str:
-        response = await _get(self.__http_client, "/")
+        response = await self._get("/")
         return response.text
 
     async def create_collection(self, collection: Collection, api_key: str = None) -> CollectionMetadata:
@@ -48,8 +48,7 @@ class PssFleetDataClient:
         request_json = json.loads(api_collection.model_dump_json())
         api_key = api_key or self.api_key
 
-        response = await _post_with_api_key(
-            self.__http_client,
+        response = await self._post_with_api_key(
             "/collections",
             api_key=api_key,
             json=request_json,
@@ -61,8 +60,7 @@ class PssFleetDataClient:
     async def delete_collection(self, collection_id: int, api_key: str = None) -> bool:
         api_key = api_key or self.api_key
 
-        _ = await _delete_with_api_key(
-            self.__http_client,
+        _ = await self._delete_with_api_key(
             f"/collections/{collection_id}",
             api_key=api_key,
         )
@@ -78,8 +76,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[AllianceHistory]:
-        response = await _get_with_filter_parameters(
-            self.__http_client,
+        response = await self._get_with_filter_parameters(
             f"/allianceHistory/{alliance_id}",
             from_date=from_date,
             to_date=to_date,
@@ -92,12 +89,12 @@ class PssFleetDataClient:
         return alliance_histories
 
     async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[CollectionMetadata, PssAlliance]:
-        response = await _get(self.__http_client, f"/collections/{collection_id}/alliances/{alliance_id}")
+        response = await self._get(f"/collections/{collection_id}/alliances/{alliance_id}")
         alliance_history = FromResponse.to_alliance_history(response)
         return (alliance_history.collection, alliance_history.alliance)
 
     async def get_alliances_from_collection(self, collection_id: int) -> tuple[Optional[CollectionMetadata], list[PssAlliance]]:
-        response = await _get(self.__http_client, f"/collections/{collection_id}/alliances")
+        response = await self._get(f"/collections/{collection_id}/alliances")
         collection = FromResponse.to_collection(response)
 
         if not collection:
@@ -106,7 +103,7 @@ class PssFleetDataClient:
         return (collection.metadata, collection.alliances)
 
     async def get_collection(self, collection_id: int) -> Collection:
-        response = await _get(self.__http_client, f"/collections/{collection_id}")
+        response = await self._get(f"/collections/{collection_id}")
         collection = FromResponse.to_collection(response)
         return collection
 
@@ -119,8 +116,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[Collection]:
-        response = await _get_with_filter_parameters(
-            self.__http_client,
+        response = await self._get_with_filter_parameters(
             "/collections/",
             from_date=from_date,
             to_date=to_date,
@@ -133,7 +129,7 @@ class PssFleetDataClient:
         return collections
 
     async def get_top_100_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
-        response = await _get(self.__http_client, f"/collections/{collection_id}/top100Users")
+        response = await self._get(f"/collections/{collection_id}/top100Users")
         collection = FromResponse.to_collection(response)
 
         if not collection:
@@ -142,12 +138,12 @@ class PssFleetDataClient:
         return (collection.metadata, collection.users)
 
     async def get_user_from_collection(self, collection_id: int, user_id: int) -> UserHistory:
-        response = await _get(self.__http_client, f"/collections/{collection_id}/users/{user_id}")
+        response = await self._get(f"/collections/{collection_id}/users/{user_id}")
         user_history = FromResponse.to_user_history(response)
         return user_history
 
     async def get_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
-        response = await _get(self.__http_client, f"/collections/{collection_id}/users")
+        response = await self._get(f"/collections/{collection_id}/users")
         collection = FromResponse.to_collection(response)
 
         if not collection:
@@ -165,8 +161,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[UserHistory]:
-        response = await _get_with_filter_parameters(
-            self.__http_client,
+        response = await self._get_with_filter_parameters(
             f"/userHistory/{user_id}",
             from_date=from_date,
             to_date=to_date,
@@ -186,8 +181,7 @@ class PssFleetDataClient:
 
         with open(file_path, "rb") as fp:
             files = {"collection_file": ("collection", fp, "application/json")}
-            response = await _post_with_api_key(
-                self.__http_client,
+            response = await self._post_with_api_key(
                 "/collections/upload",
                 api_key=api_key,
                 files=files,
@@ -196,81 +190,78 @@ class PssFleetDataClient:
         result = FromResponse.to_collection_metadata(response)
         return result
 
+    async def _delete(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
+        request_headers = _create_request_headers(self.__http_client, headers)
+        response = await self.__http_client.delete(path, params=params, headers=request_headers)
+        _raise_if_error(response)
 
-async def _delete(http_client: AsyncClient, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
-    request_headers = _create_request_headers(http_client, headers)
-    response = await http_client.delete(path, params=params, headers=request_headers)
-    _raise_if_error(response)
+        return response
 
-    return response
+    async def _delete_with_api_key(
+        self,
+        path: str,
+        api_key: Optional[str],
+        params: Optional[dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
+    ) -> Response:
+        headers = headers or {}
+        headers["Authorization"] = api_key
 
+        response = await self._delete(
+            path,
+            params=params,
+            headers=headers,
+        )
+        return response
 
-async def _delete_with_api_key(
-    http_client: AsyncClient,
-    path: str,
-    api_key: Optional[str] = None,
-    params: Optional[dict[str, Any]] = None,
-    headers: Optional[dict[str, Any]] = None,
-) -> Response:
-    headers = {"Authorization": api_key}
-    response = await _delete(
-        http_client,
-        path,
-        params=params,
-        headers=headers,
-    )
-    return response
+    async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
+        request_headers = _create_request_headers(self.__http_client, headers)
+        response = await self.__http_client.get(path, params=params, headers=request_headers)
+        _raise_if_error(response)
+        return response
 
+    async def _get_with_filter_parameters(
+        self,
+        path: str,
+        from_date: Optional[datetime] = None,
+        to_date: Optional[datetime] = None,
+        interval: Optional[ParameterInterval] = None,
+        desc: Optional[bool] = None,
+        skip: Optional[int] = None,
+        take: Optional[int] = None,
+    ) -> Response:
+        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        response = await self._get(path, params=parameters)
+        return response
 
-async def _get(http_client: AsyncClient, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
-    request_headers = _create_request_headers(http_client, headers)
-    response = await http_client.get(path, params=params, headers=request_headers)
-    _raise_if_error(response)
-    return response
+    async def _post(
+        self,
+        path: str,
+        json: Optional[dict[str, Any]] = None,
+        files: Optional[dict[str, tuple]] = None,
+        params: Optional[dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
+    ) -> Response:
+        request_headers = _create_request_headers(self.__http_client, headers)
 
+        response = await self.__http_client.post(path, json=json, files=files, params=params, headers=request_headers)
+        _raise_if_error(response)
+        return response
 
-async def _get_with_filter_parameters(
-    http_client: AsyncClient,
-    path: str,
-    from_date: Optional[datetime] = None,
-    to_date: Optional[datetime] = None,
-    interval: Optional[ParameterInterval] = None,
-    desc: Optional[bool] = None,
-    skip: Optional[int] = None,
-    take: Optional[int] = None,
-) -> Response:
-    parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
-    response = await _get(http_client, path, params=parameters)
-    return response
+    async def _post_with_api_key(
+        self,
+        path: str,
+        api_key: Optional[str] = None,
+        json: Optional[dict[str, Any]] = None,
+        files: Optional[dict[str, tuple]] = None,
+        params: Optional[dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
+    ) -> Response:
+        headers = headers or {}
+        headers["Authorization"] = api_key or self.api_key
 
-
-async def _post(
-    http_client: AsyncClient,
-    path: str,
-    json: Optional[dict[str, Any]] = None,
-    files: Optional[dict[str, tuple]] = None,
-    params: Optional[dict[str, Any]] = None,
-    headers: Optional[dict[str, Any]] = None,
-) -> Response:
-    request_headers = _create_request_headers(http_client, headers)
-
-    response = await http_client.post(path, json=json, files=files, params=params, headers=request_headers)
-    _raise_if_error(response)
-    return response
-
-
-async def _post_with_api_key(
-    http_client: AsyncClient,
-    path: str,
-    api_key: Optional[str] = None,
-    json: Optional[dict[str, Any]] = None,
-    files: Optional[dict[str, tuple]] = None,
-    params: Optional[dict[str, Any]] = None,
-    headers: Optional[dict[str, Any]] = None,
-) -> Response:
-    headers = {"Authorization": api_key}
-    response = await _post(http_client, path, json=json, files=files, params=params, headers=headers)
-    return response
+        response = await self._post(path, json=json, files=files, params=params, headers=headers)
+        return response
 
 
 def _get_parameter_dict(
