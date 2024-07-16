@@ -10,8 +10,7 @@ from client.model import Collection
 from client.model.exceptions import ApiError
 
 
-@pytest.mark.usefixtures("collection", "mock_response_get_collections_200")
-@pytest.mark.usefixtures("assert_collection_valid", "assert_collections_equal")
+@pytest.mark.usefixtures("mock_response_get_collections_200")
 async def test_get_collections_200(
     collection: Collection,
     test_client: PssFleetDataClient,

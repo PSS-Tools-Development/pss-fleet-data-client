@@ -8,7 +8,7 @@ from client.model import CollectionMetadata
 from client.model.exceptions import AllianceNotFoundError, CollectionNotFoundError, InvalidAllianceIdError, InvalidCollectionIdError
 
 
-@pytest.mark.usefixtures("pss_alliance", "mock_response_collections_collectionId_alliances_allianceId_get_200")
+@pytest.mark.usefixtures("mock_response_collections_collectionId_alliances_allianceId_get_200")
 async def test_get_alliance_from_collection_200(
     pss_alliance: PssAlliance,
     collection_metadata_9: CollectionMetadata,
@@ -27,7 +27,7 @@ async def test_get_alliance_from_collection_200(
     assert_pss_alliances_equal(pss_alliance, alliance)
 
 
-@pytest.mark.usefixtures("pss_alliance", "mock_response_collections_collectionId_alliances_allianceId_get_200_with_members")
+@pytest.mark.usefixtures("mock_response_collections_collectionId_alliances_allianceId_get_200_with_members")
 async def test_get_alliance_from_collection_200_with_members(
     pss_alliance: PssAlliance,
     collection_metadata_9: CollectionMetadata,

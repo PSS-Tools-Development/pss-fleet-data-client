@@ -1,15 +1,15 @@
+from datetime import datetime, timezone
 from typing import Callable
 
 import pytest
 
+from client import utils
 from client.model.api import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
-
-from .factory import create_api_alliance, create_api_collection_9, create_api_collection_metadata_3, create_api_collection_metadata_9, create_api_user
 
 
 @pytest.fixture(scope="function")
 def api_alliance() -> ApiAlliance:
-    return create_api_alliance()
+    return (1, "A1", 0, 0, 5000, 0, 1, 0)
 
 
 @pytest.fixture(scope="function")
@@ -33,39 +33,78 @@ def api_alliance_history_with_members(
 
 
 @pytest.fixture(scope="function")
-def api_collection() -> ApiCollection:
-    return create_api_collection_9()
-
-
-@pytest.fixture(scope="function")
-def api_collection_with_fleets() -> ApiCollection:
+def api_collection(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance, api_user: ApiUser) -> ApiCollection:
     return ApiCollection(
-        metadata=create_api_collection_metadata_9(),
-        fleets=[create_api_alliance()],
+        metadata=api_collection_metadata_9,
+        fleets=[api_alliance],
+        users=[
+            api_user,
+        ],
     )
 
 
 @pytest.fixture(scope="function")
-def api_collection_with_users() -> ApiCollection:
+def api_collection_with_fleets(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance) -> ApiCollection:
     return ApiCollection(
-        metadata=create_api_collection_metadata_9(),
-        users=[create_api_user()],
+        metadata=api_collection_metadata_9,
+        fleets=[api_alliance],
+    )
+
+
+@pytest.fixture(scope="function")
+def api_collection_with_users(api_collection_metadata_9: ApiCollectionMetadata, api_user: ApiUser) -> ApiCollection:
+    return ApiCollection(
+        metadata=api_collection_metadata_9,
+        users=[api_user],
     )
 
 
 @pytest.fixture(scope="function")
 def api_collection_metadata_3() -> ApiCollectionMetadata:
-    return create_api_collection_metadata_3()
+    return ApiCollectionMetadata(
+        collection_id=1,
+        timestamp=datetime(2016, 1, 6, 23, 59, tzinfo=timezone.utc),
+        duration=11.2,
+        fleet_count=1,
+        user_count=1,
+        tourney_running=False,
+        schema_version=9,
+        max_tournament_battle_attempts=6,
+        data_version=3,
+    )
 
 
 @pytest.fixture(scope="function")
-def api_collection_metadata_9() -> ApiCollectionMetadata:
-    return create_api_collection_metadata_9()
+def api_collection_metadata_9(api_collection_metadata_3: ApiCollectionMetadata) -> ApiCollectionMetadata:
+    api_collection_metadata_3.data_version = 9
+    api_collection_metadata_3.max_tournament_battle_attempts = 6
+    return api_collection_metadata_3
 
 
 @pytest.fixture(scope="function")
 def api_user() -> ApiUser:
-    return create_api_user()
+    return (
+        1,
+        "U1",
+        1,
+        1000,
+        0,
+        0,
+        utils.convert_datetime_to_seconds(datetime(2016, 1, 6, 8, 12, 34)),
+        utils.convert_datetime_to_seconds(datetime(2016, 1, 6, 23, 58)),
+        utils.convert_datetime_to_seconds(datetime(2016, 1, 6, 23, 58)),
+        0,
+        0,
+        5,
+        2,
+        1,
+        1,
+        8,
+        0,
+        0,
+        1000,
+        0,
+    )
 
 
 @pytest.fixture(scope="function")

@@ -8,8 +8,7 @@ from client.model import Collection
 from client.model.exceptions import CollectionNotFoundError, InvalidCollectionIdError
 
 
-@pytest.mark.usefixtures("collection", "mock_response_collections_collectionId_alliances_get_200")
-@pytest.mark.usefixtures("assert_collection_metadata_valid", "assert_collection_metadatas_equal")
+@pytest.mark.usefixtures("mock_response_collections_collectionId_alliances_get_200")
 async def test_get_alliances_from_collection_200(
     collection: Collection,
     test_client: PssFleetDataClient,
@@ -32,7 +31,7 @@ async def test_get_alliances_from_collection_200(
         assert_pss_alliances_equal(alliance_1, alliance_2)
 
 
-@pytest.mark.usefixtures("collection", "mock_response_empty_collection_get_204")
+@pytest.mark.usefixtures("mock_response_empty_collection_get_204")
 async def test_get_alliances_from_collection_204(
     test_client: PssFleetDataClient,
 ):
