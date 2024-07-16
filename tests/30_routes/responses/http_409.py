@@ -5,7 +5,6 @@ from pytest_httpx import HTTPXMock
 @pytest.fixture(scope="function")
 def mock_response_collections_post_409_non_unique_timestamp(httpx_mock: HTTPXMock):
     httpx_mock.add_response(
-        method="POST",
         status_code=409,
         json={
             "code": "NON_UNIQUE_TIMESTAMP",

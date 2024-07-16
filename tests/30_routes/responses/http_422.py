@@ -37,7 +37,6 @@ def mock_response_collection_id_invalid(httpx_mock: HTTPXMock):
 @pytest.fixture(scope="function")
 def mock_response_post_422_json_invalid(httpx_mock: HTTPXMock):
     httpx_mock.add_response(
-        method="POST",
         status_code=422,
         json={
             "code": "INVALID_JSON_FORMAT",
@@ -54,7 +53,6 @@ def mock_response_post_422_json_invalid(httpx_mock: HTTPXMock):
 @pytest.fixture(scope="function")
 def mock_response_post_422_schema_version_mismatch(httpx_mock: HTTPXMock):
     httpx_mock.add_response(
-        method="POST",
         status_code=422,
         json={
             "code": "SCHEMA_VERSION_MISMATCH",
@@ -71,7 +69,6 @@ def mock_response_post_422_schema_version_mismatch(httpx_mock: HTTPXMock):
 @pytest.fixture(scope="function")
 def mock_response_post_422_unsupported_schema(httpx_mock: HTTPXMock):
     httpx_mock.add_response(
-        method="POST",
         status_code=422,
         json={
             "code": "UNSUPPORTED_SCHEMA",
