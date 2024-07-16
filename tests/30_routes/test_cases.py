@@ -25,3 +25,31 @@ invalid_filter_parameters = [
     pytest.param({"take": 101}, InvalidTakeError, id="take_too_big"),
 ]
 """parameters, expected_exception"""
+
+
+def invalid_parameter_types(expected_type: str) -> list[pytest.param]:
+    invalid_parameters: dict[str, list[pytest.param]] = {
+        "bool": [
+            pytest.param(True, id="type_bool_True"),
+            pytest.param(False, id="type_bool_False"),
+        ],
+        "float": [
+            pytest.param(0.1, id="type_float_0.1"),
+            pytest.param(1.1, id="type_float_1.1"),
+        ],
+        "int": [
+            pytest.param(0, id="type_int_0"),
+            pytest.param(1, id="type_int_1"),
+        ],
+        "str": [
+            pytest.param("", id="type_str_empty"),
+            pytest.param("abc", id="type_str_random"),
+        ],
+    }
+
+    result = []
+    for key, value in invalid_parameters.items():
+        if key != expected_type:
+            result.extend(value)
+
+    return result

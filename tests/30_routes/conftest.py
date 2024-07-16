@@ -21,9 +21,9 @@ def base_url() -> str:
     # return "http://127.0.0.1:8000"
 
 
-@pytest.fixture(scope="session")
-def vcr_config_match_on() -> list[str]:
-    return ["method", "query"]
+@pytest.fixture(scope="function")
+def upload_test_file_path() -> str:
+    return "tests/30_routes/files/upload_test_data_schema_9.json"
 
 
 @pytest.fixture(scope="module")
@@ -35,16 +35,21 @@ def vcr_config(vcr_config_match_on: list[str]):
         "filter_query_parameters": [],
         "filter_post_data_parameters": [],
         "record_on_exception": False,
-        "before_record_request": before_record_request,
-        "before_record_response": before_record_response,
+        "before_record_request": _before_record_request,
+        "before_record_response": _before_record_response,
         "decode_compressed_response": True,
     }
 
 
-def before_record_request(request: vcr.request.Request):
+@pytest.fixture(scope="session")
+def vcr_config_match_on() -> list[str]:
+    return ["method", "query"]
+
+
+def _before_record_request(request: vcr.request.Request):
     request.headers["Authorization"] = ""
     return request
 
 
-def before_record_response(response):
+def _before_record_response(response):
     return response
