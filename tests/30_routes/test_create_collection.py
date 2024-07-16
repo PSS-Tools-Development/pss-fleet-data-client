@@ -11,16 +11,16 @@ from client.core.exceptions import (
     UnsupportedMediaTypeError,
     UnsupportedSchemaError,
 )
-from client.models import Collection
+from client.models import Collection, CollectionMetadata
 
 
 @pytest.mark.usefixtures("mock_response_collections_post_201")
 async def test_create_collection_201(
     collection: Collection,
-    collection_metadata_9: Collection,
+    collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_collection_metadata_valid: Callable[[Collection], None],
-    assert_collection_metadatas_equal: Callable[[Collection, Collection, bool, bool], None],
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
     collection_metadata_response = await test_client.create_collection(collection)
 
