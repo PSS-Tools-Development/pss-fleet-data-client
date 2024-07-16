@@ -1,7 +1,7 @@
 import pytest
 from pytest_httpx import HTTPXMock
 
-from client.models.api_models import ApiAllianceHistory, ApiCollection
+from client.models.api_models import ApiAllianceHistory, ApiCollection, ApiCollectionMetadata
 
 
 @pytest.fixture(scope="function")
@@ -25,11 +25,11 @@ def mock_response_allianceHistory_allianceId_get_200_with_members(
 
 
 @pytest.fixture(scope="function")
-def mock_response_get_collections_200(api_collection: ApiCollection, get_collections_url: str, httpx_mock: HTTPXMock):
+def mock_response_get_collections_200(api_collection_metadata_9: ApiCollectionMetadata, get_collections_url: str, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         method="GET",
         url=get_collections_url,
-        text=f"[{api_collection.model_dump_json()}]",
+        text=f"[{api_collection_metadata_9.model_dump_json()}]",
     )
 
 

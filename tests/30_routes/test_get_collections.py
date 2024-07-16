@@ -7,22 +7,22 @@ from pytest import FixtureRequest
 
 from client import PssFleetDataClient
 from client.core.exceptions import ApiError
-from client.models import Collection
+from client.models import CollectionMetadata
 
 
 @pytest.mark.usefixtures("mock_response_get_collections_200")
 async def test_get_collections_200(
-    collection: Collection,
+    collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
-    assert_collection_valid: Callable[[Collection], None],
-    assert_collections_equal: Callable[[Collection, Collection, bool, bool], None],
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
-    response = await test_client.get_collections()
-    assert response
-    assert isinstance(response, list)
+    collection_metadatas = await test_client.get_collections()
+    assert collection_metadatas
+    assert isinstance(collection_metadatas, list)
 
-    assert_collection_valid(response[0], True, True)
-    assert_collections_equal(collection, response[0], True, True)
+    assert_collection_metadata_valid(collection_metadatas[0])
+    assert_collection_metadatas_equal(collection_metadata_9, collection_metadatas[0])
 
 
 @pytest.mark.usefixtures("mock_response_empty_collection_get_204")

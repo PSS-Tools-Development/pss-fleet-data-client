@@ -1,8 +1,7 @@
 import json
 from dataclasses import dataclass
 from datetime import datetime
-from io import TextIOWrapper
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from httpx import AsyncClient, Response
 from pssapi.entities import Alliance as PssAlliance
@@ -10,9 +9,9 @@ from pssapi.entities import User as PssUser
 
 from .core.config import CONFIG
 from .core.enums import ParameterInterval
-from .models.api_models import ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUserHistory
-from .models.client_models import AllianceHistory, Collection, CollectionMetadata
-from .models.converters import FromAPI, ToAPI
+from .models.api_models import ApiCollectionMetadata, ApiErrorResponse
+from .models.client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
+from .models.converters import FromAPI, FromResponse, ToAPI
 
 
 @dataclass(frozen=True)
@@ -37,33 +36,33 @@ class PssFleetDataClient:
     def base_url(self) -> str:
         return self.__config.base_url
 
-    async def get_home_page(self) -> str:
-        return self.__client.get("/").text
-
     def edit_config(self, base_url: str = None, api_key: str = None):
         self.__config = ClientConfig(
             api_key=api_key or self.__config.api_key,
             base_url=base_url or self.__config.base_url,
         )
 
+    async def get_home_page(self) -> str:
+        response = await self._get("/")
+        return response.text
+
     async def create_collection(self, collection: Collection, api_key: str = None) -> CollectionMetadata:
-        headers = {"Authorization": api_key or self.api_key}
         api_collection = ToAPI.from_collection(collection)
-        response = await self._post(
+        request_json = json.loads(api_collection.model_dump_json())
+        response = await self._post_with_api_key(
             "/collections",
-            json=json.loads(api_collection.model_dump_json()),
-            headers=headers,
+            api_key=api_key,
+            json=request_json,
         )
 
-        api_collection_metadata = ApiCollectionMetadata(**response)
+        api_collection_metadata = ApiCollectionMetadata(**response.json())
         result = FromAPI.to_collection_metadata(api_collection_metadata)
         return result
 
     async def delete_collection(self, collection_id: int, api_key: str = None) -> bool:
-        headers = {"Authorization": api_key or self.api_key}
-        _ = await self._delete(
+        _ = await self._delete_with_api_key(
             f"/collections/{collection_id}",
-            headers=headers,
+            api_key=api_key,
         )
         return True
 
@@ -77,38 +76,29 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[AllianceHistory]:
-        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
-        response = await self._get(f"/allianceHistory/{alliance_id}", params=parameters)
-
-        if not response:
-            return []
-
-        api_alliance_histories = [ApiAllianceHistory(**item) for item in response]
-        alliance_histories = [FromAPI.to_alliance_history(alliance_history) for alliance_history in api_alliance_histories]
+        response = await self._get_with_filter_parameters(
+            f"/allianceHistory/{alliance_id}", from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take
+        )
+        alliance_histories = FromResponse.to_alliance_history_list(response)
         return alliance_histories
 
     async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[CollectionMetadata, PssAlliance]:
         response = await self._get(f"/collections/{collection_id}/alliances/{alliance_id}")
-
-        api_alliance_history = ApiAllianceHistory(**response)
-        alliance_history = FromAPI.to_alliance_history(api_alliance_history)
+        alliance_history = FromResponse.to_alliance_history(response)
         return (alliance_history.collection, alliance_history.alliance)
 
     async def get_alliances_from_collection(self, collection_id: int) -> tuple[Optional[CollectionMetadata], list[PssAlliance]]:
         response = await self._get(f"/collections/{collection_id}/alliances")
+        collection = FromResponse.to_collection(response)
 
-        if not response:
+        if not collection:
             return None, []
 
-        api_collection = ApiCollection(**response)
-        collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.alliances)
 
     async def get_collection(self, collection_id: int) -> Collection:
         response = await self._get(f"/collections/{collection_id}")
-
-        api_collection = ApiCollection(**response)
-        collection = FromAPI.to_collection(api_collection)
+        collection = FromResponse.to_collection(response)
         return collection
 
     async def get_collections(
@@ -120,38 +110,33 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> list[Collection]:
-        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
-        response = await self._get("/collections/", params=parameters)
-
-        api_collections = [ApiCollection(**item) for item in response]
-        result = [FromAPI.to_collection(collection) for collection in api_collections]
-        return result
+        response = await self._get_with_filter_parameters(
+            "/collections/", from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take
+        )
+        collections = FromResponse.to_collection_metadata_list(response)
+        return collections
 
     async def get_top_100_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
         response = await self._get(f"/collections/{collection_id}/top100Users")
+        collection = FromResponse.to_collection(response)
 
-        if not response:
+        if not collection:
             return None, []
 
-        api_collection = ApiCollection(**response)
-        collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.users)
 
-    async def get_user_from_collection(self, collection_id: int, user_id: int) -> tuple[Collection, PssUser]:
+    async def get_user_from_collection(self, collection_id: int, user_id: int) -> UserHistory:
         response = await self._get(f"/collections/{collection_id}/users/{user_id}")
-
-        api_user_history = ApiUserHistory(**response)
-        user_history = FromAPI.to_user_history(api_user_history)
-        return (user_history.collection, user_history.user)
+        user_history = FromResponse.to_user_history(response)
+        return user_history
 
     async def get_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
         response = await self._get(f"/collections/{collection_id}/users")
+        collection = FromResponse.to_collection(response)
 
-        if not response:
+        if not collection:
             return None, []
 
-        api_collection = ApiCollection(**response)
-        collection = FromAPI.to_collection(api_collection)
         return (collection.metadata, collection.users)
 
     async def get_user_history(
@@ -163,53 +148,66 @@ class PssFleetDataClient:
         desc: Optional[bool] = None,
         skip: Optional[int] = None,
         take: Optional[int] = None,
-    ) -> list[tuple[Collection, PssUser]]:
-        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
-        response = await self._get(
-            f"/userHistory/{user_id}",
-            params=parameters,
+    ) -> list[UserHistory]:
+        response = await self._get_with_filter_parameters(
+            f"/userHistory/{user_id}", from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take
         )
+        user_histories = FromResponse.to_user_history_list(response)
+        return user_histories
 
-        api_user_histories = [ApiUserHistory(**item) for item in response.json()]
-        user_histories = [FromAPI.to_user_history(user_history) for user_history in api_user_histories]
-        result = [(user_history.collection, user_history.user) for user_history in user_histories]
-        return result
+    async def upload_collection(self, file_path: str, api_key: str = None) -> CollectionMetadata:
+        if not isinstance(file_path, str):
+            raise TypeError("Parameter `file` must be of type `str`.")
 
-    async def upload_collection(self, file: Union[str, TextIOWrapper] = None, api_key: str = None) -> Collection:
-        headers = {"Authorization": api_key or self.api_key}
-        if isinstance(file, str):
-            with open(file, "rb") as fp:
-                files = {"collection_file": ("collection", fp, "application/json")}
-                response = await self._post(
-                    "/collections/upload",
-                    files=files,
-                    headers=headers,
-                )
-        else:
-            files = {"collection_file": ("collection", file, "application/json")}
-            response = await self._post(
+        with open(file_path, "rb") as fp:
+            files = {"collection_file": ("collection", fp, "application/json")}
+            response = await self._post_with_api_key(
                 "/collections/upload",
+                api_key=api_key,
                 files=files,
-                headers=headers,
             )
 
-        api_collection_metadata = ApiCollectionMetadata(**response)
-        result = Collection(metadata=FromAPI.to_collection_metadata(api_collection_metadata))
+        api_collection_metadata = ApiCollectionMetadata(**response.json())
+        result = FromAPI.to_collection_metadata(api_collection_metadata)
         return result
 
     async def _delete(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
-        response = await self.__client.delete(path, params=params, headers=headers)
+        request_headers = _create_request_headers(self.__client, headers)
+        response = await self.__client.delete(path, params=params, headers=request_headers)
         _raise_if_error(response)
 
-        if not response.text:
-            return response.text
+        return response
 
-        return response.json()
+    async def _delete_with_api_key(
+        self, path: str, api_key: Optional[str] = None, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None
+    ) -> Response:
+        headers = {"Authorization": api_key or self.api_key}
+        response = await self._delete(
+            path,
+            params=params,
+            headers=headers,
+        )
+        return response
 
-    async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Any:
-        response = await self.__client.get(path, params=params, headers=headers)
+    async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
+        request_headers = _create_request_headers(self.__client, headers)
+        response = await self.__client.get(path, params=params, headers=request_headers)
         _raise_if_error(response)
-        return response.json()
+        return response
+
+    async def _get_with_filter_parameters(
+        self,
+        path: str,
+        from_date: Optional[datetime] = None,
+        to_date: Optional[datetime] = None,
+        interval: Optional[ParameterInterval] = None,
+        desc: Optional[bool] = None,
+        skip: Optional[int] = None,
+        take: Optional[int] = None,
+    ) -> Response:
+        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        response = await self._get(path, params=parameters)
+        return response
 
     async def _post(
         self,
@@ -218,10 +216,25 @@ class PssFleetDataClient:
         files: Optional[dict[str, tuple]] = None,
         params: Optional[dict[str, Any]] = None,
         headers: Optional[dict[str, Any]] = None,
-    ) -> Any:
-        response = await self.__client.post(path, json=json, files=files, params=params, headers=headers)
+    ) -> Response:
+        request_headers = _create_request_headers(self.__client, headers)
+
+        response = await self.__client.post(path, json=json, files=files, params=params, headers=request_headers)
         _raise_if_error(response)
-        return response.json()
+        return response
+
+    async def _post_with_api_key(
+        self,
+        path: str,
+        api_key: Optional[str] = None,
+        json: Optional[dict[str, Any]] = None,
+        files: Optional[dict[str, tuple]] = None,
+        params: Optional[dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
+    ) -> Response:
+        headers = {"Authorization": api_key or self.api_key}
+        response = await self._post(path, json=json, files=files, params=params, headers=headers)
+        return response
 
 
 def _get_parameter_dict(
@@ -257,6 +270,27 @@ def _raise_if_error(response: Response):
     exception = FromAPI.to_error(api_error)
 
     raise exception
+
+
+def _create_request_headers(client: AsyncClient, headers: dict[str, str]) -> dict[str, str]:
+    """Takes the default headers configured in the `client` and updates them with the additionally specified `headers`.
+
+    Args:
+        client (AsyncClient): The client to take the default headers from.
+        headers (dict[str, Any]): The additional headers to add or to overwrite default headers with.
+
+    Returns:
+        dict[str, str]: A collection of headers to be sent with a request.
+    """
+    if not client.headers:
+        return headers
+
+    request_headers = dict(client.headers)
+
+    if headers:
+        request_headers.update(headers)
+
+    return request_headers
 
 
 __all__ = [

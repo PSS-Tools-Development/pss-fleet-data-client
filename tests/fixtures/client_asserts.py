@@ -4,7 +4,7 @@ import pytest
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from client.models import AllianceHistory, Collection, CollectionMetadata
+from client.models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 
 
 # Equal
@@ -29,8 +29,8 @@ def assert_alliance_histories_equal(
         assert_pss_alliances_equal(alliance_history_1.alliance, alliance_history_2.alliance)
 
         assert len(alliance_history_1.users) == len(alliance_history_2.users)
-        for i, pss_user in enumerate(alliance_history_1.users):
-            assert_pss_users_equal(pss_user, alliance_history_2.users[i])
+        for user_1, user_2 in zip(alliance_history_1.users, alliance_history_2.users, strict=True):
+            assert_pss_users_equal(user_1, user_2)
 
     return _assert_alliance_histories_equal
 
@@ -127,6 +127,32 @@ def assert_pss_users_equal() -> Callable[[PssUser, PssUser], None]:
         assert pss_user_1.tournament_bonus_score == pss_user_2.tournament_bonus_score
 
     return _assert_pss_users_equal
+
+
+@pytest.fixture(scope="function")
+def assert_user_histories_equal(
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata], None],
+    assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance], None],
+    assert_pss_users_equal: Callable[[PssUser, PssUser], None],
+) -> Callable[[Collection], None]:
+    def _assert_user_histories_equal(user_history_1: UserHistory, user_history_2: UserHistory):
+        assert user_history_1
+        assert user_history_2
+        assert isinstance(user_history_1, UserHistory)
+        assert isinstance(user_history_2, UserHistory)
+
+        assert id(user_history_1) != id(user_history_2)
+        assert user_history_1.model_dump() == user_history_2.model_dump()
+
+        assert_collection_metadatas_equal(user_history_1.collection, user_history_2.collection)
+        assert_pss_users_equal(user_history_1.user, user_history_2.user)
+        if user_history_1.alliance:
+            assert_pss_alliances_equal(user_history_1.alliance, user_history_2.alliance)
+        else:
+            assert user_history_1.alliance is None
+            assert user_history_2.alliance is None
+
+    return _assert_user_histories_equal
 
 
 # Valid
@@ -258,3 +284,37 @@ def assert_pss_user_valid() -> Callable[[PssUser], None]:
         assert pss_user.tournament_bonus_score is not None
 
     return _assert_pss_user_valid
+
+
+@pytest.fixture(scope="function")
+def assert_user_history_valid(
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_pss_user_valid: Callable[[PssUser], None],
+) -> Callable[[Collection], None]:
+    def _assert_user_history_valid(user_history: UserHistory):
+        assert user_history
+        assert isinstance(user_history, UserHistory)
+
+        assert_collection_metadata_valid(user_history.collection)
+        assert_pss_user_valid(user_history.user)
+
+        assert user_history.alliance is None
+
+    return _assert_user_history_valid
+
+
+@pytest.fixture(scope="function")
+def assert_user_history_with_alliance_valid(
+    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
+    assert_pss_alliance_valid: Callable[[PssAlliance], None],
+    assert_pss_user_valid: Callable[[PssUser], None],
+) -> Callable[[Collection], None]:
+    def _assert_user_history_valid(user_history: UserHistory):
+        assert user_history
+        assert isinstance(user_history, UserHistory)
+
+        assert_collection_metadata_valid(user_history.collection)
+        assert_pss_user_valid(user_history.user)
+        assert_pss_alliance_valid(user_history.alliance)
+
+    return _assert_user_history_valid

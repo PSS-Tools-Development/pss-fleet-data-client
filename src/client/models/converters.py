@@ -1,5 +1,6 @@
 from typing import Optional
 
+from httpx import Response
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
@@ -49,7 +50,7 @@ from .client_models import AllianceHistory, Collection, CollectionMetadata, User
 
 class FromAPI:
     """
-    Offers functions to convert objects returned by the API to client objects or .
+    Offers functions to convert objects returned by the API to client objects or errors.
     """
 
     @staticmethod
@@ -150,6 +151,101 @@ class FromAPI:
             user=FromAPI.to_pss_user(source.user),
             alliance=FromAPI.to_pss_alliance(source.fleet) if source.fleet else None,
         )
+
+
+class FromResponse:
+    """
+    Offers functions to convert httpx responses to client objects.
+    """
+
+    @staticmethod
+    def to_alliance_history(source: Response) -> Optional[AllianceHistory]:
+        if not source.text:
+            return None
+
+        response_json = source.json()
+        if not response_json:
+            return None
+
+        api_alliance_history = ApiAllianceHistory(**response_json)
+        alliance_history = FromAPI.to_alliance_history(api_alliance_history)
+        return alliance_history
+
+    @staticmethod
+    def to_alliance_history_list(source: Response) -> list[AllianceHistory]:
+        if not source.text:
+            return []
+
+        response_json = source.json()
+        if not response_json:
+            return []
+
+        alliance_history_list = [FromAPI.to_alliance_history(ApiAllianceHistory(**item)) for item in response_json]
+        return alliance_history_list
+
+    @staticmethod
+    def to_collection(source: Response) -> Optional[Collection]:
+        if not source.text:
+            return None
+
+        response_json = source.json()
+        if not response_json:
+            return None
+
+        api_collection = ApiCollection(**response_json)
+        collection = FromAPI.to_collection(api_collection)
+        return collection
+
+    @staticmethod
+    def to_collection_metadata(source: Response) -> Optional[CollectionMetadata]:
+        if not source.text:
+            return None
+
+        response_json = source.json()
+        if not response_json:
+            return None
+
+        api_collection_metadata = ApiCollectionMetadata(**response_json)
+        collection_metadata = FromAPI.to_collection_metadata(api_collection_metadata)
+        return collection_metadata
+
+    @staticmethod
+    def to_collection_metadata_list(source: Response) -> list[CollectionMetadata]:
+        if not source.text:
+            return []
+
+        response_json = source.json()
+        if not response_json:
+            return []
+
+        collection_metadata_list = [FromAPI.to_collection_metadata(ApiCollectionMetadata(**item)) for item in response_json]
+        return collection_metadata_list
+
+    @staticmethod
+    def to_user_history(source: Response) -> Optional[UserHistory]:
+        if not source.text:
+            return None
+
+        response_json = source.json()
+        if not response_json:
+            return None
+
+        response_json = source.json()
+        api_user_history = ApiUserHistory(**response_json)
+        user_history = FromAPI.to_user_history(api_user_history)
+        return user_history
+
+    @staticmethod
+    def to_user_history_list(source: Response) -> list[UserHistory]:
+        if not source.text:
+            return []
+
+        response_json = source.json()
+        if not response_json:
+            return []
+
+        user_history_list = [FromAPI.to_user_history(ApiUserHistory(**item)) for item in response_json]
+        return user_history_list
 
 
 class ToAPI:

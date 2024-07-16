@@ -104,7 +104,16 @@ def pss_user() -> PssUser:
 
 
 @pytest.fixture(scope="function")
-def user_history(collection_metadata_9: CollectionMetadata, pss_alliance: PssAlliance, pss_user: PssUser) -> UserHistory:
+def user_history(collection_metadata_9: CollectionMetadata, pss_user: PssUser) -> UserHistory:
+    return UserHistory(
+        collection=collection_metadata_9,
+        user=pss_user,
+        alliance=None,
+    )
+
+
+@pytest.fixture(scope="function")
+def user_history_with_alliance(collection_metadata_9: CollectionMetadata, pss_alliance: PssAlliance, pss_user: PssUser) -> UserHistory:
     return UserHistory(
         collection=collection_metadata_9,
         user=pss_user,
