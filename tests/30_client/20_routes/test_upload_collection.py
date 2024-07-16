@@ -1,7 +1,7 @@
 from typing import Any, Callable
 
 import pytest
-import test_cases
+import routes_test_cases
 
 from client import PssFleetDataClient
 from client.core.exceptions import (
@@ -83,7 +83,7 @@ async def test_upload_collection_422_unsupported_schema(
         _ = await test_client.upload_collection(upload_test_file_path)
 
 
-@pytest.mark.parametrize(["value"], test_cases.invalid_parameter_types("str"))
+@pytest.mark.parametrize(["value"], routes_test_cases.invalid_parameter_types("str"))
 async def test_upload_collection_invalid_file_path_type(
     value: Any,
     test_client: PssFleetDataClient,

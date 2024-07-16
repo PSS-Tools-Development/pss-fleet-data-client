@@ -1,3 +1,5 @@
+from typing import Generator
+
 import pytest
 import vcr
 import vcr.request
@@ -6,11 +8,19 @@ from responses import *  # noqa: F401,F403
 from client import PssFleetDataClient
 
 
+_DEFAULT_API_KEY = "123456"
+
+
 @pytest.fixture(scope="function", autouse=True)
-def test_client(base_url):
+def default_api_key() -> str:
+    return _DEFAULT_API_KEY
+
+
+@pytest.fixture(scope="function", autouse=True)
+def test_client(base_url: str, default_api_key: str) -> Generator[PssFleetDataClient, None, None]:
     client = PssFleetDataClient(
         base_url=base_url,
-        api_key="123456",
+        api_key=default_api_key,
     )
     yield client
 

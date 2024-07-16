@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import dateutil
 from pssapi.enums import AllianceMembership
 
 from .config import CONFIG
-from .enums import UserAllianceMembershipEncoded
+from .enums import ParameterInterval, UserAllianceMembershipEncoded
 
 
 def add_timezone_utc(dt: Optional[datetime]) -> datetime:
@@ -55,6 +55,31 @@ def convert_datetime_to_seconds(dt: Optional[datetime]) -> int:
         return 0
 
     return int((dt - CONFIG.pss_start_date).total_seconds())
+
+
+def create_parameter_dict(
+    *,
+    from_date: Optional[datetime] = None,
+    to_date: Optional[datetime] = None,
+    interval: Optional[ParameterInterval] = None,
+    desc: Optional[bool] = None,
+    skip: Optional[int] = None,
+    take: Optional[int] = None,
+) -> dict[str, Any]:
+    parameters = {}
+    if from_date is not None:
+        parameters["fromDate"] = from_date
+    if to_date is not None:
+        parameters["toDate"] = to_date
+    if interval is not None:
+        parameters["interval"] = interval
+    if desc is not None:
+        parameters["desc"] = desc
+    if skip is not None:
+        parameters["skip"] = skip
+    if take is not None:
+        parameters["take"] = take
+    return parameters
 
 
 def decode_alliance_membership(membership: Union[int, UserAllianceMembershipEncoded]) -> AllianceMembership:

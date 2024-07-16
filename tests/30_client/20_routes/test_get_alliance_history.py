@@ -1,7 +1,7 @@
 from typing import Any, Callable
 
 import pytest
-import test_cases
+import routes_test_cases
 import vcr
 from pytest import FixtureRequest
 
@@ -61,7 +61,7 @@ async def test_get_alliance_history_invalid_allianceId_422(test_client: PssFleet
 
 @pytest.mark.vcr()
 @pytest.mark.usefixtures("vcr_config_match_on")
-@pytest.mark.parametrize(["parameters", "expected_exception"], test_cases.invalid_filter_parameters)
+@pytest.mark.parametrize(["parameters", "expected_exception"], routes_test_cases.invalid_filter_parameters)
 async def test_get_alliance_history_422(
     parameters: dict[str, Any],
     expected_exception: ApiError,

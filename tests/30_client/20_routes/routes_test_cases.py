@@ -1,6 +1,15 @@
 import pytest
 
-from client.core.exceptions import *
+from client.core.exceptions import (
+    FromDateAfterToDateError,
+    FromDateTooEarlyError,
+    InvalidFromDateError,
+    InvalidIntervalError,
+    InvalidSkipError,
+    InvalidTakeError,
+    InvalidToDateError,
+    ToDateTooEarlyError,
+)
 
 
 invalid_filter_parameters = [

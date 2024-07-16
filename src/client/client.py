@@ -6,6 +6,7 @@ from httpx import AsyncClient, Response
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
+from .core import utils
 from .core.enums import ParameterInterval
 from .models.api_models import ApiErrorResponse
 from .models.client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
@@ -193,7 +194,7 @@ class PssFleetDataClient:
     async def _delete(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         request_headers = _create_request_headers(self.__http_client, headers)
         response = await self.__http_client.delete(path, params=params, headers=request_headers)
-        _raise_if_error(response)
+        _raise_on_error(response)
 
         return response
 
@@ -205,7 +206,7 @@ class PssFleetDataClient:
         headers: Optional[dict[str, Any]] = None,
     ) -> Response:
         headers = headers or {}
-        headers["Authorization"] = api_key
+        headers["Authorization"] = api_key or self.__api_key
 
         response = await self._delete(
             path,
@@ -217,7 +218,7 @@ class PssFleetDataClient:
     async def _get(self, path: str, params: Optional[dict[str, Any]] = None, headers: Optional[dict[str, Any]] = None) -> Response:
         request_headers = _create_request_headers(self.__http_client, headers)
         response = await self.__http_client.get(path, params=params, headers=request_headers)
-        _raise_if_error(response)
+        _raise_on_error(response)
         return response
 
     async def _get_with_filter_parameters(
@@ -230,7 +231,7 @@ class PssFleetDataClient:
         skip: Optional[int] = None,
         take: Optional[int] = None,
     ) -> Response:
-        parameters = _get_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        parameters = utils.create_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
         response = await self._get(path, params=parameters)
         return response
 
@@ -245,7 +246,7 @@ class PssFleetDataClient:
         request_headers = _create_request_headers(self.__http_client, headers)
 
         response = await self.__http_client.post(path, json=json, files=files, params=params, headers=request_headers)
-        _raise_if_error(response)
+        _raise_on_error(response)
         return response
 
     async def _post_with_api_key(
@@ -258,41 +259,16 @@ class PssFleetDataClient:
         headers: Optional[dict[str, Any]] = None,
     ) -> Response:
         headers = headers or {}
-        headers["Authorization"] = api_key or self.api_key
+        headers["Authorization"] = api_key or self.__api_key
 
         response = await self._post(path, json=json, files=files, params=params, headers=headers)
         return response
 
 
-def _get_parameter_dict(
-    *,
-    from_date: Optional[datetime] = None,
-    to_date: Optional[datetime] = None,
-    interval: Optional[ParameterInterval] = None,
-    desc: Optional[bool] = None,
-    skip: Optional[int] = None,
-    take: Optional[int] = None,
-) -> dict[str, Any]:
-    parameters = {}
-    if from_date is not None:
-        parameters["fromDate"] = from_date
-    if to_date is not None:
-        parameters["toDate"] = to_date
-    if interval is not None:
-        parameters["interval"] = interval
-    if desc is not None:
-        parameters["desc"] = desc
-    if skip is not None:
-        parameters["skip"] = skip
-    if take is not None:
-        parameters["take"] = take
-    return parameters
-
-
 # Helper
 
 
-def _raise_if_error(response: Response):
+def _raise_on_error(response: Response):
     if response.status_code not in (401, 403, 404, 405, 409, 415, 422, 429, 500):
         return
 
