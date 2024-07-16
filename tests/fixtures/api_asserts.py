@@ -35,12 +35,12 @@ def assert_api_collections_equal(
         assert_api_collection_metadatas_equal(api_collection_1.metadata, api_collection_2.metadata)
 
         assert len(api_collection_1.fleets) == len(api_collection_2.fleets)
-        for i, pss_alliance in enumerate(api_collection_1.fleets):
-            assert_api_alliances_equal(pss_alliance, api_collection_2.fleets[i])
+        for alliance_1, alliance_2 in zip(api_collection_1.fleets, api_collection_2.fleets, strict=True):
+            assert_api_alliances_equal(alliance_1, alliance_2)
 
         assert len(api_collection_1.users) == len(api_collection_2.users)
-        for i, pss_user in enumerate(api_collection_1.users):
-            assert_api_users_equal(pss_user, api_collection_2.users[i])
+        for user_1, user_2 in zip(api_collection_1.users, api_collection_2.users, strict=True):
+            assert_api_users_equal(user_1, user_2)
 
     return _assert_api_collections_equal
 

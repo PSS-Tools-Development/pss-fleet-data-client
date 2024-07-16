@@ -56,13 +56,13 @@ def assert_collections_equal(
 
         if not skip_fleets:
             assert len(collection_1.alliances) == len(collection_2.alliances)
-            for i, pss_alliance in enumerate(collection_1.alliances):
-                assert_pss_alliances_equal(pss_alliance, collection_2.alliances[i])
+            for alliance_1, alliance_2 in zip(collection_1.alliances, collection_2.alliances, strict=True):
+                assert_pss_alliances_equal(alliance_1, alliance_2)
 
         if not skip_users:
             assert len(collection_1.users) == len(collection_2.users)
-            for i, pss_user in enumerate(collection_1.users):
-                assert_pss_users_equal(pss_user, collection_2.users[i])
+            for user_1, user_2 in zip(collection_1.users, collection_2.users, strict=True):
+                assert_pss_users_equal(user_1, user_2)
 
     return _assert_collections_equal
 
