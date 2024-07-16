@@ -2,55 +2,35 @@ from typing import Callable
 
 import pytest
 
-from client import PssAlliance, PssFleetDataClient, PssUser
+from client import PssFleetDataClient
 from client.core.exceptions import CollectionNotFoundError, InvalidCollectionIdError, InvalidUserIdError, UserNotFoundError
-from client.models import CollectionMetadata
+from client.models import UserHistory
 
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_users_userId_get_200")
 async def test_get_user_from_collection_200(
-    pss_user: PssUser,
-    collection_metadata_9: CollectionMetadata,
+    user_history: UserHistory,
     test_client: PssFleetDataClient,
-    assert_pss_user_valid: Callable[[PssUser], None],
-    assert_pss_users_equal: Callable[[PssUser, PssUser, bool, bool], None],
-    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
-    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
+    assert_user_history_valid: Callable[[UserHistory], None],
+    assert_user_histories_equal: Callable[[UserHistory, UserHistory, bool, bool], None],
 ):
-    user_history = await test_client.get_user_from_collection(1, 1)
+    user_history_response = await test_client.get_user_from_collection(1, 1)
 
-    assert_collection_metadata_valid(user_history.collection)
-    assert_collection_metadatas_equal(collection_metadata_9, user_history.collection)
-
-    assert_pss_user_valid(user_history.user)
-    assert_pss_users_equal(pss_user, user_history.user)
-
-    assert user_history.alliance is None
+    assert_user_history_valid(user_history_response)
+    assert_user_histories_equal(user_history, user_history_response)
 
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_users_userId_get_200_with_fleet")
 async def test_get_user_from_collection_200_with_fleet(
-    collection_metadata_9: CollectionMetadata,
-    pss_alliance: PssUser,
-    pss_user: PssUser,
+    user_history_with_alliance: UserHistory,
     test_client: PssFleetDataClient,
-    assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
-    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
-    assert_pss_alliance_valid: Callable[[PssAlliance], None],
-    assert_pss_alliances_equal: Callable[[PssAlliance, PssAlliance, bool, bool], None],
-    assert_pss_user_valid: Callable[[PssUser], None],
-    assert_pss_users_equal: Callable[[PssUser, PssUser, bool, bool], None],
+    assert_user_history_with_alliance_valid: Callable[[UserHistory], None],
+    assert_user_histories_equal: Callable[[UserHistory, UserHistory, bool, bool], None],
 ):
-    user_history = await test_client.get_user_from_collection(1, 1)
+    user_history_response = await test_client.get_user_from_collection(1, 1)
 
-    assert_collection_metadata_valid(user_history.collection)
-    assert_collection_metadatas_equal(collection_metadata_9, user_history.collection)
-
-    assert_pss_user_valid(user_history.user)
-    assert_pss_users_equal(pss_user, user_history.user)
-
-    assert_pss_alliance_valid(user_history.alliance)
-    assert_pss_alliances_equal(pss_alliance, user_history.alliance)
+    assert_user_history_with_alliance_valid(user_history_response)
+    assert_user_histories_equal(user_history_with_alliance, user_history_response)
 
 
 @pytest.mark.usefixtures("mock_response_collection_not_found")
