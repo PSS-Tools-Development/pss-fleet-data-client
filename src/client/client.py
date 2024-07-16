@@ -46,7 +46,7 @@ class PssFleetDataClient:
             base_url=base_url or self.__config.base_url,
         )
 
-    async def create_collection(self, collection: Collection, api_key: str = None) -> Collection:
+    async def create_collection(self, collection: Collection, api_key: str = None) -> CollectionMetadata:
         headers = {"Authorization": api_key or self.api_key}
         api_collection = ToAPI.from_collection(collection)
         response = await self._post(
@@ -56,7 +56,7 @@ class PssFleetDataClient:
         )
 
         api_collection_metadata = ApiCollectionMetadata(**response)
-        result = Collection(metadata=FromAPI.to_collection_metadata(api_collection_metadata))
+        result = FromAPI.to_collection_metadata(api_collection_metadata)
         return result
 
     async def delete_collection(self, collection_id: int, api_key: str = None) -> bool:
