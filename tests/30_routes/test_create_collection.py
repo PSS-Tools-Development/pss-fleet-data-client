@@ -4,7 +4,6 @@ import pytest
 
 from client import PssFleetDataClient
 from client.core.exceptions import (
-    InvalidJsonUpload,
     MissingAccessError,
     NonUniqueTimestampError,
     NotAuthenticatedError,
@@ -39,7 +38,7 @@ async def test_create_collection_401(
 
 
 @pytest.mark.usefixtures("mock_response_403")
-async def test_create_collection_409(
+async def test_create_collection_403(
     collection: Collection,
     test_client: PssFleetDataClient,
 ):
@@ -47,7 +46,7 @@ async def test_create_collection_409(
         _ = await test_client.create_collection(collection)
 
 
-@pytest.mark.usefixtures("mock_response_collections_post_409")
+@pytest.mark.usefixtures("mock_response_collections_post_409_non_unique_timestamp")
 async def test_create_collection_409(
     collection: Collection,
     test_client: PssFleetDataClient,
@@ -56,7 +55,7 @@ async def test_create_collection_409(
         _ = await test_client.create_collection(collection)
 
 
-@pytest.mark.usefixtures("mock_response_collections_post_415")
+@pytest.mark.usefixtures("mock_response_post_415")
 async def test_create_collection_415(
     collection: Collection,
     test_client: PssFleetDataClient,
@@ -65,28 +64,19 @@ async def test_create_collection_415(
         _ = await test_client.create_collection(collection)
 
 
-@pytest.mark.usefixtures("mock_response_collections_post_422_json_invalid")
-async def test_create_collection_422_json_invalid(
-    collection: Collection,
-    test_client: PssFleetDataClient,
-):
-    with pytest.raises(InvalidJsonUpload):
-        _ = await test_client.create_collection(collection)
-
-
-@pytest.mark.usefixtures("mock_response_collections_post_422_unsupported_schema")
-async def test_create_collection_422_unsupported_schema(
-    collection: Collection,
-    test_client: PssFleetDataClient,
-):
-    with pytest.raises(UnsupportedSchemaError):
-        _ = await test_client.create_collection(collection)
-
-
-@pytest.mark.usefixtures("mock_response_collections_post_422_schema_version_mismatch")
+@pytest.mark.usefixtures("mock_response_post_422_schema_version_mismatch")
 async def test_create_collection_422_schema_version_mismatch(
     collection: Collection,
     test_client: PssFleetDataClient,
 ):
     with pytest.raises(SchemaVersionMismatch):
+        _ = await test_client.create_collection(collection)
+
+
+@pytest.mark.usefixtures("mock_response_post_422_unsupported_schema")
+async def test_create_collection_422_unsupported_schema(
+    collection: Collection,
+    test_client: PssFleetDataClient,
+):
+    with pytest.raises(UnsupportedSchemaError):
         _ = await test_client.create_collection(collection)
