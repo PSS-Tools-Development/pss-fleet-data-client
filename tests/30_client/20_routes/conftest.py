@@ -23,7 +23,7 @@ def base_url() -> str:
 
 @pytest.fixture(scope="function")
 def upload_test_file_path() -> str:
-    return "tests/30_routes/files/upload_test_data_schema_9.json"
+    return "tests/files/upload_test_data_schema_9.json"
 
 
 @pytest.fixture(scope="module")

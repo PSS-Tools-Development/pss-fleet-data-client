@@ -42,7 +42,7 @@ async def test_get_collections_422(
     test_client: PssFleetDataClient,
     request: FixtureRequest,
 ):
-    cassette_path = f"tests/30_routes/cassettes/test_get_422_{request.node.callspec.id}.yaml"
+    cassette_path = f"tests/cassettes/test_get_422_{request.node.callspec.id}.yaml"
 
     with vcr.use_cassette(cassette_path, match_on=vcr_config_match_on):
         with pytest.raises(expected_exception):
