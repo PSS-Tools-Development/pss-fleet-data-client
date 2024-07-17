@@ -2,9 +2,9 @@ from typing import Callable
 
 import pytest
 
-from client import PssFleetDataClient
-from client.core.exceptions import CollectionNotFoundError, InvalidCollectionIdError, InvalidUserIdError, UserNotFoundError
-from client.models import UserHistory
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.core.exceptions import CollectionNotFoundError, InvalidCollectionIdError, InvalidUserIdError, UserNotFoundError
+from pss_fleet_data.models import UserHistory
 
 
 @pytest.mark.usefixtures("mock_response_collections_collectionId_users_userId_get_200")

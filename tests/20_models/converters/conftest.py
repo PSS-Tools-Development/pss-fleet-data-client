@@ -3,7 +3,7 @@ import json
 import pytest
 from httpx import Response
 
-from client.models.api_models import ApiAllianceHistory, ApiCollection, ApiUserHistory
+from pss_fleet_data.models.api_models import ApiAllianceHistory, ApiCollection, ApiUserHistory
 
 
 @pytest.fixture(scope="function")

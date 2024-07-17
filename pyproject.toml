@@ -1,7 +1,7 @@
 [project]
 name = "pss-fleet-data-client"
 version = "0.1.1"
-license = "MIT"
+license = {file = "LICENSE"}
 description = "A client for the Pixel Starships Fleet Data API."
 authors = [
     {name = "The worst.", email = "theworstpss@gmail.com"}
@@ -51,5 +51,5 @@ lines_after_imports = 2
 
 [tool.vulture]
 min_confidence = 100
-paths = ["./src/client"]
+paths = ["./src/pss_fleet_data"]
 sort_by_size = true

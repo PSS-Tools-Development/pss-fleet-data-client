@@ -1,6 +1,6 @@
 import pytest
 
-from client.core.exceptions import (
+from pss_fleet_data.core.exceptions import (
     FromDateAfterToDateError,
     FromDateTooEarlyError,
     InvalidFromDateError,

@@ -3,9 +3,9 @@ from typing import Callable
 import pytest
 from pssapi.entities import Alliance as PssAlliance
 
-from client.models import Collection
-from client.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
-from client.models.converters import FromAPI
+from pss_fleet_data.models import Collection
+from pss_fleet_data.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
+from pss_fleet_data.models.converters import FromAPI
 
 
 @pytest.mark.usefixtures("api_alliance")

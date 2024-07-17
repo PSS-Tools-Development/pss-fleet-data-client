@@ -2,8 +2,8 @@ from typing import Callable
 
 from httpx import Response
 
-from client.models import AllianceHistory, Collection, UserHistory
-from client.models.converters import FromResponse
+from pss_fleet_data.models import AllianceHistory, Collection, UserHistory
+from pss_fleet_data.models.converters import FromResponse
 
 
 async def test_to_alliance_history(

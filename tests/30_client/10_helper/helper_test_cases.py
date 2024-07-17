@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from client.core.enums import ParameterInterval
+from pss_fleet_data.core.enums import ParameterInterval
 
 
 _DEFAULT_API_KEY = os.getenv("TEST_DEFAULT_API_KEY")

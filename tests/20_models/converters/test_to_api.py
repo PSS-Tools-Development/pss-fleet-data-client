@@ -4,9 +4,9 @@ import pytest
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from client.models import Collection, CollectionMetadata
-from client.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
-from client.models.converters import ToAPI
+from pss_fleet_data.models import Collection, CollectionMetadata
+from pss_fleet_data.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
+from pss_fleet_data.models.converters import ToAPI
 
 
 @pytest.mark.usefixtures("pss_alliance")

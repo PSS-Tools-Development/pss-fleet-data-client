@@ -2,8 +2,8 @@ from typing import Callable
 
 import pytest
 
-from client import PssFleetDataClient
-from client.core.exceptions import (
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.core.exceptions import (
     MissingAccessError,
     NonUniqueTimestampError,
     NotAuthenticatedError,
@@ -11,7 +11,7 @@ from client.core.exceptions import (
     UnsupportedMediaTypeError,
     UnsupportedSchemaError,
 )
-from client.models import Collection, CollectionMetadata
+from pss_fleet_data.models import Collection, CollectionMetadata
 
 
 @pytest.mark.usefixtures("mock_response_collections_post_201")

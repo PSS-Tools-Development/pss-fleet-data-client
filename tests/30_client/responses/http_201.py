@@ -1,7 +1,7 @@
 import pytest
 from pytest_httpx import HTTPXMock
 
-from client.models.api_models import ApiCollectionMetadata
+from pss_fleet_data.models.api_models import ApiCollectionMetadata
 
 
 @pytest.fixture(scope="function")

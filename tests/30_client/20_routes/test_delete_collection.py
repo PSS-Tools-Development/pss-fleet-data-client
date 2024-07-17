@@ -1,7 +1,7 @@
 import pytest
 
-from client import PssFleetDataClient
-from client.core.exceptions import (
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.core.exceptions import (
     CollectionNotDeletedError,
     CollectionNotFoundError,
     InvalidCollectionIdError,

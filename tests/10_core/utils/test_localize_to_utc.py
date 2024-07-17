@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import pytest
 from dateutil.parser import parse as parse_datetime
 
-from client.core.utils import localize_to_utc
+from pss_fleet_data.core.utils import localize_to_utc
 
 
 test_cases_invalid = [
