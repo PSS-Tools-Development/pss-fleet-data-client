@@ -15,3 +15,13 @@ format:
 check:
 	rye run flake8 ./src
 	rye run vulture
+
+.PHONY: publish
+publish:
+	rye build
+	rye update
+
+
+.PHONY: update
+update:
+	rye sync --update-all
