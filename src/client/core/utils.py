@@ -173,6 +173,20 @@ def format_datetime(dt: Optional[datetime], remove_tzinfo: bool = False) -> str:
     return dt.replace(microsecond=0).isoformat()
 
 
+def get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInterval) -> tuple[datetime, datetime]:
+    match interval:
+        case ParameterInterval.HOURLY:
+            from_date = timestamp - timedelta(hours=1)
+        case ParameterInterval.DAILY:
+            from_date = timestamp - timedelta(days=1)
+        case ParameterInterval.MONTHLY:
+            from_date = timestamp - dateutil.relativedelta.relativedelta(months=1)
+
+    to_date = timestamp + timedelta(seconds=0)
+
+    return from_date, to_date
+
+
 def localize_to_utc(dt: Optional[datetime]) -> datetime:
     """Takes a `datetime` and converts it to a timezone-aware UTC `datetime`.
 

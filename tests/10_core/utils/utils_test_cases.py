@@ -5,6 +5,79 @@ import pytest
 from client.core.enums import ParameterInterval
 
 
+from_to_timestamps = [
+    # timestamp, interval, expected_from_date, expected_to_date
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23), datetime(2017, 1, 6), id="hourly"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5), datetime(2017, 1, 6), id="daily"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6), datetime(2017, 1, 6), id="monthly"),
+    #
+    pytest.param(datetime(2017, 1, 1), ParameterInterval.HOURLY, datetime(2016, 12, 31, 23), datetime(2017, 1, 1), id="hourly_on_first_of_year"),
+    pytest.param(datetime(2017, 1, 1), ParameterInterval.DAILY, datetime(2016, 12, 31), datetime(2017, 1, 1), id="daily_on_first_of_year"),
+    pytest.param(datetime(2017, 1, 1), ParameterInterval.MONTHLY, datetime(2016, 12, 1), datetime(2017, 1, 1), id="monthly_on_first_of_year"),
+    #
+    pytest.param(datetime(2017, 7, 1), ParameterInterval.HOURLY, datetime(2017, 6, 30, 23), datetime(2017, 7, 1), id="hourly_on_first_of_month"),
+    pytest.param(datetime(2017, 7, 1), ParameterInterval.DAILY, datetime(2017, 6, 30), datetime(2017, 7, 1), id="daily_on_first_of_month"),
+    pytest.param(datetime(2017, 7, 1), ParameterInterval.MONTHLY, datetime(2017, 6, 1), datetime(2017, 7, 1), id="monthly_on_first_of_month"),
+    #
+    pytest.param(datetime(2017, 1, 6, 12), ParameterInterval.HOURLY, datetime(2017, 1, 6, 11), datetime(2017, 1, 6, 12), id="hourly_with_hours"),
+    pytest.param(datetime(2017, 1, 6, 12), ParameterInterval.DAILY, datetime(2017, 1, 5, 12), datetime(2017, 1, 6, 12), id="daily_with_hours"),
+    pytest.param(datetime(2017, 1, 6, 12), ParameterInterval.MONTHLY, datetime(2016, 12, 6, 12), datetime(2017, 1, 6, 12), id="monthly_with_hours"),
+    #
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23), datetime(2017, 1, 6), id="hourly_with_minutes"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5), datetime(2017, 1, 6), id="daily_with_minutes"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6), datetime(2017, 1, 6), id="monthly_with_minutes"),
+    #
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23), datetime(2017, 1, 6), id="hourly_with_seconds"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5), datetime(2017, 1, 6), id="daily_with_seconds"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6), datetime(2017, 1, 6), id="monthly_with_seconds"),
+    #
+    pytest.param(
+        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        ParameterInterval.HOURLY,
+        datetime(2017, 1, 5, 23, tzinfo=timezone.utc),
+        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        id="hourly_with_tzinfo",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        ParameterInterval.DAILY,
+        datetime(2017, 1, 5, tzinfo=timezone.utc),
+        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        id="daily_with_tzinfo",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 12, 6, tzinfo=timezone.utc),
+        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        id="monthly_with_tzinfo",
+    ),
+    #
+    pytest.param(
+        datetime(2017, 1, 6, 3, 12, 56),
+        ParameterInterval.HOURLY,
+        datetime(2017, 1, 6, 2, 12, 56),
+        datetime(2017, 1, 6, 3, 12, 56),
+        id="hourly_mixed",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6, 8, 0, 12),
+        ParameterInterval.DAILY,
+        datetime(2017, 1, 5, 8, 0, 12),
+        datetime(2017, 1, 6, 8, 0, 12),
+        id="daily_mixed",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6, 0, 0, 59),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 12, 6, 0, 0, 59),
+        datetime(2017, 1, 6, 0, 0, 59),
+        id="monthly_mixed",
+    ),
+]
+"""timestamp, interval, expected_from_date, expected_to_date"""
+
+
 parameter_dicts = [
     # input, expected_output
     pytest.param(None, {}, id="none"),
