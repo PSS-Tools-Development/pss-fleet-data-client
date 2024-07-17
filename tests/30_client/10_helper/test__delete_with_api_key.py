@@ -2,7 +2,7 @@ import helper_test_cases
 import pytest
 from httpx import Response
 
-from client import PssFleetDataClient
+from pss_fleet_data import PssFleetDataClient
 
 
 @pytest.mark.usefixtures("mock_response_empty_get_204")

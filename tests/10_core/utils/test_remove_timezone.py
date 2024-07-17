@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from dateutil.parser import parse as parse_datetime
 
-from client.core.utils import remove_timezone
+from pss_fleet_data.core.utils import remove_timezone
 
 
 test_cases_invalid = [

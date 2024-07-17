@@ -3,8 +3,8 @@ from typing import Callable
 
 import pytest
 
-from client import PssFleetDataClient
-from client.models import CollectionMetadata
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.models import CollectionMetadata
 
 
 @pytest.mark.usefixtures("patch_get_collections_successful_first_try")

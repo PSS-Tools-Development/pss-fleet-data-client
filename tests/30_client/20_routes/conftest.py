@@ -3,8 +3,8 @@ from unittest.mock import AsyncMock
 import pytest
 from pytest import MonkeyPatch
 
-from client import PssFleetDataClient
-from client.models import Collection, CollectionMetadata
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.models import Collection, CollectionMetadata
 
 
 @pytest.fixture(scope="function")

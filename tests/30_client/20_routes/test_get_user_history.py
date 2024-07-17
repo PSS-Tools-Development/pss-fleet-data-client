@@ -5,9 +5,9 @@ import routes_test_cases
 import vcr
 from pytest import FixtureRequest
 
-from client import PssFleetDataClient
-from client.core.exceptions import ApiError, InvalidUserIdError, UserNotFoundError
-from client.models import UserHistory
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.core.exceptions import ApiError, InvalidUserIdError, UserNotFoundError
+from pss_fleet_data.models import UserHistory
 
 
 @pytest.mark.usefixtures("mock_response_userHistory_userId_get_200")

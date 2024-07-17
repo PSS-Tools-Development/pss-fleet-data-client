@@ -1,7 +1,7 @@
 [project]
 name = "pss-fleet-data-client"
-version = "0.1.1"
-license = "MIT"
+version = "0.2.0"
+license = {file = "LICENSE"}
 description = "A client for the Pixel Starships Fleet Data API."
 authors = [
     {name = "The worst.", email = "theworstpss@gmail.com"}
@@ -14,10 +14,6 @@ dependencies = [
 ]
 readme = "README.md"
 requires-python = ">= 3.11.7"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
@@ -35,12 +31,6 @@ dev-dependencies = [
     "pytest_httpx>=0.30.0",
     "pytest-vcr>=1.0.2",
 ]
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/client"]
 
 [tool.autoflake]
 in-place = true
@@ -61,5 +51,5 @@ lines_after_imports = 2
 
 [tool.vulture]
 min_confidence = 100
-paths = ["./src/client"]
+paths = ["./src/pss_fleet_data"]
 sort_by_size = true

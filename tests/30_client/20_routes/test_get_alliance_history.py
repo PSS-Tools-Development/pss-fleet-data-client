@@ -5,9 +5,9 @@ import routes_test_cases
 import vcr
 from pytest import FixtureRequest
 
-from client import PssFleetDataClient
-from client.core.exceptions import AllianceNotFoundError, ApiError, InvalidAllianceIdError
-from client.models import AllianceHistory
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.core.exceptions import AllianceNotFoundError, ApiError, InvalidAllianceIdError
+from pss_fleet_data.models import AllianceHistory
 
 
 @pytest.mark.usefixtures("mock_response_allianceHistory_allianceId_get_200")

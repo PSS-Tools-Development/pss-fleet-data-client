@@ -5,9 +5,9 @@ import routes_test_cases
 import vcr
 from pytest import FixtureRequest
 
-from client import PssFleetDataClient
-from client.core.exceptions import ApiError
-from client.models import CollectionMetadata
+from pss_fleet_data import PssFleetDataClient
+from pss_fleet_data.core.exceptions import ApiError
+from pss_fleet_data.models import CollectionMetadata
 
 
 @pytest.mark.usefixtures("mock_response_get_collections_200")

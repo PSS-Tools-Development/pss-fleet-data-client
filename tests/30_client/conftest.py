@@ -6,7 +6,7 @@ import vcr
 import vcr.request
 from responses import *  # noqa: F401,F403
 
-from client import PssFleetDataClient
+from pss_fleet_data import PssFleetDataClient
 
 
 @pytest.fixture(scope="function", autouse=True)

@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from dateutil.parser import parse as parse_datetime
 
-from client.core.utils import convert_datetime_to_seconds
+from pss_fleet_data.core.utils import convert_datetime_to_seconds
 
 
 test_cases_invalid = [
