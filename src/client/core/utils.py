@@ -181,6 +181,8 @@ def get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInte
             from_date = timestamp - timedelta(days=1)
         case ParameterInterval.MONTHLY:
             from_date = timestamp - dateutil.relativedelta.relativedelta(months=1)
+        case _:
+            raise ValueError(f"Parameter `interval` received in invalid value: {interval}")
 
     from_date = localize_to_utc(from_date)
     to_date = localize_to_utc(timestamp)

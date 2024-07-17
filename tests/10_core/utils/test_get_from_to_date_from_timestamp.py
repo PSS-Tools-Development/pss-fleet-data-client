@@ -13,3 +13,9 @@ def test_get_from_to_date_from_timestamp(timestamp: datetime, interval: Paramete
     from_date, to_date = get_from_to_date_from_timestamp(timestamp, interval)
     assert from_date == expected_from_date
     assert to_date == expected_to_date
+
+
+@pytest.mark.parametrize(["timestamp", "interval", "expected_exception"], utils_test_cases.from_to_timestamps_invalid)
+def test_get_from_to_date_from_timestamp_invalid(timestamp: datetime, interval: ParameterInterval, expected_exception: Exception):
+    with pytest.raises(expected_exception):
+        _ = get_from_to_date_from_timestamp(timestamp, interval)
