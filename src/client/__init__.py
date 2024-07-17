@@ -19,3 +19,6 @@ __all__ = [
     PssFleetDataClient.__name__,
     PssUser.__name__,
 ]
+
+
+__version__ = "0.1.0"
