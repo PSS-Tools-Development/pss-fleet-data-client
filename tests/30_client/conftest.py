@@ -1,3 +1,4 @@
+import os
 from typing import Generator
 
 import pytest
@@ -8,12 +9,9 @@ from responses import *  # noqa: F401,F403
 from client import PssFleetDataClient
 
 
-_DEFAULT_API_KEY = "123456"
-
-
 @pytest.fixture(scope="function", autouse=True)
 def default_api_key() -> str:
-    return _DEFAULT_API_KEY
+    return os.getenv("TEST_DEFAULT_API_KEY")
 
 
 @pytest.fixture(scope="function", autouse=True)

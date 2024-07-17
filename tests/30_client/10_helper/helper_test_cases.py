@@ -1,9 +1,12 @@
+import os
 from datetime import datetime, timezone
 
 import pytest
-from conftest import _DEFAULT_API_KEY
 
 from client.core.enums import ParameterInterval
+
+
+_DEFAULT_API_KEY = os.getenv("TEST_DEFAULT_API_KEY")
 
 
 api_keys = [
