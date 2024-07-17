@@ -7,9 +7,9 @@ from client.core import utils
 
 
 @pytest.mark.parametrize(["input", "expected_output"], helper_test_cases.parameter_dicts)
-def test__get_parameter_dict(input: Optional[dict[str, Any]], expected_output: dict[str, Any]):
+def test__create_parameter_dict(input: Optional[dict[str, Any]], expected_output: dict[str, Any]):
     if input is None:
         output = utils.create_parameter_dict()
     else:
         output = utils.create_parameter_dict(**input)
-    assert output == expected_output
+    assert expected_output == output

@@ -67,11 +67,11 @@ def create_parameter_dict(
     take: Optional[int] = None,
 ) -> dict[str, Any]:
     parameters = {}
-    if from_date is not None:
+    if from_date:
         parameters["fromDate"] = from_date
-    if to_date is not None:
+    if to_date:
         parameters["toDate"] = to_date
-    if interval is not None:
+    if interval:
         parameters["interval"] = interval
     if desc is not None:
         parameters["desc"] = desc
