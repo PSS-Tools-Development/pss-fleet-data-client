@@ -1,8 +1,7 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 import pytest
 import utils_test_cases
-from dateutil.parser import parse as parse_datetime
 
 from client.core.enums import ParameterInterval
 from client.core.utils import get_from_to_date_from_timestamp
