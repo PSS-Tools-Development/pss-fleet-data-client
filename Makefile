@@ -19,8 +19,7 @@ check:
 .PHONY: publish
 publish:
 	rye build
-	rye update
-
+	rye publish
 
 .PHONY: update
 update:
