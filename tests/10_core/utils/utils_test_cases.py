@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 
+
+utc = timezone.utc
+
 import pytest
 
 from client.core.enums import ParameterInterval
@@ -7,72 +10,239 @@ from client.core.enums import ParameterInterval
 
 from_to_timestamps = [
     # timestamp, interval, expected_from_date, expected_to_date
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23), datetime(2017, 1, 6), id="hourly"),
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5), datetime(2017, 1, 6), id="daily"),
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6), datetime(2017, 1, 6), id="monthly"),
-    #
-    pytest.param(datetime(2017, 1, 1), ParameterInterval.HOURLY, datetime(2016, 12, 31, 23), datetime(2017, 1, 1), id="hourly_on_first_of_year"),
-    pytest.param(datetime(2017, 1, 1), ParameterInterval.DAILY, datetime(2016, 12, 31), datetime(2017, 1, 1), id="daily_on_first_of_year"),
-    pytest.param(datetime(2017, 1, 1), ParameterInterval.MONTHLY, datetime(2016, 12, 1), datetime(2017, 1, 1), id="monthly_on_first_of_year"),
-    #
-    pytest.param(datetime(2017, 7, 1), ParameterInterval.HOURLY, datetime(2017, 6, 30, 23), datetime(2017, 7, 1), id="hourly_on_first_of_month"),
-    pytest.param(datetime(2017, 7, 1), ParameterInterval.DAILY, datetime(2017, 6, 30), datetime(2017, 7, 1), id="daily_on_first_of_month"),
-    pytest.param(datetime(2017, 7, 1), ParameterInterval.MONTHLY, datetime(2017, 6, 1), datetime(2017, 7, 1), id="monthly_on_first_of_month"),
-    #
-    pytest.param(datetime(2017, 1, 6, 12), ParameterInterval.HOURLY, datetime(2017, 1, 6, 11), datetime(2017, 1, 6, 12), id="hourly_with_hours"),
-    pytest.param(datetime(2017, 1, 6, 12), ParameterInterval.DAILY, datetime(2017, 1, 5, 12), datetime(2017, 1, 6, 12), id="daily_with_hours"),
-    pytest.param(datetime(2017, 1, 6, 12), ParameterInterval.MONTHLY, datetime(2016, 12, 6, 12), datetime(2017, 1, 6, 12), id="monthly_with_hours"),
-    #
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23), datetime(2017, 1, 6), id="hourly_with_minutes"),
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5), datetime(2017, 1, 6), id="daily_with_minutes"),
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6), datetime(2017, 1, 6), id="monthly_with_minutes"),
-    #
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23), datetime(2017, 1, 6), id="hourly_with_seconds"),
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5), datetime(2017, 1, 6), id="daily_with_seconds"),
-    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6), datetime(2017, 1, 6), id="monthly_with_seconds"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.HOURLY, datetime(2017, 1, 5, 23, tzinfo=utc), datetime(2017, 1, 6, tzinfo=utc), id="hourly"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5, tzinfo=utc), datetime(2017, 1, 6, tzinfo=utc), id="daily"),
+    pytest.param(datetime(2017, 1, 6), ParameterInterval.MONTHLY, datetime(2016, 12, 6, tzinfo=utc), datetime(2017, 1, 6, tzinfo=utc), id="monthly"),
     #
     pytest.param(
-        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        datetime(2017, 1, 1),
         ParameterInterval.HOURLY,
-        datetime(2017, 1, 5, 23, tzinfo=timezone.utc),
-        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        datetime(2016, 12, 31, 23, tzinfo=utc),
+        datetime(2017, 1, 1, tzinfo=utc),
+        id="hourly_on_first_of_year",
+    ),
+    pytest.param(
+        datetime(2017, 1, 1),
+        ParameterInterval.DAILY,
+        datetime(2016, 12, 31, tzinfo=utc),
+        datetime(2017, 1, 1, tzinfo=utc),
+        id="daily_on_first_of_year",
+    ),
+    pytest.param(
+        datetime(2017, 1, 1),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 12, 1, tzinfo=utc),
+        datetime(2017, 1, 1, tzinfo=utc),
+        id="monthly_on_first_of_year",
+    ),
+    #
+    pytest.param(
+        datetime(2017, 7, 1),
+        ParameterInterval.HOURLY,
+        datetime(2017, 6, 30, 23, tzinfo=utc),
+        datetime(2017, 7, 1, tzinfo=utc),
+        id="hourly_on_first_of_month",
+    ),
+    pytest.param(
+        datetime(2017, 7, 1),
+        ParameterInterval.DAILY,
+        datetime(2017, 6, 30, tzinfo=utc),
+        datetime(2017, 7, 1, tzinfo=utc),
+        id="daily_on_first_of_month",
+    ),
+    pytest.param(
+        datetime(2017, 7, 1),
+        ParameterInterval.MONTHLY,
+        datetime(2017, 6, 1, tzinfo=utc),
+        datetime(2017, 7, 1, tzinfo=utc),
+        id="monthly_on_first_of_month",
+    ),
+    #
+    pytest.param(
+        datetime(2017, 1, 6, 12),
+        ParameterInterval.HOURLY,
+        datetime(2017, 1, 6, 11, tzinfo=utc),
+        datetime(2017, 1, 6, 12, tzinfo=utc),
+        id="hourly_with_hours",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6, 12),
+        ParameterInterval.DAILY,
+        datetime(2017, 1, 5, 12, tzinfo=utc),
+        datetime(2017, 1, 6, 12, tzinfo=utc),
+        id="daily_with_hours",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6, 12),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 12, 6, 12, tzinfo=utc),
+        datetime(2017, 1, 6, 12, tzinfo=utc),
+        id="monthly_with_hours",
+    ),
+    #
+    pytest.param(
+        datetime(2017, 1, 6),
+        ParameterInterval.HOURLY,
+        datetime(2017, 1, 5, 23, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
+        id="hourly_with_minutes",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5, tzinfo=utc), datetime(2017, 1, 6, tzinfo=utc), id="daily_with_minutes"
+    ),
+    pytest.param(
+        datetime(2017, 1, 6),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 12, 6, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
+        id="monthly_with_minutes",
+    ),
+    #
+    pytest.param(
+        datetime(2017, 1, 6),
+        ParameterInterval.HOURLY,
+        datetime(2017, 1, 5, 23, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
+        id="hourly_with_seconds",
+    ),
+    pytest.param(
+        datetime(2017, 1, 6), ParameterInterval.DAILY, datetime(2017, 1, 5, tzinfo=utc), datetime(2017, 1, 6, tzinfo=utc), id="daily_with_seconds"
+    ),
+    pytest.param(
+        datetime(2017, 1, 6),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 12, 6, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
+        id="monthly_with_seconds",
+    ),
+    #
+    pytest.param(
+        datetime(2017, 1, 6, tzinfo=utc),
+        ParameterInterval.HOURLY,
+        datetime(2017, 1, 5, 23, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
         id="hourly_with_tzinfo",
     ),
     pytest.param(
-        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        datetime(2017, 1, 6, tzinfo=utc),
         ParameterInterval.DAILY,
-        datetime(2017, 1, 5, tzinfo=timezone.utc),
-        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        datetime(2017, 1, 5, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
         id="daily_with_tzinfo",
     ),
     pytest.param(
-        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        datetime(2017, 1, 6, tzinfo=utc),
         ParameterInterval.MONTHLY,
-        datetime(2016, 12, 6, tzinfo=timezone.utc),
-        datetime(2017, 1, 6, tzinfo=timezone.utc),
+        datetime(2016, 12, 6, tzinfo=utc),
+        datetime(2017, 1, 6, tzinfo=utc),
         id="monthly_with_tzinfo",
     ),
     #
     pytest.param(
         datetime(2017, 1, 6, 3, 12, 56),
         ParameterInterval.HOURLY,
-        datetime(2017, 1, 6, 2, 12, 56),
-        datetime(2017, 1, 6, 3, 12, 56),
+        datetime(2017, 1, 6, 2, 12, 56, tzinfo=utc),
+        datetime(2017, 1, 6, 3, 12, 56, tzinfo=utc),
         id="hourly_mixed",
     ),
     pytest.param(
         datetime(2017, 1, 6, 8, 0, 12),
         ParameterInterval.DAILY,
-        datetime(2017, 1, 5, 8, 0, 12),
-        datetime(2017, 1, 6, 8, 0, 12),
+        datetime(2017, 1, 5, 8, 0, 12, tzinfo=utc),
+        datetime(2017, 1, 6, 8, 0, 12, tzinfo=utc),
         id="daily_mixed",
     ),
     pytest.param(
         datetime(2017, 1, 6, 0, 0, 59),
         ParameterInterval.MONTHLY,
-        datetime(2016, 12, 6, 0, 0, 59),
-        datetime(2017, 1, 6, 0, 0, 59),
+        datetime(2016, 12, 6, 0, 0, 59, tzinfo=utc),
+        datetime(2017, 1, 6, 0, 0, 59, tzinfo=utc),
         id="monthly_mixed",
+    ),
+    #
+    pytest.param(
+        datetime(2016, 1, 6),
+        ParameterInterval.HOURLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, tzinfo=utc),
+        id="hourly_from_date_before_pss_start_date_1",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6, 0, 23),
+        ParameterInterval.HOURLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, 0, 23, tzinfo=utc),
+        id="hourly_from_date_before_pss_start_date_2",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6),
+        ParameterInterval.DAILY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, tzinfo=utc),
+        id="daily_from_date_before_pss_start_date_1",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6, 0, 23),
+        ParameterInterval.DAILY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, 0, 23, tzinfo=utc),
+        id="daily_from_date_before_pss_start_date_2",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6, 23, 0),
+        ParameterInterval.DAILY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, 23, 0, tzinfo=utc),
+        id="daily_from_date_before_pss_start_date_3",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, tzinfo=utc),
+        id="monthly_from_date_before_pss_start_date_1",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6, 0, 23),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, 0, 23, tzinfo=utc),
+        id="monthly_from_date_before_pss_start_date_2",
+    ),
+    pytest.param(
+        datetime(2016, 1, 6, 23, 0),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, 23, 0, tzinfo=utc),
+        id="monthly_from_date_before_pss_start_date_3",
+    ),
+    pytest.param(
+        datetime(2016, 2, 5),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 2, 5, tzinfo=utc),
+        id="monthly_from_date_before_pss_start_date_4",
+    ),
+    pytest.param(
+        datetime(2016, 1, 1),
+        ParameterInterval.HOURLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, tzinfo=utc),
+        id="hourly_timestamp_before_pss_start_date",
+    ),
+    pytest.param(
+        datetime(2016, 1, 1),
+        ParameterInterval.DAILY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, tzinfo=utc),
+        id="daily_timestamp_before_pss_start_date",
+    ),
+    pytest.param(
+        datetime(2016, 1, 1),
+        ParameterInterval.MONTHLY,
+        datetime(2016, 1, 6, tzinfo=utc),
+        datetime(2016, 1, 6, tzinfo=utc),
+        id="monthly_timestamp_before_pss_start_date",
     ),
 ]
 """timestamp, interval, expected_from_date, expected_to_date"""
@@ -87,8 +257,8 @@ parameter_dicts = [
     pytest.param({"from_date": ""}, {}, id="fromDate_empty_str"),
     pytest.param({"from_date": datetime(2016, 1, 6)}, {"fromDate": datetime(2016, 1, 6)}, id="fromDate_without_tzinfo"),
     pytest.param(
-        {"from_date": datetime(2016, 1, 6, tzinfo=timezone.utc)},
-        {"fromDate": datetime(2016, 1, 6, tzinfo=timezone.utc)},
+        {"from_date": datetime(2016, 1, 6, tzinfo=utc)},
+        {"fromDate": datetime(2016, 1, 6, tzinfo=utc)},
         id="fromDate_with_tzinfo",
     ),
     pytest.param({"to_date": None}, {}, id="toDate_none"),
@@ -96,8 +266,8 @@ parameter_dicts = [
     pytest.param({"to_date": ""}, {}, id="toDate_empty_str"),
     pytest.param({"to_date": datetime(2016, 12, 31)}, {"toDate": datetime(2016, 12, 31)}, id="toDate_without_tzinfo"),
     pytest.param(
-        {"to_date": datetime(2016, 1, 6, tzinfo=timezone.utc)},
-        {"toDate": datetime(2016, 1, 6, tzinfo=timezone.utc)},
+        {"to_date": datetime(2016, 1, 6, tzinfo=utc)},
+        {"toDate": datetime(2016, 1, 6, tzinfo=utc)},
         id="toDate_with_tzinfo",
     ),
     pytest.param(

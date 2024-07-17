@@ -182,9 +182,10 @@ def get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInte
         case ParameterInterval.MONTHLY:
             from_date = timestamp - dateutil.relativedelta.relativedelta(months=1)
 
-    to_date = timestamp + timedelta(seconds=0)
+    from_date = localize_to_utc(from_date)
+    to_date = localize_to_utc(timestamp)
 
-    return from_date, to_date
+    return max(from_date, CONFIG.pss_start_date), max(to_date, CONFIG.pss_start_date)
 
 
 def localize_to_utc(dt: Optional[datetime]) -> datetime:
