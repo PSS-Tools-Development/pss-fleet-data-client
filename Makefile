@@ -18,8 +18,8 @@ check:
 
 .PHONY: publish
 publish:
-	rye build
-	rye publish
+	rye build --clean
+	rye publish --yes
 
 .PHONY: update
 update:
