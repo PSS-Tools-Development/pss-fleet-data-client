@@ -1,0 +1,43 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - fleetdata.dolores2.xyz
+      user-agent:
+      - python-httpx/0.27.0
+    method: GET
+    uri: https://fleetdata.dolores2.xyz/collections/?fromDate=2016-01-01T00%3A00%3A00
+  response:
+    body:
+      string: !!binary |
+        H4sIANP7lGYC/z2PUUvDQAyA/8pR8EnbXltttSBSWAXBMSl9UZEu7rK2eO3Vu3Q4xf9uNlQIgYQv
+        X5Ivb2MUern3UFTFsqzLqrmtVstmUdRlU69WTVlU94/emTegc9AeyLpDMVmz6xUqsQM9o9gaK+jQ
+        BgsDElqx3lozLIBwLXonyBiBYPU+YJNCgl47Nt2N00zCdWbWSryiaC3CYZg6GAUr8X0GzcMillHq
+        y8iXaS1lfownNlHPVxEME7tiGZ/7MvOjizqSeZLlMgvS7PIqyU6PPOOz1Qx2RFMehluNSAoIAmW0
+        seji4GP/GW6M1rih3owuvPn74fp/f8T7T5LiN7HTzW3LNzDPaq51P77xa88v3z832YM4WgEAAA==
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '283'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 15 Jul 2024 10:37:07 GMT
+      Server:
+      - nginx
+      content-encoding:
+      - gzip
+      vary:
+      - Accept-Encoding
+    status:
+      code: 422
+      message: Unprocessable Entity
+version: 1

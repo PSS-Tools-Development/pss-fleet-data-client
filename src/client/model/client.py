@@ -1,2 +1,0 @@
-class PssFleetDataClient:
-    pass
