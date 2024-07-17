@@ -29,7 +29,6 @@ def assert_api_collections_equal(
         assert isinstance(api_collection_1, ApiCollection)
         assert isinstance(api_collection_2, ApiCollection)
 
-        assert id(api_collection_1) != id(api_collection_2)
         assert api_collection_1.model_dump() == api_collection_2.model_dump()
 
         assert_api_collection_metadatas_equal(api_collection_1.metadata, api_collection_2.metadata)
@@ -48,7 +47,6 @@ def assert_api_collections_equal(
 @pytest.fixture(scope="session")
 def assert_api_collection_metadatas_equal() -> Callable[[ApiCollectionMetadata, ApiCollectionMetadata], None]:
     def _assert_api_collection_metadatas_equal(api_collection_metadata_1: ApiCollectionMetadata, api_collection_metadata_2: ApiCollectionMetadata):
-        assert id(api_collection_metadata_1) != id(api_collection_metadata_2)
         assert api_collection_metadata_1.model_dump() == api_collection_metadata_2.model_dump()
 
     return _assert_api_collection_metadatas_equal

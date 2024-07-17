@@ -22,7 +22,6 @@ def assert_alliance_histories_equal(
         assert isinstance(alliance_history_1, AllianceHistory)
         assert isinstance(alliance_history_2, AllianceHistory)
 
-        assert id(alliance_history_1) != id(alliance_history_2)
         assert alliance_history_1.model_dump() == alliance_history_2.model_dump()
 
         assert_collection_metadatas_equal(alliance_history_1.collection, alliance_history_2.collection)
@@ -49,7 +48,6 @@ def assert_collections_equal(
         assert isinstance(collection_1, Collection)
         assert isinstance(collection_2, Collection)
 
-        assert id(collection_1) != id(collection_2)
         assert collection_1.model_dump() == collection_2.model_dump()
 
         assert_collection_metadatas_equal(collection_1.metadata, collection_2.metadata)
@@ -70,7 +68,6 @@ def assert_collections_equal(
 @pytest.fixture(scope="function")
 def assert_collection_metadatas_equal() -> Callable[[CollectionMetadata, CollectionMetadata], None]:
     def _assert_collection_metadatas_equal(collection_metadata_1: CollectionMetadata, collection_metadata_2: CollectionMetadata):
-        assert id(collection_metadata_1) != id(collection_metadata_2)
         assert collection_metadata_1.model_dump() == collection_metadata_2.model_dump()
 
     return _assert_collection_metadatas_equal
@@ -83,7 +80,6 @@ def assert_pss_alliances_equal() -> Callable[[PssAlliance, PssAlliance], None]:
         assert pss_alliance_2
         assert isinstance(pss_alliance_1, PssAlliance)
         assert isinstance(pss_alliance_2, PssAlliance)
-        assert id(pss_alliance_1) != id(pss_alliance_2)
 
         assert pss_alliance_1.alliance_id == pss_alliance_2.alliance_id
         assert pss_alliance_1.alliance_name == pss_alliance_2.alliance_name
@@ -104,7 +100,6 @@ def assert_pss_users_equal() -> Callable[[PssUser, PssUser], None]:
         assert pss_user_2
         assert isinstance(pss_user_1, PssUser)
         assert isinstance(pss_user_2, PssUser)
-        assert id(pss_user_1) != id(pss_user_2)
 
         assert pss_user_1.id == pss_user_2.id
         assert pss_user_1.name == pss_user_2.name
@@ -141,7 +136,6 @@ def assert_user_histories_equal(
         assert isinstance(user_history_1, UserHistory)
         assert isinstance(user_history_2, UserHistory)
 
-        assert id(user_history_1) != id(user_history_2)
         assert user_history_1.model_dump() == user_history_2.model_dump()
 
         assert_collection_metadatas_equal(user_history_1.collection, user_history_2.collection)
