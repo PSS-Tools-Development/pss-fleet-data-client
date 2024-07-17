@@ -1,5 +1,5 @@
 .PHONY: all
-all: format check test
+all: format check test build
 
 .PHONY: test
 test:
@@ -15,6 +15,10 @@ format:
 check:
 	rye run flake8 ./src
 	rye run vulture
+
+.PHONY: build
+build:
+	rye build --clean
 
 .PHONY: publish
 publish:
