@@ -82,7 +82,7 @@ class FromAPI:
     @staticmethod
     def to_collection(source: ApiCollection) -> Collection:
         return Collection(
-            metadata=FromAPI.to_collection_metadata(source.metadata),
+            metadata=FromAPI.to_collection_metadata(source.meta),
             alliances=[FromAPI.to_pss_alliance(api_alliance) for api_alliance in source.fleets] if source.fleets else list(),
             users=[FromAPI.to_pss_user(api_user) for api_user in source.users] if source.users else list(),
         )
@@ -256,7 +256,7 @@ class ToAPI:
     @staticmethod
     def from_collection(source: Collection) -> ApiCollection:
         return ApiCollection(
-            metadata=ToAPI.from_collection_metadata(source.metadata),
+            meta=ToAPI.from_collection_metadata(source.metadata),
             fleets=[ToAPI.from_pss_alliance(alliance) for alliance in source.alliances] if source.alliances else list(),
             users=[ToAPI.from_pss_user(users) for users in source.users] if source.users else list(),
         )

@@ -22,7 +22,7 @@ def test_from_to_api_collection(api_collection: ApiCollection, assert_api_collec
     api_collection_after = ToAPI.from_collection(collection)
     assert_api_collection_valid(api_collection_after)
 
-    api_collection.metadata.collection_id = None
+    api_collection.meta.collection_id = None
     assert api_collection.model_dump() == api_collection_after.model_dump()
 
 

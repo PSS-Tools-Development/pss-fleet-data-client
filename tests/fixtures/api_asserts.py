@@ -31,7 +31,7 @@ def assert_api_collections_equal(
 
         assert api_collection_1.model_dump() == api_collection_2.model_dump()
 
-        assert_api_collection_metadatas_equal(api_collection_1.metadata, api_collection_2.metadata)
+        assert_api_collection_metadatas_equal(api_collection_1.meta, api_collection_2.meta)
 
         assert len(api_collection_1.fleets) == len(api_collection_2.fleets)
         for alliance_1, alliance_2 in zip(api_collection_1.fleets, api_collection_2.fleets, strict=True):
@@ -82,7 +82,7 @@ def assert_api_collection_valid(
     def _assert_api_collection_valid(api_collection: ApiCollection):
         assert api_collection
         assert isinstance(api_collection, ApiCollection)
-        assert_api_collection_metadata_valid(api_collection.metadata)
+        assert_api_collection_metadata_valid(api_collection.meta)
 
         assert isinstance(api_collection.fleets, list)
         for fleet in api_collection.fleets:
@@ -113,7 +113,7 @@ def assert_api_collection_with_fleets_valid(
     def _assert_api_collection_with_fleets_valid(api_collection: ApiCollection):
         assert api_collection
         assert isinstance(api_collection, ApiCollection)
-        assert_api_collection_metadata_valid(api_collection.metadata)
+        assert_api_collection_metadata_valid(api_collection.meta)
 
         assert isinstance(api_collection.fleets, list)
         for fleet in api_collection.fleets:
@@ -130,7 +130,7 @@ def assert_api_collection_with_fleets_valid(
     def _assert_api_collection_with_users_valid(api_collection: ApiCollection):
         assert api_collection
         assert isinstance(api_collection, ApiCollection)
-        assert_api_collection_metadata_valid(api_collection.metadata)
+        assert_api_collection_metadata_valid(api_collection.meta)
 
         assert isinstance(api_collection.users, list)
         for user in api_collection.users:
