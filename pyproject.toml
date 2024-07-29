@@ -1,6 +1,6 @@
 [project]
 name = "pss-fleet-data-client"
-version = "0.3.0"
+version = "0.3.1"
 license = {file = "LICENSE"}
 description = "A client for the Pixel Starships Fleet Data API."
 authors = [
