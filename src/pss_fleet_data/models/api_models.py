@@ -18,7 +18,16 @@ OPTIONAL_INT_GE_0 = Annotated[Optional[int], Field(ge=0, default=None)]
 OPTIONAL_STR_LENGTH_GE_1 = Annotated[Optional[str], Field(min_length=1, default=None)]
 
 
-ApiAlliance = tuple[INT_GE_1, STR_LENGTH_GE_1, INT_GE_0, INT_GE_0, INT_GE_0, INT_GE_0, INT_GE_0, INT_GE_0]
+ApiAlliance = tuple[
+    INT_GE_1,
+    STR_LENGTH_GE_1,
+    INT_GE_0,
+    INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+]
 """(
     0: alliance_id,
     1: alliance_name,
@@ -143,17 +152,17 @@ ApiUser = tuple[
     OPTIONAL_INT_GE_0,
     INT_GE_0,
     OPTIONAL_INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
-    INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
+    OPTIONAL_INT_GE_0,
 ]
 """(
     0: user_id,
@@ -161,10 +170,10 @@ ApiUser = tuple[
     2: alliance_id,
     3: trophy,
     4: alliance_score,
-    5: alliance_membership (encoded),
-    6: alliance_join_date (encoded),
-    7: last_login_date (encoded),
-    8: last_heartbeat_date (encoded),
+    5: alliance_membership,
+    6: alliance_join_date,
+    7: last_login_date,
+    8: last_heartbeat_date,
     9: crew_donated,
     10: crew_received,
     11: pvp_attack_wins,
