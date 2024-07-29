@@ -1,6 +1,6 @@
 [project]
 name = "pss-fleet-data-client"
-version = "0.2.0"
+version = "0.3.0"
 license = {file = "LICENSE"}
 description = "A client for the Pixel Starships Fleet Data API."
 authors = [
@@ -27,9 +27,9 @@ dev-dependencies = [
     "pytest>=7.2.1",
     "pytest-asyncio>=0.23.7",
     "pytest-env>=1.1.3",
-    "vulture>=2.11",
     "pytest_httpx>=0.30.0",
     "pytest-vcr>=1.0.2",
+    "vulture>=2.11",
 ]
 
 [tool.autoflake]
