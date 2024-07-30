@@ -2,7 +2,8 @@ import json
 from datetime import datetime
 from typing import Any, Optional
 
-from httpx import AsyncClient, Response
+from httpx import AsyncClient, Response, Timeout
+from httpx._config import DEFAULT_TIMEOUT_CONFIG
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
@@ -14,10 +15,12 @@ from .models.converters import FromAPI, FromResponse, ToAPI
 
 
 class PssFleetDataClient:
-    def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None, proxy: Optional[str] = None):
+    def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None, proxy: Optional[str] = None, timeout: Optional[float] = None):
         self.__api_key: Optional[str] = api_key
         self.__proxy: Optional[str] = proxy
-        self.__http_client = AsyncClient(base_url=base_url, proxy=proxy)
+        timeout_config = DEFAULT_TIMEOUT_CONFIG if timeout is None else Timeout(timeout)
+
+        self.__http_client = AsyncClient(base_url=base_url, proxy=proxy, timeout=timeout_config)
 
     @property
     def api_key(self) -> Optional[str]:
