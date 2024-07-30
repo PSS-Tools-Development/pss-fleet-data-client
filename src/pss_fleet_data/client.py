@@ -109,6 +109,13 @@ class PssFleetDataClient:
         return collection
 
     async def get_most_recent_collection_by_timestamp(self, timestamp: datetime) -> Optional[Collection]:
+        collection_metadata = await self.get_most_recent_collection_metadata_by_timestamp(timestamp)
+        if collection_metadata:
+            collection = await self.get_collection(collection_metadata.collection_id)
+            return collection
+        return None
+
+    async def get_most_recent_collection_metadata_by_timestamp(self, timestamp: datetime) -> Optional[CollectionMetadata]:
         for interval in (ParameterInterval.HOURLY, ParameterInterval.DAILY, ParameterInterval.MONTHLY):
             from_date, to_date = utils.get_from_to_date_from_timestamp(timestamp, interval)
             collection_metadatas = await self.get_collections(
@@ -119,8 +126,7 @@ class PssFleetDataClient:
                 take=1,
             )
             if collection_metadatas:
-                collection = await self.get_collection(collection_metadatas[0].collection_id)
-                return collection
+                return collection_metadatas[0]
         return None
 
     async def get_collections(
