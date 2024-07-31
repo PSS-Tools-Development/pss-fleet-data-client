@@ -491,6 +491,9 @@ class PssFleetDataClient:
         Returns:
             CollectionMetadata: The metadata of the `Collection` created.
         """
+        if not isinstance(file_path, str):
+            raise TypeError("Parameter `file` must be of type `str`.")
+
         api_key = api_key or self.api_key
 
         with open(file_path, "rb") as fp:
