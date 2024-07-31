@@ -19,7 +19,7 @@ def mock_response_allianceHistory_allianceId_get_200_with_members(api_alliance_h
 
 
 @pytest.fixture(scope="function")
-def mock_response_get_collections_200(api_collection_metadata_9: ApiCollectionMetadata, httpx_mock: HTTPXMock):
+def mock_response_collections_get_200(api_collection_metadata_9: ApiCollectionMetadata, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         text=f"[{api_collection_metadata_9.model_dump_json()}]",
     )
