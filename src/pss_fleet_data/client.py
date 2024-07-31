@@ -35,15 +35,6 @@ class PssFleetDataClient:
     def proxy(self) -> str:
         return self.__proxy
 
-    # TODO: remove change_base_url() & change_proxy(). The user can just create a new client.
-
-    def change_base_url(self, base_url: str):
-        self.__http_client = AsyncClient(base_url=base_url, proxy=self.proxy)
-
-    def change_proxy(self, proxy: str):
-        self.__proxy = proxy
-        self.__http_client = AsyncClient(base_url=self.base_url, proxy=proxy)
-
     # Operations
 
     async def get_home_page(self) -> str:
