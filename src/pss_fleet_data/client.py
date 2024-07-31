@@ -322,7 +322,7 @@ class PssFleetDataClient:
             If there's none, `None`.
         """
         for interval in (ParameterInterval.HOURLY, ParameterInterval.DAILY, ParameterInterval.MONTHLY):
-            from_date, to_date = utils.get_from_to_date_from_timestamp(timestamp, interval)
+            from_date, to_date = utils.get_most_recent_from_to_date_from_timestamp(timestamp, interval)
             collection_metadatas = await self.get_collections(
                 from_date=from_date,
                 to_date=to_date,

@@ -4,12 +4,12 @@ import pytest
 import utils_test_cases
 
 from pss_fleet_data.core.enums import ParameterInterval
-from pss_fleet_data.core.utils import get_from_to_date_from_timestamp
+from pss_fleet_data.core.utils import get_most_recent_from_to_date_from_timestamp
 
 
 @pytest.mark.parametrize(["timestamp", "interval", "expected_from_date", "expected_to_date"], utils_test_cases.from_to_timestamps)
 def test_get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInterval, expected_from_date: datetime, expected_to_date: datetime):
-    from_date, to_date = get_from_to_date_from_timestamp(timestamp, interval)
+    from_date, to_date = get_most_recent_from_to_date_from_timestamp(timestamp, interval)
     assert from_date == expected_from_date
     assert to_date == expected_to_date
 
@@ -17,4 +17,4 @@ def test_get_from_to_date_from_timestamp(timestamp: datetime, interval: Paramete
 @pytest.mark.parametrize(["timestamp", "interval", "expected_exception"], utils_test_cases.from_to_timestamps_invalid)
 def test_get_from_to_date_from_timestamp_invalid(timestamp: datetime, interval: ParameterInterval, expected_exception: Exception):
     with pytest.raises(expected_exception):
-        _ = get_from_to_date_from_timestamp(timestamp, interval)
+        _ = get_most_recent_from_to_date_from_timestamp(timestamp, interval)

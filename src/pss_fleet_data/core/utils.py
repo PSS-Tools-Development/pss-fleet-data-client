@@ -195,8 +195,7 @@ def format_datetime(dt: Optional[datetime], remove_tzinfo: bool = False) -> str:
     return dt.replace(microsecond=0).isoformat()
 
 
-# TODO: Rename to get_most_recent_from_to_date_from_timestamp
-def get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInterval) -> tuple[datetime, datetime]:
+def get_most_recent_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInterval) -> tuple[datetime, datetime]:
     """Calculates most recent `datetime`s to be used as `fromDate` and `toDate` parameters given the specified `interval`.
 
     Args:
