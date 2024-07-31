@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any, Optional, Union
 
 from httpx import AsyncClient, Response, Timeout
 from httpx._config import DEFAULT_TIMEOUT_CONFIG
@@ -464,7 +465,7 @@ class PssFleetDataClient:
 
     # TODO: Add /ping
 
-    async def upload_collection(self, file_path: str, api_key: Optional[str] = None) -> CollectionMetadata:
+    async def upload_collection(self, file_path: Union[str, Path], api_key: Optional[str] = None) -> CollectionMetadata:
         """Uploads the `Collection` at the given `file_path`.
 
         Args:
@@ -491,7 +492,7 @@ class PssFleetDataClient:
         Returns:
             CollectionMetadata: The metadata of the `Collection` created.
         """
-        if not isinstance(file_path, str):
+        if not isinstance(file_path, (str, Path)):
             raise TypeError("Parameter `file` must be of type `str`.")
 
         api_key = api_key or self.api_key

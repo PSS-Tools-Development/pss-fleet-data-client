@@ -1,4 +1,5 @@
-from typing import Any, Callable
+from pathlib import Path
+from typing import Any, Callable, Union
 
 import pytest
 import routes_test_cases
@@ -15,15 +16,16 @@ from pss_fleet_data.core.exceptions import (
 from pss_fleet_data.models import Collection, CollectionMetadata
 
 
+@pytest.mark.parametrize("file_path", routes_test_cases.upload_test_file_paths)
 @pytest.mark.usefixtures("mock_response_collections_post_201")
 async def test_upload_collection_201_from_file_path(
-    upload_test_file_path: str,
+    file_path: Union[Path, str],
     collection_metadata_9: Collection,
     test_client: PssFleetDataClient,
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
     assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
 ):
-    collection_metadata_response = await test_client.upload_collection(upload_test_file_path)
+    collection_metadata_response = await test_client.upload_collection(file_path)
 
     assert_collection_metadata_valid(collection_metadata_response)
     assert_collection_metadatas_equal(collection_metadata_9, collection_metadata_response)
