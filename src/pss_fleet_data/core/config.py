@@ -4,8 +4,15 @@ from datetime import datetime, timezone
 
 @dataclass(frozen=True)
 class Config:
+    """
+    The base configuration of a PssFleetDataClient.
+    """
+
     default_base_url: str = "https://fleetdata.dolores2.xyz"
+    """The default base url of the Fleet Data API server."""
     pss_start_date: datetime = datetime(2016, 1, 6, tzinfo=timezone.utc)
+    """The day Pixel Starships open beta started."""
 
 
+# TODO: Migrate to get_config() to prevent accidental overwriting of the config
 CONFIG = Config()

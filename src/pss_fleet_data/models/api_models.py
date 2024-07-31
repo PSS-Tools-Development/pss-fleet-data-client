@@ -118,13 +118,30 @@ class ApiCollectionMetadata(BaseModel):
 
 
 class ApiErrorResponse(BaseModel):
+    """
+    Represents an error response received from the API.
+    """
+
     code: str
+    """The error code of the error that occured."""
     message: str
+    """A message matching the error code."""
     details: str
+    """A detailed message about the error that occured."""
     timestamp: str
+    """The point in time when the error occured. UTC."""
     url: str
+    """The URL that was called when the error occured."""
     suggestion: str
+    """A suggestion how to fix the error that occured, if it can be fixed or worked around by the client."""
     links: list["ApiLink"]
+    """A collection of API links related to the error."""
+
+    def __str__(self) -> str:
+        return f"{self.code} ({self.url})"
+
+    def __repr__(self) -> str:
+        return f"<ApiErrorResponse code={self.code}, url={self.url}>"
 
 
 class ApiLink(BaseModel):
@@ -133,13 +150,15 @@ class ApiLink(BaseModel):
     """
 
     path: str
+    """The target path of the link on the current API server."""
     description: str
+    """A description of this link."""
 
     def __str__(self) -> str:
-        return self.__repr__
+        return f"{self.path} ({self.description})"
 
     def __repr__(self) -> str:
-        return f"{self.path} ({self.description})"
+        return f"<ApiLink path={self.path}, description={self.description}>"
 
 
 ApiUser = tuple[

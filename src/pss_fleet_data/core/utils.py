@@ -66,6 +66,19 @@ def create_parameter_dict(
     skip: Optional[int] = None,
     take: Optional[int] = None,
 ) -> dict[str, Any]:
+    """Creates a dictionary of query parameters.
+
+    Args:
+        from_date (datetime, optional): The earliest date for which to return results. Defaults to None.
+        to_date (datetime, optional): The latest date for which to return results. Defaults to None.
+        interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to None.
+        desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
+        skip (int, optional): The number of results to skip in the response. Defaults to None.
+        take (int, optional): The number of results to be returned. Defaults to None.
+
+    Returns:
+        dict[str, Any]: A dictionary of query parameters. Only includes the specified parameters.
+    """
     parameters = {}
     if from_date:
         parameters["fromDate"] = from_date
@@ -165,6 +178,15 @@ def encode_alliance_membership(membership: Union[str, AllianceMembership]) -> in
 
 
 def format_datetime(dt: Optional[datetime], remove_tzinfo: bool = False) -> str:
+    """Removes microseconds from a given `datetime` and returns an iso-formatted string of it.
+
+    Args:
+        dt (datetime, optional): The `datetime to be formatted. May be `None`.
+        remove_tzinfo (bool, optional): Determines, whether to remove the timezone information from the given `datetime`. Defaults to False.
+
+    Returns:
+        str: The formatted datetime, including or excluding timezone information, if the provided `datetime` is not `None`. Else, `None`.
+    """
     if not dt:
         return None
 
@@ -173,7 +195,23 @@ def format_datetime(dt: Optional[datetime], remove_tzinfo: bool = False) -> str:
     return dt.replace(microsecond=0).isoformat()
 
 
+# TODO: Rename to get_most_recent_from_to_date_from_timestamp
 def get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInterval) -> tuple[datetime, datetime]:
+    """Calculates most recent `datetime`s to be used as `fromDate` and `toDate` parameters given the specified `interval`.
+
+    Args:
+        timestamp (datetime): The timestamp to base the calculations on.
+        interval (ParameterInterval): The interval to base the calculations on.
+
+    Raises:
+        ValueError: The parameter `interval` received an invalid value.
+
+    Returns:
+        tuple[datetime, datetime]: Two `datetime`s to be used as `fromDate` and `toDate` parameters. Localized to UTC timezone.
+        The 1st `datetime` (for the `fromDate` parameter) depends on the provided `interval`:
+        `HOURLY` will subtract 1 hour, `DAILY` will subtract 1 day and `MONTHLY` will subtract 1 month.
+        The 2nd `datetime` (for the `toDate` parameter) is equal to the provided `timestamp`.
+    """
     match interval:
         case ParameterInterval.HOURLY:
             from_date = timestamp - timedelta(hours=1)
