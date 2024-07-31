@@ -4,11 +4,11 @@ from typing import Annotated, Any, Optional, Union
 from pydantic import BaseModel, Field, field_validator
 
 from ..core import utils
-from ..core.config import CONFIG
+from ..core.config import get_config
 from ..core.enums import UserAllianceMembershipEncoded
 
 
-DATETIME = Annotated[datetime, Field(ge=CONFIG.pss_start_date)]
+DATETIME = Annotated[datetime, Field(ge=get_config().pss_start_date)]
 FLOAT_GE_0 = Annotated[float, Field(ge=0.0)]
 INT_GE_0 = Annotated[int, Field(ge=0)]
 INT_GE_1 = Annotated[int, Field(ge=1)]
@@ -110,7 +110,7 @@ class ApiCollectionMetadata(BaseModel):
         """
         if isinstance(value, (datetime, int, str)):
             result = utils.localize_to_utc(utils.parse_datetime(value))
-            if result < CONFIG.pss_start_date:
+            if result < get_config().pss_start_date:
                 raise ValueError
             return result
         else:

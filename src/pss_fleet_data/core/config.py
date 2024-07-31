@@ -14,5 +14,8 @@ class Config:
     """The day Pixel Starships open beta started."""
 
 
-# TODO: Migrate to get_config() to prevent accidental overwriting of the config
-CONFIG = Config()
+__CONFIG = Config()
+
+
+def get_config() -> Config:
+    return __CONFIG

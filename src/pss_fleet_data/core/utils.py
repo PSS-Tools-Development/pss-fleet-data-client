@@ -4,7 +4,7 @@ from typing import Any, Optional, Union
 import dateutil
 from pssapi.enums import AllianceMembership
 
-from .config import CONFIG
+from .config import get_config
 from .enums import ParameterInterval, UserAllianceMembershipEncoded
 
 
@@ -51,10 +51,10 @@ def convert_datetime_to_seconds(dt: Optional[datetime]) -> int:
         raise TypeError("The parameter `dt` must be of type `datetime`!")
 
     dt = localize_to_utc(dt)
-    if dt < CONFIG.pss_start_date:
+    if dt < get_config().pss_start_date:
         return 0
 
-    return int((dt - CONFIG.pss_start_date).total_seconds())
+    return int((dt - get_config().pss_start_date).total_seconds())
 
 
 def create_parameter_dict(
@@ -225,7 +225,7 @@ def get_from_to_date_from_timestamp(timestamp: datetime, interval: ParameterInte
     from_date = localize_to_utc(from_date)
     to_date = localize_to_utc(timestamp)
 
-    return max(from_date, CONFIG.pss_start_date), max(to_date, CONFIG.pss_start_date)
+    return max(from_date, get_config().pss_start_date), max(to_date, get_config().pss_start_date)
 
 
 def localize_to_utc(dt: Optional[datetime]) -> datetime:
@@ -274,7 +274,7 @@ def parse_datetime(dt: Optional[Union[datetime, int, str]]) -> datetime:
 
     if isinstance(dt, int):
         # If it's an integer value, then it's likely encoded as seconds from Jan 6th, 2016 00:00 UTC
-        return CONFIG.pss_start_date + timedelta(seconds=dt)
+        return get_config().pss_start_date + timedelta(seconds=dt)
     elif isinstance(dt, str):
         return dateutil.parser.parse(dt)
     return dt
