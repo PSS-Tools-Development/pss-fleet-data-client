@@ -77,6 +77,13 @@ def mock_response_collections_collectionId_users_userId_get_200_with_fleet(api_u
 
 
 @pytest.fixture(scope="function")
+def mock_response_ping_get_200(httpx_mock: HTTPXMock):
+    httpx_mock.add_response(
+        json={"ping": "Pong!"},
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_response_userHistory_userId_get_200(api_user_history: ApiUserHistory, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         text=f"[{api_user_history.model_dump_json()}]",

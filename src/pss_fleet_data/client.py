@@ -463,7 +463,14 @@ class PssFleetDataClient:
         user_histories = FromResponse.to_user_history_list(response)
         return user_histories
 
-    # TODO: Add /ping
+    async def ping(self) -> str:
+        """Sends a ping to the API.
+
+        Returns:
+            str: Pong!
+        """
+        response = await self._get("/ping")
+        return response.json()["ping"]
 
     async def upload_collection(self, file_path: Union[str, Path], api_key: Optional[str] = None) -> CollectionMetadata:
         """Uploads the `Collection` at the given `file_path`.
