@@ -3,8 +3,8 @@ from datetime import datetime
 import pytest
 import utils_test_cases
 
-from pss_fleet_data.core.enums import ParameterInterval
-from pss_fleet_data.core.utils import get_most_recent_from_to_date_from_timestamp
+from pss_fleet_data.models.enums import ParameterInterval
+from pss_fleet_data.utils import get_most_recent_from_to_date_from_timestamp
 
 
 @pytest.mark.parametrize(["timestamp", "interval", "expected_from_date", "expected_to_date"], utils_test_cases.from_to_timestamps)

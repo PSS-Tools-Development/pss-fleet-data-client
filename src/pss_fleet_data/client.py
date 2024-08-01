@@ -8,11 +8,11 @@ from httpx._config import DEFAULT_TIMEOUT_CONFIG
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from .core import utils
-from .core.enums import ParameterInterval
+from . import utils
 from .models.api_models import ApiErrorResponse
 from .models.client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 from .models.converters import FromAPI, FromResponse, ToAPI
+from .models.enums import ParameterInterval
 
 
 class PssFleetDataClient:

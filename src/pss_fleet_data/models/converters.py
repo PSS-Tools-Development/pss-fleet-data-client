@@ -4,8 +4,7 @@ from httpx import Response
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from ..core import utils
-from ..core.enums import ErrorCode
+from .. import utils
 from ..core.exceptions import (
     AllianceNotFoundError,
     ApiError,
@@ -46,6 +45,7 @@ from ..core.exceptions import (
 )
 from .api_models import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUser, ApiUserHistory
 from .client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
+from .enums import ErrorCode
 
 
 class FromAPI:

@@ -3,9 +3,9 @@ from typing import Annotated, Any, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator
 
-from ..core import utils
+from .. import utils
 from ..core.config import get_config
-from ..core.enums import UserAllianceMembershipEncoded
+from .enums import UserAllianceMembershipEncoded
 
 
 DATETIME = Annotated[datetime, Field(ge=get_config().pss_start_date)]

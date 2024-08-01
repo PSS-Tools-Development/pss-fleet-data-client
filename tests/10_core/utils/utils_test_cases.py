@@ -5,7 +5,7 @@ utc = timezone.utc
 
 import pytest
 
-from pss_fleet_data.core.enums import ParameterInterval
+from pss_fleet_data.models.enums import ParameterInterval
 
 
 from_to_timestamps = [

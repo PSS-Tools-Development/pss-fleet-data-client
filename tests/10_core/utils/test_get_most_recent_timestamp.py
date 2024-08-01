@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from pss_fleet_data.core.enums import ParameterInterval
-from pss_fleet_data.core.utils import get_most_recent_timestamp
+from pss_fleet_data.models.enums import ParameterInterval
+from pss_fleet_data.utils import get_most_recent_timestamp
 
 
 test_cases_invalid = [

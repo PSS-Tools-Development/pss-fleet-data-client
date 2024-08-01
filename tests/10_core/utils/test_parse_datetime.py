@@ -3,7 +3,7 @@ from typing import Union
 
 import pytest
 
-from pss_fleet_data.core.utils import parse_datetime
+from pss_fleet_data.utils import parse_datetime
 
 
 test_cases_invalid = [

@@ -4,8 +4,8 @@ from typing import Any, Optional, Union
 import dateutil
 from pssapi.enums import AllianceMembership
 
-from .config import get_config
-from .enums import ParameterInterval, UserAllianceMembershipEncoded
+from .core.config import get_config
+from .models.enums import ParameterInterval, UserAllianceMembershipEncoded
 
 
 def add_timezone_utc(dt: Optional[datetime]) -> datetime:
