@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any, Optional, Union
+from typing import Any, MutableMapping, Optional, Union
 
 import dateutil
 from pssapi.enums import AllianceMembership
@@ -282,6 +282,22 @@ def localize_to_utc(dt: Optional[datetime]) -> datetime:
         return dt.astimezone(timezone.utc)
     else:
         return dt
+
+
+def merge_headers(client_headers: MutableMapping[str, str], headers: MutableMapping[str, str]) -> dict[str, str]:
+    """Merges header dicts, overwriting keys existing in the `client_headers`, if those are also defined in `headers`.
+
+    Args:
+        client_headers (MutableMapping[str, str]): The default headers of an `AsyncClient`.
+        headers (MutableMapping[str, str]): The additional headers to add or to overwrite default headers with.
+
+    Returns:
+        dict[str, str]: A new dictionary representing the headers to be sent with a `Request`.
+    """
+    request_headers = dict(client_headers or {})
+    request_headers.update(headers or {})
+
+    return request_headers
 
 
 def parse_datetime(dt: Optional[Union[datetime, int, str]]) -> datetime:

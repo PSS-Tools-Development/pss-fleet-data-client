@@ -532,7 +532,7 @@ class PssFleetDataClient:
         Returns:
             httpx.Response: The response from the API.
         """
-        request_headers = _create_request_headers(self.__http_client, headers)
+        request_headers = utils.merge_headers(self.__http_client.headers, headers)
         response = await self.__http_client.delete(path, params=params, headers=request_headers)
         _raise_on_error(response)
 
@@ -619,7 +619,7 @@ class PssFleetDataClient:
         Returns:
             httpx.Response: The response from the API.
         """
-        request_headers = _create_request_headers(self.__http_client, headers)
+        request_headers = utils.merge_headers(self.__http_client.headers, headers)
         response = await self.__http_client.get(path, params=params, headers=request_headers)
         _raise_on_error(response)
         return response
@@ -721,7 +721,7 @@ class PssFleetDataClient:
         Returns:
             httpx.Response: The response from the API.
         """
-        request_headers = _create_request_headers(self.__http_client, headers)
+        request_headers = utils.merge_headers(self.__http_client.headers, headers)
 
         response = await self.__http_client.post(path, json=json, files=files, params=params, headers=request_headers)
         _raise_on_error(response)
@@ -831,27 +831,6 @@ def _raise_on_error(response: Response):
     exception = FromAPI.to_error(api_error)
 
     raise exception
-
-
-def _create_request_headers(client: AsyncClient, headers: dict[str, str]) -> dict[str, str]:
-    """Takes the default headers configured in the `client` and updates them with the additionally specified `headers`.
-
-    Args:
-        client (AsyncClient): The client to take the default headers from.
-        headers (dict[str, Any]): The additional headers to add or to overwrite default headers with.
-
-    Returns:
-        dict[str, str]: A collection of headers to be sent with a request.
-    """
-    if not client.headers:
-        return headers
-
-    request_headers = dict(client.headers)
-
-    if headers:
-        request_headers.update(headers)
-
-    return request_headers
 
 
 __all__ = [
