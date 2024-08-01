@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any, MutableMapping, Optional, Union
+from typing import Optional, Union
 
 import dateutil
-from pssapi.enums import AllianceMembership
 
-from .core.config import get_config
-from .models.enums import ParameterInterval, UserAllianceMembershipEncoded
+from ..core.config import get_config
+from ..models.enums import ParameterInterval
 
 
 def add_timezone_utc(dt: Optional[datetime]) -> datetime:
@@ -55,126 +54,6 @@ def convert_datetime_to_seconds(dt: Optional[datetime]) -> int:
         return 0
 
     return int((dt - get_config().pss_start_date).total_seconds())
-
-
-def create_parameter_dict(
-    *,
-    from_date: Optional[datetime] = None,
-    to_date: Optional[datetime] = None,
-    interval: Optional[ParameterInterval] = None,
-    desc: Optional[bool] = None,
-    skip: Optional[int] = None,
-    take: Optional[int] = None,
-) -> dict[str, Any]:
-    """Creates a dictionary of query parameters.
-
-    Args:
-        from_date (datetime, optional): The earliest date for which to return results. Defaults to None.
-        to_date (datetime, optional): The latest date for which to return results. Defaults to None.
-        interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to None.
-        desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
-        skip (int, optional): The number of results to skip in the response. Defaults to None.
-        take (int, optional): The number of results to be returned. Defaults to None.
-
-    Returns:
-        dict[str, Any]: A dictionary of query parameters. Only includes the specified parameters.
-    """
-    parameters = {}
-    if from_date:
-        parameters["fromDate"] = from_date
-    if to_date:
-        parameters["toDate"] = to_date
-    if interval:
-        parameters["interval"] = interval
-    if desc is not None:
-        parameters["desc"] = desc
-    if skip is not None:
-        parameters["skip"] = skip
-    if take is not None:
-        parameters["take"] = take
-    return parameters
-
-
-def decode_alliance_membership(membership: Union[int, UserAllianceMembershipEncoded]) -> AllianceMembership:
-    """Converts an `int` or `UserCreateAllianceMembership` enum into a `AllianceMembership`.
-
-    Args:
-        membership (Union[int, UserCreateAllianceMembership]): The alliance membership (member rank) to be decoded.
-
-    Raises:
-        ValueError: Raised, if parameter `membership` is `None` or not a valid value for the enum `UserCreateAllianceMembership`.
-        TypeError: Raised, if parameter `membership` is not of type `int` or `UserCreateAllianceMembership`.
-
-    Returns:
-        AllianceMembership: The decoded alliance membership (member rank).
-    """
-    if membership is None:
-        raise ValueError("The parameter `membership` must not be `None`!")
-
-    if isinstance(membership, bool) or not isinstance(membership, (int, UserAllianceMembershipEncoded)):
-        raise TypeError("The parameter `membership` must be of type `int` or `UserCreateAllianceMembership`!")
-
-    if isinstance(membership, int):
-        membership = UserAllianceMembershipEncoded(membership)
-
-    match membership:
-        case UserAllianceMembershipEncoded.NONE:
-            return AllianceMembership.NONE
-        case UserAllianceMembershipEncoded.CANDIDATE:
-            return AllianceMembership.CANDIDATE
-        case UserAllianceMembershipEncoded.ENSIGN:
-            return AllianceMembership.ENSIGN
-        case UserAllianceMembershipEncoded.LIEUTENANT:
-            return AllianceMembership.LIEUTENANT
-        case UserAllianceMembershipEncoded.MAJOR:
-            return AllianceMembership.MAJOR
-        case UserAllianceMembershipEncoded.COMMANDER:
-            return AllianceMembership.COMMANDER
-        case UserAllianceMembershipEncoded.VICE_ADMIRAL:
-            return AllianceMembership.VICE_ADMIRAL
-        case UserAllianceMembershipEncoded.FLEET_ADMIRAL:
-            return AllianceMembership.FLEET_ADMIRAL
-
-
-def encode_alliance_membership(membership: Union[str, AllianceMembership]) -> int:
-    """Converts a `str` or `AllianceMembership` enum into an `int`.
-
-    Args:
-        membership (Union[str, AllianceMembership]): The alliance membership (member rank) to be encoded.
-
-    Raises:
-        TypeError: Raised, if the parameter `membership` is not of type `str` or `AllianceMembership`.
-        ValueError: Raised, if the parameter `membership` is `None` or not a valid value of the `StrEnum` `AllianceMembership`.
-
-    Returns:
-        int: An `int` representing an encoded `AllianceMembership` value.
-    """
-    if not membership:
-        raise ValueError("Parameter `membership` must not be `None`!")
-
-    if not isinstance(membership, (str, AllianceMembership)):
-        raise TypeError("Parameter `membership` must be of type `str` or `AllianceMembership`!")
-
-    if isinstance(membership, str):
-        membership = AllianceMembership(membership)
-
-    match membership:
-        case AllianceMembership.NONE:
-            return int(UserAllianceMembershipEncoded.NONE)
-        case AllianceMembership.CANDIDATE:
-            return int(UserAllianceMembershipEncoded.CANDIDATE)
-        case AllianceMembership.ENSIGN:
-            return int(UserAllianceMembershipEncoded.ENSIGN)
-        case AllianceMembership.LIEUTENANT:
-            return int(UserAllianceMembershipEncoded.LIEUTENANT)
-        case AllianceMembership.MAJOR:
-            return int(UserAllianceMembershipEncoded.MAJOR)
-        case AllianceMembership.COMMANDER:
-            return int(UserAllianceMembershipEncoded.COMMANDER)
-        case AllianceMembership.VICE_ADMIRAL:
-            return int(UserAllianceMembershipEncoded.VICE_ADMIRAL)
-        case AllianceMembership.FLEET_ADMIRAL:
-            return int(UserAllianceMembershipEncoded.FLEET_ADMIRAL)
 
 
 def format_datetime(dt: Optional[datetime], remove_tzinfo: bool = False) -> str:
@@ -282,22 +161,6 @@ def localize_to_utc(dt: Optional[datetime]) -> datetime:
         return dt.astimezone(timezone.utc)
     else:
         return dt
-
-
-def merge_headers(client_headers: MutableMapping[str, str], headers: MutableMapping[str, str]) -> dict[str, str]:
-    """Merges header dicts, overwriting keys existing in the `client_headers`, if those are also defined in `headers`.
-
-    Args:
-        client_headers (MutableMapping[str, str]): The default headers of an `AsyncClient`.
-        headers (MutableMapping[str, str]): The additional headers to add or to overwrite default headers with.
-
-    Returns:
-        dict[str, str]: A new dictionary representing the headers to be sent with a `Request`.
-    """
-    request_headers = dict(client_headers or {})
-    request_headers.update(headers or {})
-
-    return request_headers
 
 
 def parse_datetime(dt: Optional[Union[datetime, int, str]]) -> datetime:
