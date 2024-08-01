@@ -824,7 +824,7 @@ def _raise_on_error(response: Response):
         UnsupportedSchemaError: Raised, if the requested endpoint received a `Collection` of an unknown schema.\n
         UserNotFoundError: Raised, if a `User` with the provided `user_id` was not found.
     """
-    if response.status_code not in (401, 403, 404, 405, 409, 415, 422, 429, 500):
+    if response.status_code not in (400, 401, 403, 404, 405, 409, 415, 422, 429, 500):
         return
 
     api_error = ApiErrorResponse(**response.json())
