@@ -9,6 +9,7 @@ from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
 from . import utils
+from .core.config import get_config
 from .models.api_models import ApiErrorResponse
 from .models.client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 from .models.converters import FromAPI, FromResponse, ToAPI
@@ -17,6 +18,7 @@ from .models.enums import ParameterInterval
 
 class PssFleetDataClient:
     def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None, proxy: Optional[str] = None, timeout: Optional[float] = None):
+        base_url = base_url or get_config().default_base_url
         self.__api_key: Optional[str] = api_key
         self.__proxy: Optional[str] = proxy
         timeout_config = DEFAULT_TIMEOUT_CONFIG if timeout is None else Timeout(timeout)
