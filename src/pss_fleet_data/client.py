@@ -35,45 +35,14 @@ class PssFleetDataClient:
             request_timeout (float | int, optional): The request timeout in seconds after which any request gets cancelled. Defaults to `None` (no request timeout).
             connect_timeout (float | int, optional): The connection timeout in seconds after which a connection attempt gets cancelled. Increase, if the connection is bad. Defaults to `5.0`.
         """
-        if base_url is None:
-            base_url = get_config().default_base_url
-        elif not isinstance(base_url, (str, URL)):
-            raise TypeError("The parameter 'base_url' must be of type 'str' or 'httpx.URL'.")
+        base_url = utils.ensure.str_or_url(base_url, "base_url", default=get_config().default_base_url)
+        self.__api_key = utils.ensure.str_(api_key, "api_key")
+        self.__proxy = utils.ensure.str_or_url(proxy, "proxy")
+        self.__connect_timeout = utils.ensure.positive_float_or_int(connect_timeout, "connect_timeout", default=5.0)
+        self.__request_timeout = utils.ensure.positive_float_or_int(request_timeout, "request_timeout")
 
-        if api_key is None:
-            self.__api_key = None
-        elif not isinstance(api_key, str):
-            raise TypeError("The parameter 'api_key' must be of type 'str'.")
-        else:
-            self.__api_key = api_key
-
-        if proxy is None:
-            self.__proxy = None
-        elif not isinstance(proxy, (str, URL)):
-            raise TypeError("The parameter 'proxy' must be of type 'str' or 'httpx.URL'.")
-        else:
-            self.__proxy = proxy
-
-        if connect_timeout is None:
-            self.__connect_timeout = 5.0
-        elif not isinstance(connect_timeout, (float, int)) or isinstance(connect_timeout, bool):
-            raise TypeError("The parameter 'connect_timeout' must be of type 'float' or 'int'.")
-        elif connect_timeout < 0:
-            raise ValueError("The parameter 'connect_timeout' must not be negative.")
-        else:
-            self.__connect_timeout = float(connect_timeout)
-
-        if request_timeout is None:
-            self.__request_timeout = None
-        elif not isinstance(request_timeout, (float, int)) or isinstance(request_timeout, bool):
-            raise TypeError("The parameter 'request_timeout' must be of type 'float' or 'int'.")
-        elif request_timeout < 0:
-            raise ValueError("The parameter 'request_timeout' must not be negative.")
-        else:
-            self.__request_timeout = float(request_timeout)
-
-        timeout_config = Timeout(self.__request_timeout, connect=self.__connect_timeout)
-        self.__http_client = AsyncClient(base_url=base_url, proxy=proxy, timeout=timeout_config)
+        timeout_config = Timeout(self.request_timeout, connect=self.connect_timeout)
+        self.__http_client = AsyncClient(base_url=base_url, proxy=self.proxy, timeout=timeout_config)
 
     @property
     def api_key(self) -> Optional[str]:
@@ -95,10 +64,10 @@ class PssFleetDataClient:
         """
         The connection timeout in seconds after which a connection attempt gets cancelled. Increase, if the connection is bad.
         """
-        return self.__connect_timeout
+        return float(self.__connect_timeout)
 
     @property
-    def proxy(self) -> str:
+    def proxy(self) -> Optional[str]:
         """
         The proxy URL passed to the client at creation. Any requests will be sent through this server.
         """
@@ -109,7 +78,7 @@ class PssFleetDataClient:
         """
         The request timeout in seconds after which any request gets cancelled.
         """
-        return self.__request_timeout
+        return float(self.__request_timeout) if self.__request_timeout is not None else None
 
     # Operations
 
