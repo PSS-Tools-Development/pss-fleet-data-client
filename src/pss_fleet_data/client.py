@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Any, Optional, Union
 
 from httpx import AsyncClient, Response, Timeout
-from httpx._config import DEFAULT_TIMEOUT_CONFIG
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
@@ -24,9 +23,9 @@ class PssFleetDataClient:
 
         Args:
             base_url (str, optional): The base URL of the API server to work with. Defaults to `https://fleetdata.dolores2.xyz`.
-            api_key (str, optional): The API key to send with DELETE and POST requests. Defaults to None.
-            proxy (str, optional): The proxy server to send the requests through. Defaults to None.
-            timeout (float, optional): The request timeout in seconds after which any request gets cancelled. Defaults to 5.0.
+            api_key (str, optional): The API key to send with DELETE and POST requests. Defaults to `None`.
+            proxy (str, optional): The proxy server to send the requests through. Defaults to `None`.
+            timeout (float, optional): The request timeout in seconds after which any request gets cancelled. Increase, if your connection is bad. Defaults to `5.0`.
         """
         base_url = base_url or get_config().default_base_url
         self.__api_key: Optional[str] = api_key
