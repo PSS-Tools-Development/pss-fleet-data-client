@@ -17,24 +17,44 @@ from .models.enums import ParameterInterval
 
 
 class PssFleetDataClient:
+    """Represents a PSS Fleet Data API client."""
+
     def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None, proxy: Optional[str] = None, timeout: Optional[float] = None):
+        """Initializes a PSS Fleet Data API client.
+
+        Args:
+            base_url (str, optional): The base URL of the API server to work with. Defaults to `https://fleetdata.dolores2.xyz`.
+            api_key (str, optional): The API key to send with DELETE and POST requests. Defaults to None.
+            proxy (str, optional): The proxy server to send the requests through. Defaults to None.
+            timeout (float, optional): The request timeout in seconds after which any request gets cancelled. Defaults to 5.0.
+        """
         base_url = base_url or get_config().default_base_url
         self.__api_key: Optional[str] = api_key
         self.__proxy: Optional[str] = proxy
-        timeout_config = DEFAULT_TIMEOUT_CONFIG if timeout is None else Timeout(timeout)
+        timeout_config = Timeout(5.0) if timeout is None else Timeout(timeout)
 
         self.__http_client = AsyncClient(base_url=base_url, proxy=proxy, timeout=timeout_config)
 
     @property
     def api_key(self) -> Optional[str]:
+        """
+        The API key set at client creation. Is required to access certain endpoints that use the DELETE or POST methods.
+        The respective methods also accept an `api_key` to override the one passed at creation time.
+        """
         return self.__api_key
 
     @property
     def base_url(self) -> str:
+        """
+        The base URL of the API server to work with.
+        """
         return self.__http_client.base_url
 
     @property
     def proxy(self) -> str:
+        """
+        The proxy URL passed to the client at creation. Any requests will be sent through this server.s
+        """
         return self.__proxy
 
     # Operations
