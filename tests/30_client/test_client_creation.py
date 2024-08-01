@@ -1,50 +1,71 @@
-from typing import Optional
+from typing import Optional, Union
 
+import client_test_cases
 import pytest
-from httpx import Timeout
-from httpx._config import DEFAULT_TIMEOUT_CONFIG
 
 from pss_fleet_data import PssFleetDataClient
-from pss_fleet_data.core.config import get_config
 
 
-test_cases_valid = [
-    # base_url, api_key, proxy, timeout, expected_base_url, expected_timeout_config
-    pytest.param(None, None, None, None, get_config().default_base_url, Timeout(5.0), id="all_none"),
-    # 1 parameter
-    pytest.param("https://example.com", None, None, None, "https://example.com", Timeout(5.0), id="base_url"),
-    pytest.param(None, "123456", None, None, get_config().default_base_url, Timeout(5.0), id="api_key"),
-    pytest.param(None, None, "https://127.0.0.1:8080", None, get_config().default_base_url, Timeout(5.0), id="proxy"),
-    pytest.param(None, None, None, 10, get_config().default_base_url, Timeout(10), id="timeout"),
-    # 2 parameters
-    pytest.param("https://example.com", "123456", None, None, "https://example.com", Timeout(5.0), id="base_url_api_key"),
-    pytest.param("https://example.com", None, "https://127.0.0.1:8080", None, "https://example.com", Timeout(5.0), id="base_url_proxy"),
-    pytest.param("https://example.com", None, None, 10, "https://example.com", Timeout(10), id="base_url_timeout"),
-    pytest.param(None, "123456", "https://127.0.0.1:8080", None, get_config().default_base_url, Timeout(5.0), id="api_key_proxy"),
-    pytest.param(None, "123456", None, 10, get_config().default_base_url, Timeout(10), id="api_key_timeout"),
-    pytest.param(None, None, "https://127.0.0.1:8080", 10, get_config().default_base_url, Timeout(10), id="proxy_timeout"),
-    # 3 parameters
-    pytest.param("https://example.com", "123456", "https://127.0.0.1:8080", None, "https://example.com", Timeout(5.0), id="base_url_api_key_proxy"),
-    pytest.param("https://example.com", "123456", None, 10, "https://example.com", Timeout(10), id="base_url_api_key_timeout"),
-    pytest.param("https://example.com", None, "https://127.0.0.1:8080", 10, "https://example.com", Timeout(10), id="base_url_proxy_timeout"),
-    pytest.param(None, "123456", "https://127.0.0.1:8080", 10, get_config().default_base_url, Timeout(10), id="api_key_proxy_timeout"),
-    # 4 parameters
-    pytest.param("https://example.com", "123456", "https://127.0.0.1:8080", 10, "https://example.com", Timeout(10), id="all"),
-]
-"""base_url, api_key, proxy, timeout, expected_timeout_config"""
-
-
-@pytest.mark.parametrize(["base_url", "api_key", "proxy", "timeout", "expected_base_url", "expected_timeout_config"], test_cases_valid)
+@pytest.mark.parametrize(
+    [
+        "base_url",
+        "api_key",
+        "proxy",
+        "request_timeout",
+        "connect_timeout",
+        "expected_base_url",
+        "expected_connect_timeout",
+    ],
+    client_test_cases.client_valid,
+)
 def test_client_creation(
     base_url: Optional[str],
     api_key: Optional[str],
     proxy: Optional[str],
-    timeout: Optional[float],
+    request_timeout: Optional[float],
+    connect_timeout: Optional[float],
     expected_base_url: str,
-    expected_timeout_config: Timeout,
+    expected_connect_timeout: float,
 ):
-    client = PssFleetDataClient(base_url, api_key, proxy, timeout)
+    client = PssFleetDataClient(base_url, api_key, proxy, request_timeout, connect_timeout)
+
     assert client.base_url == expected_base_url
     assert client.api_key == api_key
     assert client.proxy == proxy
-    assert client._PssFleetDataClient__http_client.timeout == expected_timeout_config
+    assert client._PssFleetDataClient__http_client.timeout.connect == expected_connect_timeout
+    assert client._PssFleetDataClient__http_client.timeout.read == request_timeout
+    assert client._PssFleetDataClient__http_client.timeout.write == request_timeout
+    assert client._PssFleetDataClient__http_client.timeout.pool == request_timeout
+
+
+@pytest.mark.parametrize(["api_key"], client_test_cases.api_key_valid)
+def test_client_creation_api_key(api_key: Optional[str]):
+    client = PssFleetDataClient(api_key=api_key)
+
+    assert client.api_key == api_key
+
+
+@pytest.mark.parametrize(["base_url", "expected_base_url"], client_test_cases.base_url_valid)
+def test_client_creation_base_url(base_url: Optional[str], expected_base_url: str):
+    client = PssFleetDataClient(base_url=base_url)
+
+    assert client.base_url == expected_base_url
+
+
+@pytest.mark.parametrize(["proxy"], client_test_cases.proxy_valid)
+def test_client_creation_proxy(proxy: Optional[str]):
+    client = PssFleetDataClient(proxy=proxy)
+
+    assert client.proxy == proxy
+
+
+@pytest.mark.parametrize(["request_timeout", "connect_timeout", "expected_connect_timeout"], client_test_cases.timeout_valid)
+def test_client_creation_timeout(
+    request_timeout: Optional[Union[float, int]], connect_timeout: Optional[Union[float, int]], expected_connect_timeout: float
+):
+    client = PssFleetDataClient(request_timeout=request_timeout, connect_timeout=connect_timeout)
+
+    assert client._PssFleetDataClient__http_client.timeout.connect == expected_connect_timeout
+    assert client._PssFleetDataClient__http_client.timeout.read == request_timeout
+    assert client._PssFleetDataClient__http_client.timeout.write == request_timeout
+    assert client._PssFleetDataClient__http_client.timeout.pool == request_timeout

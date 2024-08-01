@@ -18,19 +18,28 @@ from .models.enums import ParameterInterval
 class PssFleetDataClient:
     """Represents a PSS Fleet Data API client."""
 
-    def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None, proxy: Optional[str] = None, timeout: Optional[float] = None):
+    def __init__(
+        self,
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
+        proxy: Optional[str] = None,
+        request_timeout: Optional[float] = None,
+        connect_timeout: Optional[float] = None,
+    ):
         """Initializes a PSS Fleet Data API client.
 
         Args:
             base_url (str, optional): The base URL of the API server to work with. Defaults to `https://fleetdata.dolores2.xyz`.
             api_key (str, optional): The API key to send with DELETE and POST requests. Defaults to `None`.
             proxy (str, optional): The proxy server to send the requests through. Defaults to `None`.
-            timeout (float, optional): The request timeout in seconds after which any request gets cancelled. Increase, if your connection is bad. Defaults to `5.0`.
+            request_timeout (float, optional): The request timeout in seconds after which any request gets cancelled. Defaults to `None` (no request timeout).
+            connect_timeout (float, optional): The connection timeout in seconds after which a connection attempt gets cancelled. Increase, if your connection is bad. Defaults to `None` (no request timeout).
         """
         base_url = base_url or get_config().default_base_url
         self.__api_key: Optional[str] = api_key
         self.__proxy: Optional[str] = proxy
-        timeout_config = Timeout(5.0) if timeout is None else Timeout(timeout)
+        connect_timeout = 5.0 if connect_timeout is None else connect_timeout
+        timeout_config = Timeout(request_timeout, connect=connect_timeout)
 
         self.__http_client = AsyncClient(base_url=base_url, proxy=proxy, timeout=timeout_config)
 
