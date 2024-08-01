@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional, Union
 
-from httpx import AsyncClient, Response, Timeout
+from httpx import URL, AsyncClient, Response, Timeout
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
@@ -20,27 +20,59 @@ class PssFleetDataClient:
 
     def __init__(
         self,
-        base_url: Optional[str] = None,
+        base_url: Optional[Union[str, URL]] = None,
         api_key: Optional[str] = None,
-        proxy: Optional[str] = None,
+        proxy: Optional[Union[str, URL]] = None,
         request_timeout: Optional[float] = None,
         connect_timeout: Optional[float] = None,
     ):
         """Initializes a PSS Fleet Data API client.
 
         Args:
-            base_url (str, optional): The base URL of the API server to work with. Defaults to `https://fleetdata.dolores2.xyz`.
+            base_url (str | httpx.URL, optional): The base URL of the API server to work with. Defaults to `https://fleetdata.dolores2.xyz`.
             api_key (str, optional): The API key to send with DELETE and POST requests. Defaults to `None`.
-            proxy (str, optional): The proxy server to send the requests through. Defaults to `None`.
-            request_timeout (float, optional): The request timeout in seconds after which any request gets cancelled. Defaults to `None` (no request timeout).
-            connect_timeout (float, optional): The connection timeout in seconds after which a connection attempt gets cancelled. Increase, if your connection is bad. Defaults to `None` (no request timeout).
+            proxy (str | httpx.URL, optional): The proxy server to send the requests through. Defaults to `None`.
+            request_timeout (float | int, optional): The request timeout in seconds after which any request gets cancelled. Defaults to `None` (no request timeout).
+            connect_timeout (float | int, optional): The connection timeout in seconds after which a connection attempt gets cancelled. Increase, if the connection is bad. Defaults to `5.0`.
         """
-        base_url = base_url or get_config().default_base_url
-        self.__api_key: Optional[str] = api_key
-        self.__proxy: Optional[str] = proxy
-        connect_timeout = 5.0 if connect_timeout is None else connect_timeout
-        timeout_config = Timeout(request_timeout, connect=connect_timeout)
+        if base_url is None:
+            base_url = get_config().default_base_url
+        elif not isinstance(base_url, (str, URL)):
+            raise TypeError("The parameter 'base_url' must be of type 'str' or 'httpx.URL'.")
 
+        if api_key is None:
+            self.__api_key = None
+        elif not isinstance(api_key, str):
+            raise TypeError("The parameter 'api_key' must be of type 'str'.")
+        else:
+            self.__api_key = api_key
+
+        if proxy is None:
+            self.__proxy = None
+        elif not isinstance(proxy, (str, URL)):
+            raise TypeError("The parameter 'proxy' must be of type 'str' or 'httpx.URL'.")
+        else:
+            self.__proxy = proxy
+
+        if connect_timeout is None:
+            self.__connect_timeout = 5.0
+        elif not isinstance(connect_timeout, (float, int)) or isinstance(connect_timeout, bool):
+            raise TypeError("The parameter 'connect_timeout' must be of type 'float' or 'int'.")
+        elif connect_timeout < 0:
+            raise ValueError("The parameter 'connect_timeout' must not be negative.")
+        else:
+            self.__connect_timeout = float(connect_timeout)
+
+        if request_timeout is None:
+            self.__request_timeout = None
+        elif not isinstance(request_timeout, (float, int)) or isinstance(request_timeout, bool):
+            raise TypeError("The parameter 'request_timeout' must be of type 'float' or 'int'.")
+        elif request_timeout < 0:
+            raise ValueError("The parameter 'request_timeout' must not be negative.")
+        else:
+            self.__request_timeout = float(request_timeout)
+
+        timeout_config = Timeout(self.__request_timeout, connect=self.__connect_timeout)
         self.__http_client = AsyncClient(base_url=base_url, proxy=proxy, timeout=timeout_config)
 
     @property
@@ -59,11 +91,25 @@ class PssFleetDataClient:
         return self.__http_client.base_url
 
     @property
+    def connect_timeout(self) -> float:
+        """
+        The connection timeout in seconds after which a connection attempt gets cancelled. Increase, if the connection is bad.
+        """
+        return self.__connect_timeout
+
+    @property
     def proxy(self) -> str:
         """
-        The proxy URL passed to the client at creation. Any requests will be sent through this server.s
+        The proxy URL passed to the client at creation. Any requests will be sent through this server.
         """
         return self.__proxy
+
+    @property
+    def request_timeout(self) -> Optional[float]:
+        """
+        The request timeout in seconds after which any request gets cancelled.
+        """
+        return self.__request_timeout
 
     # Operations
 
