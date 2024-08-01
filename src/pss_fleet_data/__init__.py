@@ -4,7 +4,9 @@ from pssapi.entities import User as PssUser
 from . import core, models, utils
 from .client import PssFleetDataClient
 from .core import exceptions
+from .core.exceptions import ApiError
 from .models import Collection, CollectionMetadata, enums
+from .models.enums import ErrorCode, ParameterInterval
 
 
 __all__ = [
@@ -20,6 +22,11 @@ __all__ = [
     PssAlliance.__name__,
     PssFleetDataClient.__name__,
     PssUser.__name__,
+    # exceptions
+    ApiError.__name__,
+    # enums
+    ErrorCode.__name__,
+    ParameterInterval.__name__,
 ]
 
 
