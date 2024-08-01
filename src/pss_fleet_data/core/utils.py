@@ -227,6 +227,37 @@ def get_most_recent_from_to_date_from_timestamp(timestamp: datetime, interval: P
     return max(from_date, get_config().pss_start_date), max(to_date, get_config().pss_start_date)
 
 
+def get_most_recent_timestamp(timestamp: datetime, interval: ParameterInterval) -> datetime:
+    """Calculates the most recent timestamp matching the interval.
+
+    Args:
+        timestamp (datetime): The point in time for which to calculate the most recent timestamp.
+        interval (ParameterInterval): The interval to base the calculations on.
+
+    Raises:
+        ValueError: The parameter `interval` received an invalid value or `None`.
+
+    Returns:
+        datetime: A timestamp localized to UTC. Depending on the `interval`:
+        `MONTHLY` returns the most recent first of month.
+        `DAILY` returns the most recent midnight.
+        `HOURLY` returns the most recent hour.
+    """
+    result = localize_to_utc(timestamp).replace(minute=0, second=0, microsecond=0)
+
+    match interval:
+        case ParameterInterval.HOURLY:
+            pass
+        case ParameterInterval.DAILY:
+            result = result.replace(hour=0)
+        case ParameterInterval.MONTHLY:
+            result = result.replace(hour=0, day=1)
+        case _:
+            raise ValueError(f"Parameter `interval` received in invalid value: {interval}")
+
+    return result
+
+
 def localize_to_utc(dt: Optional[datetime]) -> datetime:
     """Takes a `datetime` and converts it to a timezone-aware UTC `datetime`.
 
