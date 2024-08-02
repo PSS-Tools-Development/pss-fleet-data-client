@@ -4,6 +4,7 @@ all: format check test
 # setup
 .PHONY: init-dev
 init-dev:
+	rye self update
 	rye sync --update-all
 	pre-commit install
 	pre-commit run --all-files
