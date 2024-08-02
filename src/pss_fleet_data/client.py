@@ -163,21 +163,21 @@ class PssFleetDataClient:
         alliance_id: int,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-        interval: Optional[ParameterInterval] = None,
-        desc: Optional[bool] = None,
-        skip: Optional[int] = None,
-        take: Optional[int] = None,
+        interval: Optional[ParameterInterval] = ParameterInterval.MONTHLY,
+        desc: Optional[bool] = False,
+        skip: Optional[int] = 0,
+        take: Optional[int] = 100,
     ) -> list[AllianceHistory]:
         """Retrieves the history of the `Alliance` with the specified `alliance_id`.
 
         Args:
             alliance_id (int): The `AllianceId` of the `Alliance` to be retrieved.
-            from_date (datetime, optional): The earliest date for which to return results. Defaults to None.
-            to_date (datetime, optional): The latest date for which to return results. Defaults to None.
-            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to None.
-            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
-            skip (int, optional): The number of results to skip in the response. Defaults to None.
-            take (int, optional): The number of results to be returned. Defaults to None.
+            from_date (datetime, optional): The earliest date for which to return results. Defaults to `None`.
+            to_date (datetime, optional): The latest date for which to return results. Defaults to `None`.
+            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to `ParameterInterval.MONTHLY`.
+            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
+            skip (int, optional): The number of results to skip in the response. Defaults to `0`.
+            take (int, optional): The number of results to be returned. Defaults to `100`.
 
         Raises:
             AllianceNotFoundError: Raised, if an `Alliance` with the provided `alliance_id` was not found.\n
@@ -277,20 +277,20 @@ class PssFleetDataClient:
         self,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-        interval: Optional[ParameterInterval] = None,
-        desc: Optional[bool] = None,
-        skip: Optional[int] = None,
-        take: Optional[int] = None,
+        interval: Optional[ParameterInterval] = ParameterInterval.MONTHLY,
+        desc: Optional[bool] = False,
+        skip: Optional[int] = 0,
+        take: Optional[int] = 100,
     ) -> list[CollectionMetadata]:
         """Retrieves a list of metadatas of `Collections` meeting the specified criteria.
 
         Args:
-            from_date (datetime, optional): The earliest date for which to return results. Defaults to None.
-            to_date (datetime, optional): The latest date for which to return results. Defaults to None.
-            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to None.
-            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
-            skip (int, optional): The number of results to skip in the response. Defaults to None.
-            take (int, optional): The number of results to be returned. Defaults to None.
+            from_date (datetime, optional): The earliest date for which to return results. Defaults to `None`.
+            to_date (datetime, optional): The latest date for which to return results. Defaults to `None`.
+            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to `ParameterInterval.MONTHLY`.
+            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
+            skip (int, optional): The number of results to skip in the response. Defaults to `0`.
+            take (int, optional): The number of results to be returned. Defaults to `100`.
 
         Raises:
             FromDateAfterToDateError: Raised, if the parameters `fromDate` and `toDate` have been specified and `fromDate` is greater than `toDate`.\n
@@ -382,16 +382,16 @@ class PssFleetDataClient:
     async def get_top_100_users_from_collection(
         self,
         collection_id: int,
-        skip: Optional[int] = None,
-        take: Optional[int] = None,
+        skip: Optional[int] = 0,
+        take: Optional[int] = 100,
     ) -> tuple[Collection, list[PssUser]]:
         """Retrieves the `User` data of the top 100 players from a the specified `Collection` without their `Alliance`s.\n
         NOTE: For `Collection`s recorded before Jan 25th, 2021, this list is not be accurate, because top 100 players not in a fleet weren't recorded.
 
         Args:
             collection_id (int): The `collection_id` of the the `Collection` to be retrieved.
-            skip (int, optional): The number of results to skip in the response. Defaults to None.
-            take (int, optional): The number of results to be returned. Defaults to None.
+            skip (int, optional): The number of results to skip in the response. Defaults to `0`.
+            take (int, optional): The number of results to be returned. Defaults to `100`.
 
         Raises:
             CollectionNotFoundError: Raised, if a `Collection` with the provided `collection_id` was not found.\n
@@ -462,21 +462,21 @@ class PssFleetDataClient:
         user_id: int,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-        interval: Optional[ParameterInterval] = None,
-        desc: Optional[bool] = None,
-        skip: Optional[int] = None,
-        take: Optional[int] = None,
+        interval: Optional[ParameterInterval] = ParameterInterval.MONTHLY,
+        desc: Optional[bool] = False,
+        skip: Optional[int] = 0,
+        take: Optional[int] = 100,
     ) -> list[UserHistory]:
         """Retrieves the history of the `User` with the specified `user_id`.
 
         Args:
             user_id (int): The `Id` of the `User` to be retrieved.
-            from_date (datetime, optional): The earliest date for which to return results. Defaults to None.
-            to_date (datetime, optional): The latest date for which to return results. Defaults to None.
-            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to None.
-            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
-            skip (int, optional): The number of results to skip in the response. Defaults to None.
-            take (int, optional): The number of results to be returned. Defaults to None.
+            from_date (datetime, optional): The earliest date for which to return results. Defaults to `None`.
+            to_date (datetime, optional): The latest date for which to return results. Defaults to `None`.
+            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to `ParameterInterval.MONTHLY`.
+            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
+            skip (int, optional): The number of results to skip in the response. Defaults to `0`.
+            take (int, optional): The number of results to be returned. Defaults to `100`.
 
         Raises:
             FromDateAfterToDateError: Raised, if the parameters `fromDate` and `toDate` have been specified and `fromDate` is greater than `toDate`.\n
@@ -565,8 +565,8 @@ class PssFleetDataClient:
 
         Args:
             path (str): The path of the endpoint relative to the API server's base URL.
-            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to None.
-            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to None.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
 
         Raises:
             CollectionNotDeletedError: Raised, if the requested `Collection` could not be deleted due to an internal server error.\n
@@ -603,9 +603,9 @@ class PssFleetDataClient:
 
         Args:
             path (str): The path of the endpoint relative to the API server's base URL.
-            api_key (str, optional): The api key to be sent with the request for authorization. Defaults to None.
-            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to None.
-            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to None.
+            api_key (str, optional): The api key to be sent with the request for authorization. Defaults to `None`.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
 
         Raises:
             CollectionNotDeletedError: Raised, if the requested `Collection` could not be deleted due to an internal server error.\n
@@ -640,8 +640,8 @@ class PssFleetDataClient:
 
         Args:
             path (str): The path of the endpoint relative to the API server's base URL.
-            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to None.
-            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to None.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
 
         Raises:
             AllianceNotFoundError: Raised, if an `Alliance` with the provided `alliance_id` was not found.\n
@@ -683,21 +683,21 @@ class PssFleetDataClient:
         path: str,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-        interval: Optional[ParameterInterval] = None,
-        desc: Optional[bool] = None,
-        skip: Optional[int] = None,
-        take: Optional[int] = None,
+        interval: Optional[ParameterInterval] = ParameterInterval.MONTHLY,
+        desc: Optional[bool] = False,
+        skip: Optional[int] = 0,
+        take: Optional[int] = 100,
     ) -> Response:
         """Sends a request to get resources from the API with query parameters for filtering the results.
 
         Args:
             path (str): The path of the endpoint relative to the API server's base URL.
-            from_date (datetime, optional): The earliest date for which to return results. Defaults to None.
-            to_date (datetime, optional): The latest date for which to return results. Defaults to None.
-            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to None.
-            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
-            skip (int, optional): The number of results to skip in the response. Defaults to None.
-            take (int, optional): The number of results to be returned. Defaults to None.
+            from_date (datetime, optional): The earliest date for which to return results. Defaults to `None`.
+            to_date (datetime, optional): The latest date for which to return results. Defaults to `None`.
+            interval (ParameterInterval, optional): The interval of the data to return, either hourly, end of day or end of month. Defaults to `ParameterInterval.MONTHLY`.
+            desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
+            skip (int, optional): The number of results to skip in the response. Defaults to `0`.
+            take (int, optional): The number of results to be returned. Defaults to `100`.
 
         Raises:
             AllianceNotFoundError: Raised, if an `Alliance` with the provided `alliance_id` was not found.\n
@@ -745,10 +745,10 @@ class PssFleetDataClient:
 
         Args:
             path (str): The path of the endpoint relative to the API server's base URL.
-            json (dict[str, Any], optional): A request body to be sent with the request. Defaults to None.
-            files (dict[str, tuple], optional): A collection of file to be sent with the request. Defaults to None.
-            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to None.
-            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to None.
+            json (dict[str, Any], optional): A request body to be sent with the request. Defaults to `None`.
+            files (dict[str, tuple], optional): A collection of file to be sent with the request. Defaults to `None`.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
 
         Raises:
             ConflictError: Raised, if a resource could not be created due to conflicting data.\n
@@ -794,11 +794,11 @@ class PssFleetDataClient:
 
         Args:
             path (str): The path of the endpoint relative to the API server's base URL.
-            api_key (str, optional): The api key to be sent with the request for authorization. Defaults to None.
-            json (dict[str, Any], optional): A request body to be sent with the request. Defaults to None.
-            files (dict[str, tuple], optional): A collection of file to be sent with the request. Defaults to None.
-            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to None.
-            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to None.
+            api_key (str, optional): The api key to be sent with the request for authorization. Defaults to `None`.
+            json (dict[str, Any], optional): A request body to be sent with the request. Defaults to `None`.
+            files (dict[str, tuple], optional): A collection of file to be sent with the request. Defaults to `None`.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
 
         Raises:
             ConflictError: Raised, if a resource could not be created due to conflicting data.\n
