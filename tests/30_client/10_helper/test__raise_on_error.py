@@ -3,7 +3,43 @@ from httpx import Response
 
 from pss_fleet_data import ApiError, ErrorCode
 from pss_fleet_data.client import _raise_on_error
-from pss_fleet_data.core.exceptions import *
+from pss_fleet_data.core.exceptions import (
+    AllianceNotFoundError,
+    CollectionNotDeletedError,
+    CollectionNotFoundError,
+    ConflictError,
+    FromDateAfterToDateError,
+    FromDateTooEarlyError,
+    InvalidAllianceIdError,
+    InvalidBoolError,
+    InvalidCollectionIdError,
+    InvalidDateTimeError,
+    InvalidDescError,
+    InvalidFromDateError,
+    InvalidIntervalError,
+    InvalidJsonUpload,
+    InvalidNumberError,
+    InvalidSkipError,
+    InvalidTakeError,
+    InvalidToDateError,
+    InvalidUserIdError,
+    MethodNotAllowedError,
+    MissingAccessError,
+    NonUniqueCollectionIdError,
+    NonUniqueTimestampError,
+    NotAuthenticatedError,
+    NotFoundError,
+    ParameterFormatError,
+    ParameterValidationError,
+    ParameterValueError,
+    SchemaVersionMismatch,
+    ServerError,
+    ToDateTooEarlyError,
+    TooManyRequestsError,
+    UnsupportedMediaTypeError,
+    UnsupportedSchemaError,
+    UserNotFoundError,
+)
 
 
 RESPONSE_CONTENT_BASE = {
