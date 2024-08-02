@@ -26,7 +26,7 @@ async def test_get_user_history_200(
 
 
 @pytest.mark.usefixtures("mock_response_userHistory_userId_get_200_with_members")
-async def test_get_user_history_200_with_members(
+async def test_get_user_history_200_with_alliance(
     user_history_with_alliance: UserHistory,
     test_client: PssFleetDataClient,
     assert_user_history_with_alliance_valid: Callable[[UserHistory], None],
