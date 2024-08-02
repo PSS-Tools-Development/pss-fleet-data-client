@@ -14,12 +14,12 @@
 </a>
 <img src="https://img.shields.io/codecov/c/github/pss-tools-development/pss-fleet-data-client" alt="Code coverage">
 
-
-> An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api).
+> An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api). Currently supported API version is **1.4.0**.
 
 ## Built with
 
 - [pssapi.py](https://pypi.org/project/pssapi)
+- [pydantic V2](https://docs.pydantic.dev/latest/)
 
 # ✨ Features
 - **Fully typehinted** so your favorite IDE can assist you with code completion.
