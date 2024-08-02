@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from pss_fleet_data.core.exceptions import (
@@ -10,6 +12,13 @@ from pss_fleet_data.core.exceptions import (
     InvalidToDateError,
     ToDateTooEarlyError,
 )
+
+
+upload_test_file_paths = [
+    # file_path
+    pytest.param("tests/files/upload_test_data_schema_9.json", id="str"),
+    pytest.param(Path("tests/files/upload_test_data_schema_9.json"), id="path"),
+]
 
 
 invalid_filter_parameters = [

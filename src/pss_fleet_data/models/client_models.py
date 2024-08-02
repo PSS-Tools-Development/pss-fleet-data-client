@@ -7,15 +7,26 @@ from pydantic import BaseModel, ConfigDict
 
 
 class AllianceHistory(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    """
+    An object representing a PSS `Alliance` at a certain point in time.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)  # Remove, if pssapi.py ever migrates to pydantic classes
 
     collection: "CollectionMetadata"
+    """The metadata of the `Collection` representing this point in time."""
     alliance: PssAlliance
+    """The `Alliance` data."""
     users: list[PssUser]
+    """The members of the `Alliance`."""
 
 
 class Collection(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    """
+    An object representing a collection of PSS `Alliance`s and `User`s at a certain point in time.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)  # Remove, if pssapi.py ever migrates to pydantic classes
 
     metadata: "CollectionMetadata"
     alliances: list[PssAlliance]
@@ -23,6 +34,10 @@ class Collection(BaseModel):
 
 
 class CollectionMetadata(BaseModel):
+    """
+    An object representing the metadata of a collection of PSS `Alliance`s and `User`s at a certain point in time.
+    """
+
     collection_id: Optional[int] = None
     """The ID of the collection in the database."""
     timestamp: datetime
@@ -44,8 +59,15 @@ class CollectionMetadata(BaseModel):
 
 
 class UserHistory(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    """
+    An object representing a PSS `User` at a certain point in time.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)  # Remove, if pssapi.py ever migrates to pydantic classes
 
     collection: "CollectionMetadata"
+    """The metadata of the `Collection` representing this point in time."""
     user: PssUser
+    """The `User` data."""
     alliance: Optional[PssAlliance]
+    """The `Alliance` of this `User`."""

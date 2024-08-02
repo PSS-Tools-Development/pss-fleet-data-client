@@ -3,7 +3,7 @@ from typing import Any, Optional
 import pytest
 import utils_test_cases
 
-from pss_fleet_data.core import utils
+from pss_fleet_data import utils
 
 
 @pytest.mark.parametrize(["input", "expected_output"], utils_test_cases.parameter_dicts)

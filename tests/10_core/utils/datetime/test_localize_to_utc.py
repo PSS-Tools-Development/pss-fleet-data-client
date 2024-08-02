@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from dateutil.parser import parse as parse_datetime
 
-from pss_fleet_data.core.utils import remove_timezone
+from pss_fleet_data.utils import localize_to_utc
 
 
 test_cases_invalid = [
@@ -22,19 +22,19 @@ test_cases_invalid = [
 test_cases_valid = [
     # value, expected_result
     pytest.param(None, None, id="none"),
-    pytest.param(parse_datetime("2016-01-07T01:23:40"), parse_datetime("2016-01-07T01:23:40"), id="no_timezone"),
-    pytest.param(parse_datetime("2016-01-07T01:23:40Z"), parse_datetime("2016-01-07T01:23:40"), id="timezone_utc"),
-    pytest.param(parse_datetime("2016-01-07T01:23:40+02:00"), parse_datetime("2016-01-07T01:23:40"), id="timezone_mest"),
+    pytest.param(parse_datetime("2016-01-06T01:23:40"), datetime(2016, 1, 6, 1, 23, 40, tzinfo=timezone.utc), id="no_timezone"),
+    pytest.param(parse_datetime("2016-01-06T01:23:40Z"), datetime(2016, 1, 6, 1, 23, 40, tzinfo=timezone.utc), id="timezone_utc"),
+    pytest.param(parse_datetime("2016-01-06T01:23:40+02:00"), datetime(2016, 1, 5, 23, 23, 40, tzinfo=timezone.utc), id="timezone_mest"),
 ]
 
 
 @pytest.mark.parametrize(["value", "expected_exception"], test_cases_invalid)
-def test_remove_timezone_invalid(value, expected_exception):
+def test_localize_to_utc_invalid(value, expected_exception):
     with expected_exception:
-        _ = remove_timezone(value)
+        _ = localize_to_utc(value)
 
 
 @pytest.mark.parametrize(["value", "expected_result"], test_cases_valid)
-def test_remove_timezone_valid(value, expected_result):
-    result = remove_timezone(value)
+def test_localize_to_utc_valid(value, expected_result):
+    result = localize_to_utc(value)
     assert result == expected_result

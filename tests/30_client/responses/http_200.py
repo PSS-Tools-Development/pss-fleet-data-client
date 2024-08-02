@@ -19,7 +19,7 @@ def mock_response_allianceHistory_allianceId_get_200_with_members(api_alliance_h
 
 
 @pytest.fixture(scope="function")
-def mock_response_get_collections_200(api_collection_metadata_9: ApiCollectionMetadata, httpx_mock: HTTPXMock):
+def mock_response_collections_get_200(api_collection_metadata_9: ApiCollectionMetadata, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         text=f"[{api_collection_metadata_9.model_dump_json()}]",
     )
@@ -73,6 +73,13 @@ def mock_response_collections_collectionId_users_userId_get_200(api_user_history
 def mock_response_collections_collectionId_users_userId_get_200_with_fleet(api_user_history_with_fleet: ApiAllianceHistory, httpx_mock: HTTPXMock):
     httpx_mock.add_response(
         text=api_user_history_with_fleet.model_dump_json(),
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_response_ping_get_200(httpx_mock: HTTPXMock):
+    httpx_mock.add_response(
+        json={"ping": "Pong!"},
     )
 
 

@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from pssapi.enums import AllianceMembership
 
-from pss_fleet_data.core.utils import encode_alliance_membership
+from pss_fleet_data.utils import encode_alliance_membership
 
 
 test_cases_invalid = [

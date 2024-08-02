@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from dateutil.parser import parse as parse_datetime
 
-from pss_fleet_data.core.utils import add_timezone_utc
+from pss_fleet_data.utils import convert_datetime_to_seconds
 
 
 test_cases_invalid = [
@@ -22,19 +22,19 @@ test_cases_invalid = [
 test_cases_valid = [
     # value, expected_result
     pytest.param(None, None, id="none"),
-    pytest.param(parse_datetime("2016-01-07T01:23:40"), parse_datetime("2016-01-07T01:23:40Z"), id="no_timezone"),
-    pytest.param(parse_datetime("2016-01-07T01:23:40Z"), parse_datetime("2016-01-07T01:23:40Z"), id="timezone_utc"),
-    pytest.param(parse_datetime("2016-01-07T01:23:40+02:00"), parse_datetime("2016-01-07T01:23:40+02:00"), id="timezone_mest"),
+    pytest.param(parse_datetime("2016-01-07T01:23:40"), 91420, id="no_timezone"),
+    pytest.param(parse_datetime("2016-01-07T01:23:40Z"), 91420, id="timezone_utc"),
+    pytest.param(parse_datetime("2016-01-07T01:23:40+02:00"), 84220, id="timezone_mest"),
 ]
 
 
 @pytest.mark.parametrize(["value", "expected_exception"], test_cases_invalid)
-def test_add_timezone_utc_invalid(value, expected_exception):
+def test_convert_datetime_to_seconds_invalid(value, expected_exception):
     with expected_exception:
-        _ = add_timezone_utc(value)
+        _ = convert_datetime_to_seconds(value)
 
 
 @pytest.mark.parametrize(["value", "expected_result"], test_cases_valid)
-def test_add_timezone_utc_valid(value, expected_result):
-    result = add_timezone_utc(value)
+def test_convert_datetime_to_seconds_valid(value, expected_result):
+    result = convert_datetime_to_seconds(value)
     assert result == expected_result

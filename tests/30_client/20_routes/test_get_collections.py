@@ -10,7 +10,7 @@ from pss_fleet_data.core.exceptions import ApiError
 from pss_fleet_data.models import CollectionMetadata
 
 
-@pytest.mark.usefixtures("mock_response_get_collections_200")
+@pytest.mark.usefixtures("mock_response_collections_get_200")
 async def test_get_collections_200(
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,

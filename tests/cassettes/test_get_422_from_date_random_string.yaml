@@ -13,24 +13,25 @@ interactions:
       user-agent:
       - python-httpx/0.27.0
     method: GET
-    uri: https://fleetdata.dolores2.xyz/collections/?fromDate=abc
+    uri: https://fleetdata.dolores2.xyz/allianceHistory/1?fromDate=abc&interval=month&desc=false&skip=0&take=100
   response:
     body:
       string: !!binary |
-        H4sIANT7lGYC/zWP20rDQBCGX2XIrW2yTSuVgEggEQJWpQRvRNJtdpIsbrJhd1I84Ls7K3g3h+//
-        hvmOWqswyqLn/Jgfyro8NvfHp0NT5HXZVI8v+UNVRKtoRO9lH7h6QJidvWiFCi7SLAiddUBhLJ0c
-        kdDBqXN2LCThCbQHPTGnVcwehSS18eyppnkh8INdjIIzgoQ/CBSnSI8ILA31iuOBZA9ZGwKOWBQQ
-        T3KcWZWKdLcW+/Xmut6IbLvPxE0s0m0qdldCZEIwvjjD4EA0Z0nSGURit4yVNdahT+OPz6+ktcZg
-        S9pOPrn7f+BWnlvO+6Xv+R7vWMO90dM7f/H69vML8fmo7EEBAAA=
+        H4sIAELlrGYC/zWP0WrCQBBFf2XJQ16qySYqSCCUgJYKtS0SfClFx+zELG6yYXcitaX/3onQt53l
+        3DNzf4LKKgyy4L3YFdt1ud4dnnZv28OqKNeHzeu+eNmsgknQovdwHrmyQdE7e9UKlbiCGVDU1gka
+        v8FBi4ROHGtn2xUQHoX2QnfMaRWxRyGBNp49m64fSPjGDkaJEwoQd0goTpFuUbB0fE84PpLsIWvH
+        gCMWjYgnaHtWpTKdT+VyKtMymWWLRZbMo1k6k8v0QcpMSsYHZxhsiPosjmuDSOyGSFljHfo0+rp9
+        x2CMhq7CZ+3JulucPP63yOFUhbrjZnxj3tqOmlChr/IajMfQX3Sfy5DggnlyX+eH85nP07bjrTwb
+        3V249Mfn7x8x/P0pcAEAAA==
     headers:
       Connection:
       - keep-alive
       Content-Length:
-      - '266'
+      - '301'
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jul 2024 10:37:08 GMT
+      - Fri, 02 Aug 2024 13:55:14 GMT
       Server:
       - nginx
       content-encoding:

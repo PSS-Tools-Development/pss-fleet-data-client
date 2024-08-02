@@ -4,7 +4,7 @@ import pytest
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from pss_fleet_data.core import utils
+from pss_fleet_data import utils
 from pss_fleet_data.models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 
 

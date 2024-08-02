@@ -3,7 +3,7 @@ from typing import Union
 
 import pytest
 
-from pss_fleet_data.core.utils import parse_datetime
+from pss_fleet_data.utils import parse_datetime
 
 
 test_cases_invalid = [
@@ -23,6 +23,7 @@ test_cases_valid = [
     pytest.param("2016-01-06 01:23:40", datetime(2016, 1, 6, 1, 23, 40, tzinfo=None), id="from_str_1"),
     pytest.param("2016-01-06T01:23:40", datetime(2016, 1, 6, 1, 23, 40, tzinfo=None), id="from_str_2"),
     pytest.param("2016-01-06T01:23:40Z", datetime(2016, 1, 6, 1, 23, 40, tzinfo=timezone.utc), id="from_str_3"),
+    pytest.param("2016-01-06T01:23:40+00:00", datetime(2016, 1, 6, 1, 23, 40, tzinfo=timezone.utc), id="from_str_4"),
     pytest.param(5020, datetime(2016, 1, 6, 1, 23, 40, tzinfo=timezone.utc), id="from_int"),
     pytest.param(datetime(2016, 1, 6, 1, 23, 40), datetime(2016, 1, 6, 1, 23, 40, tzinfo=None), id="from_datetime_1"),
     pytest.param(datetime(2016, 1, 6, 1, 23, 40, tzinfo=None), datetime(2016, 1, 6, 1, 23, 40, tzinfo=None), id="from_datetime_2"),

@@ -1,21 +1,40 @@
 .PHONY: all
 all: format check test
 
-.PHONY: test
-test:
-	rye run pytest
+# setup
+.PHONY: init-dev
+init-dev:
+	rye self update
+	rye sync --update-all
+	pre-commit install
+	pre-commit run --all-files
+
+.PHONY: update
+update:
+	rye sync --update-all
+
+# formatting and linting
+.PHONY: check
+check:
+	flake8 ./src
+	vulture
 
 .PHONY: format
 format:
-	rye run autoflake .
-	rye run isort .
-	rye run black .
+	autoflake .
+	isort .
+	black .
 
-.PHONY: check
-check:
-	rye run flake8 ./src
-	rye run vulture
+# testing
+.PHONY: coverage
+coverage:
+	pytest --cov=./src/api ./tests --cov-report xml:cov.xml
 
+.PHONY: test
+test:
+	pytest ./tests
+
+# build & publish
 .PHONY: build
 build:
 	rye build --clean
@@ -24,7 +43,3 @@ build:
 publish:
 	rye build --clean
 	rye publish --yes
-
-.PHONY: update
-update:
-	rye sync --update-all

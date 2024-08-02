@@ -3,7 +3,7 @@ from typing import Callable
 
 import pytest
 
-from pss_fleet_data.core import utils
+from pss_fleet_data import utils
 from pss_fleet_data.models.api_models import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiUser, ApiUserHistory
 
 

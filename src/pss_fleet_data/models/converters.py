@@ -4,8 +4,7 @@ from httpx import Response
 from pssapi.entities import Alliance as PssAlliance
 from pssapi.entities import User as PssUser
 
-from ..core import utils
-from ..core.enums import ErrorCode
+from .. import utils
 from ..core.exceptions import (
     AllianceNotFoundError,
     ApiError,
@@ -46,6 +45,7 @@ from ..core.exceptions import (
 )
 from .api_models import ApiAlliance, ApiAllianceHistory, ApiCollection, ApiCollectionMetadata, ApiErrorResponse, ApiUser, ApiUserHistory
 from .client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
+from .enums import ErrorCode
 
 
 class FromAPI:
@@ -55,6 +55,14 @@ class FromAPI:
 
     @staticmethod
     def to_pss_alliance(source: ApiAlliance) -> PssAlliance:
+        """Converts an `Alliance` returned by the API to a `pssapi.entities.Alliance`.
+
+        Args:
+            source (ApiAlliance): An `Alliance` returned by the API.
+
+        Returns:
+            pss.entities.Alliance: The converted `Alliance`.
+        """
         if ApiAlliance is None:
             return None
 
@@ -73,6 +81,14 @@ class FromAPI:
 
     @staticmethod
     def to_alliance_history(source: ApiAllianceHistory) -> AllianceHistory:
+        """Converts an `AllianceHistory` returned by the API to an `AllianceHistory`.
+
+        Args:
+            source (ApiAllianceHistory): An `AllianceHistory` returned by the API.
+
+        Returns:
+            AllianceHistory: The converted `AllianceHistory`.
+        """
         return AllianceHistory(
             collection=FromAPI.to_collection_metadata(source.collection),
             alliance=FromAPI.to_pss_alliance(source.fleet),
@@ -81,6 +97,14 @@ class FromAPI:
 
     @staticmethod
     def to_collection(source: ApiCollection) -> Collection:
+        """Converts a `Collection` returned by the API to a `Collection`.
+
+        Args:
+            source (ApiCollection): A `Collection` returned by the API.
+
+        Returns:
+            Collection: The converted `Collection`.
+        """
         return Collection(
             metadata=FromAPI.to_collection_metadata(source.meta),
             alliances=[FromAPI.to_pss_alliance(api_alliance) for api_alliance in source.fleets] if source.fleets else list(),
@@ -89,6 +113,14 @@ class FromAPI:
 
     @staticmethod
     def to_collection_metadata(source: ApiCollectionMetadata) -> CollectionMetadata:
+        """Converts a `CollectionMetadata` returned by the API to a `CollectionMetadata`.
+
+        Args:
+            source (ApiCollectionMetadata): A `CollectionMetadata` returned by the API.
+
+        Returns:
+            CollectionMetadata: The converted `CollectionMetadata`.
+        """
         return CollectionMetadata(
             timestamp=source.timestamp,
             duration=source.duration,
@@ -103,6 +135,14 @@ class FromAPI:
 
     @staticmethod
     def to_error(source: ApiErrorResponse) -> ApiError:
+        """Converts an error response returned by the API to an `ApiError` to be raised.
+
+        Args:
+            source (ApiErrorResponse): An error response returned by the API.
+
+        Returns:
+            ApiError: The converted `ApiError`.
+        """
         exception_class = _error_code_lookup.get(source.code, ApiError)
         result = exception_class(
             source.code,
@@ -116,6 +156,14 @@ class FromAPI:
 
     @staticmethod
     def to_pss_user(source: Optional[ApiUser]) -> PssUser:
+        """Converts a `User` returned by the API to a `pssapi.entities.User`.
+
+        Args:
+            source (ApiUser, optional): A `User` returned by the API.
+
+        Returns:
+            pss.entities.User: The converted `User`.
+        """
         if source is None:
             return None
 
@@ -146,6 +194,14 @@ class FromAPI:
 
     @staticmethod
     def to_user_history(source: ApiUserHistory) -> UserHistory:
+        """Converts a `UserHistory` returned by the API to a `UserHistory`.
+
+        Args:
+            source (ApiUserHistory): A `UserHistory` returned by the API.
+
+        Returns:
+            UserHistory: The converted `UserHistory`.
+        """
         return UserHistory(
             collection=FromAPI.to_collection_metadata(source.collection),
             user=FromAPI.to_pss_user(source.user),
@@ -160,6 +216,14 @@ class FromResponse:
 
     @staticmethod
     def to_alliance_history(source: Response) -> Optional[AllianceHistory]:
+        """Converts a `httpx.Response` returned by the API to an `AllianceHistory`.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            Optional[AllianceHistory]: The converted `AllianceHistory` if the response has content, else `None`.
+        """
         if not source.text:
             return None
 
@@ -173,6 +237,14 @@ class FromResponse:
 
     @staticmethod
     def to_alliance_history_list(source: Response) -> list[AllianceHistory]:
+        """Converts a `httpx.Response` returned by the API to a list of `AllianceHistory` objects.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            list[AllianceHistory]: The converted list of `AllianceHistory` objects. The list may be empty.
+        """
         if not source.text:
             return []
 
@@ -185,6 +257,14 @@ class FromResponse:
 
     @staticmethod
     def to_collection(source: Response) -> Optional[Collection]:
+        """Converts a `httpx.Response` returned by the API to a `Collection`.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            Optional[Collection]: The converted `Collection` if the response has content, else `None`.
+        """
         if not source.text:
             return None
 
@@ -198,6 +278,14 @@ class FromResponse:
 
     @staticmethod
     def to_collection_metadata(source: Response) -> Optional[CollectionMetadata]:
+        """Converts a `httpx.Response` returned by the API to a `CollectionMetadata`.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            Optional[CollectionMetadata]: The converted `CollectionMetadata` if the response has content, else `None`.
+        """
         if not source.text:
             return None
 
@@ -211,6 +299,14 @@ class FromResponse:
 
     @staticmethod
     def to_collection_metadata_list(source: Response) -> list[CollectionMetadata]:
+        """Converts a `httpx.Response` returned by the API to a list of `CollectionMetadata` objects.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            list[CollectionMetadata]: The converted list of `CollectionMetadata` objects. The list may be empty.
+        """
         if not source.text:
             return []
 
@@ -223,6 +319,14 @@ class FromResponse:
 
     @staticmethod
     def to_user_history(source: Response) -> Optional[UserHistory]:
+        """Converts a `httpx.Response` returned by the API to a `UserHistory`.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            Optional[UserHistory]: The converted `UserHistory` if the response has content, else `None`.
+        """
         if not source.text:
             return None
 
@@ -230,13 +334,20 @@ class FromResponse:
         if not response_json:
             return None
 
-        response_json = source.json()
         api_user_history = ApiUserHistory(**response_json)
         user_history = FromAPI.to_user_history(api_user_history)
         return user_history
 
     @staticmethod
     def to_user_history_list(source: Response) -> list[UserHistory]:
+        """Converts a `httpx.Response` returned by the API to a list of `UserHistory` objects.
+
+        Args:
+            source (httpx.Response): The response returned by the API.
+
+        Returns:
+            list[UserHistory]: The converted list of `UserHistory` objects. The list may be empty.
+        """
         if not source.text:
             return []
 
@@ -255,6 +366,14 @@ class ToAPI:
 
     @staticmethod
     def from_collection(source: Collection) -> ApiCollection:
+        """Converts a `Collection` to a `Collection` to be sent to the API.
+
+        Args:
+            source (Collection): The `Collection` to be converted.
+
+        Returns:
+            ApiCollection: The converted `Collection`.
+        """
         return ApiCollection(
             meta=ToAPI.from_collection_metadata(source.metadata),
             fleets=[ToAPI.from_pss_alliance(alliance) for alliance in source.alliances] if source.alliances else list(),
@@ -263,6 +382,14 @@ class ToAPI:
 
     @staticmethod
     def from_collection_metadata(source: CollectionMetadata) -> ApiCollectionMetadata:
+        """Converts a `CollectionMetadata` to a `CollectionMetadata` to be sent to the API.
+
+        Args:
+            source (Collection): The `CollectionMetadata` to be converted.
+
+        Returns:
+            ApiCollectionMetadata: The converted `CollectionMetadata`.
+        """
         return ApiCollectionMetadata(
             timestamp=source.timestamp,
             duration=source.duration,
@@ -277,13 +404,13 @@ class ToAPI:
 
     @staticmethod
     def from_pss_alliance(source: PssAlliance) -> ApiAlliance:
-        """Takes an Alliance from the PSS API and converts it to an Alliance to be sent to the Fleet Data API.
+        """Converts an `Alliance` from the PSS API to an `Alliance` to be sent to the API.
 
         Args:
-            source (Alliance): The Alliance to be converted.
+            source (pssapi.entities.Alliance): The `Alliance` to be converted.
 
         Returns:
-            ApiAlliance: The converted Alliance.
+            ApiAlliance: The converted `Alliance`.
         """
         return (
             source.alliance_id,
@@ -298,13 +425,13 @@ class ToAPI:
 
     @staticmethod
     def from_pss_user(source: PssUser) -> ApiUser:
-        """Takes a User from the PSS API and converts it to a User to be sent to the Fleet Data API.
+        """Converts a `User` from the PSS API to an `User` to be sent to the API.
 
         Args:
-            source (User): The User to be converted.
+            source (pssapi.entities.User): The `User` to be converted.
 
         Returns:
-            ApiUser: The converted User.
+            ApiUser: The converted `User`.
         """
         return (
             source.id,
@@ -367,3 +494,4 @@ _error_code_lookup = {
     ErrorCode.UNSUPPORTED_SCHEMA: UnsupportedSchemaError,
     ErrorCode.USER_NOT_FOUND: UserNotFoundError,
 }
+"""A lookup from an API `ErrorCode` to a specific `Exception` type."""
