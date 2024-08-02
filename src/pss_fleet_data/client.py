@@ -379,23 +379,32 @@ class PssFleetDataClient:
                 return collection_metadatas[0]
         return None
 
-    async def get_top_100_users_from_collection(self, collection_id: int) -> tuple[Collection, list[PssUser]]:
+    async def get_top_100_users_from_collection(
+        self,
+        collection_id: int,
+        skip: Optional[int] = None,
+        take: Optional[int] = None,
+    ) -> tuple[Collection, list[PssUser]]:
         """Retrieves the `User` data of the top 100 players from a the specified `Collection` without their `Alliance`s.\n
         NOTE: For `Collection`s recorded before Jan 25th, 2021, this list is not be accurate, because top 100 players not in a fleet weren't recorded.
 
         Args:
             collection_id (int): The `collection_id` of the the `Collection` to be retrieved.
+            skip (int, optional): The number of results to skip in the response. Defaults to None.
+            take (int, optional): The number of results to be returned. Defaults to None.
 
         Raises:
             CollectionNotFoundError: Raised, if a `Collection` with the provided `collection_id` was not found.\n
             InvalidCollectionIdError: Raised, if the path parameter `collection_id` received a value that can't be parsed to `int`.\n
+            InvalidSkipError: Raised, if the query parameter `skip` received a value that can't be parsed to `int`.\n
+            InvalidTakeError: Raised, if the query parameter `take` received a value that can't be parsed to `int`.\n
             TooManyRequestsError: Raised, if the client is sending too many requests and is getting rate-limited.\n
             ServerError: Raised, if an internal server error occurs.
 
         Returns:
             tuple[CollectionMetadata, list[pssapi.entities.User]]: The metadata of the requested `Collection` and its top 100 `User` data. Does not include any `Alliance` data.
         """
-        response = await self._get(f"/collections/{collection_id}/top100Users")
+        response = await self._get_with_filter_parameters(f"/collections/{collection_id}/top100Users", skip=skip, take=take)
         collection = FromResponse.to_collection(response)
 
         if not collection:
