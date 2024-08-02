@@ -35,7 +35,7 @@ def api_alliance_history_with_members(
 @pytest.fixture(scope="function")
 def api_collection(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance, api_user: ApiUser) -> ApiCollection:
     return ApiCollection(
-        metadata=api_collection_metadata_9,
+        meta=api_collection_metadata_9,
         fleets=[api_alliance],
         users=[
             api_user,
@@ -46,7 +46,7 @@ def api_collection(api_collection_metadata_9: ApiCollectionMetadata, api_allianc
 @pytest.fixture(scope="function")
 def api_collection_with_fleets(api_collection_metadata_9: ApiCollectionMetadata, api_alliance: ApiAlliance) -> ApiCollection:
     return ApiCollection(
-        metadata=api_collection_metadata_9,
+        meta=api_collection_metadata_9,
         fleets=[api_alliance],
     )
 
@@ -54,7 +54,7 @@ def api_collection_with_fleets(api_collection_metadata_9: ApiCollectionMetadata,
 @pytest.fixture(scope="function")
 def api_collection_with_users(api_collection_metadata_9: ApiCollectionMetadata, api_user: ApiUser) -> ApiCollection:
     return ApiCollection(
-        metadata=api_collection_metadata_9,
+        meta=api_collection_metadata_9,
         users=[api_user],
     )
 

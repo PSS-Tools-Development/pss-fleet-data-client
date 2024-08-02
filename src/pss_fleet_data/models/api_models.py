@@ -61,7 +61,7 @@ class ApiCollection(BaseModel):
     See also: https://github.com/Zukunftsmusik/pss-fleet-data?tab=readme-ov-file#schema-descriptions
     """
 
-    metadata: "ApiCollectionMetadata"
+    meta: "ApiCollectionMetadata"
     """The metadata of this Collection."""
     fleets: list[ApiAlliance] = Field(default_factory=lambda: list())
     """The fleets recorded in this Collection."""
