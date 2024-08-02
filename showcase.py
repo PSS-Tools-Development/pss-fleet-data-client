@@ -24,17 +24,17 @@ async def print_latest_tournament_results():
     print(f"It has collected {collection.metadata.fleet_count} fleets and {len(collection.users)} players.")
 
     # You can use the Collection's ID in other methods, too, e.g. get the top 100 players at the end of the month.
-    top_100_users = await client.get_top_100_users_from_collection(collection.metadata.collection_id)
+    _, top_100_users = await client.get_top_100_users_from_collection(collection.metadata.collection_id)
     print(f"The player ranked 3rd last month was: {top_100_users[2].name}")
 
     # Or obtain the player stats of the 2nd best player last month over time
     user_history = await client.get_user_history(top_100_users[1].id, interval=ParameterInterval.MONTHLY)
     print(
-        "Found history for player %s from %s to %s (%i)",
+        "Found %i history entries for player %s from %s to %s",
+        len(user_history),
         top_100_users[1].name,
         user_history[0].collection.timestamp.isoformat(),
         user_history[-1].collection.timestamp.isoformat(),
-        len(user_history),
     )
 
 
