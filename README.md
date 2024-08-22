@@ -26,8 +26,12 @@
 - **Easy access** to any instance of a **PSS Fleet Data API** server.
 - **Fast setup** to get you started quickly.
 
+# 🔍 Future plans
+
+- Support more Python versions
+
 # 🚀 Demo
-To retrieve the last month's tournament results (a specific `Collection`):
+To retrieve the last month's tournament results (a specific Collection):
 ```python
 import asyncio
 from datetime import datetime, timezone

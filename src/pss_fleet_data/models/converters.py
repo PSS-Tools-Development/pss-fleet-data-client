@@ -63,7 +63,7 @@ class FromAPI:
         Returns:
             pss.entities.Alliance: The converted `Alliance`.
         """
-        if ApiAlliance is None:
+        if source is None:
             return None
 
         return PssAlliance(

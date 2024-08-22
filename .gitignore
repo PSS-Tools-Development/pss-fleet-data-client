@@ -1,3 +1,6 @@
+# Coverage
+cov.xml
+
 # VS Code
 .vscode/*
 !.vscode/settings.json

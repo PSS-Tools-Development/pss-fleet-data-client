@@ -38,3 +38,8 @@ def test_convert_datetime_to_seconds_invalid(value, expected_exception):
 def test_convert_datetime_to_seconds_valid(value, expected_result):
     result = convert_datetime_to_seconds(value)
     assert result == expected_result
+
+
+def test_returns_zero_if_before_pss_start_date():
+    result = convert_datetime_to_seconds(datetime(2001, 9, 11))
+    assert result == 0
