@@ -826,7 +826,7 @@ class PssFleetDataClient:
             httpx.Response: The response from the API.
         """
         headers = headers or {}
-        headers["Authorization"] = api_key or self.__api_key
+        headers["Authorization"] = api_key or self.__api_key or ""
 
         response = await self._post(path, json=json, files=files, params=params, headers=headers)
         return response

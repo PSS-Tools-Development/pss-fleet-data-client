@@ -28,7 +28,7 @@ format:
 # testing
 .PHONY: coverage
 coverage:
-	pytest --cov=./src/api ./tests --cov-report xml:cov.xml
+	pytest --cov=./src/pss_fleet_data ./tests --cov-report=xml:cov.xml --cov-report=term
 
 .PHONY: test
 test:
