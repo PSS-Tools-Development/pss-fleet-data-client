@@ -14,6 +14,9 @@ def test_to_pss_alliance(api_alliance: ApiAlliance, assert_pss_alliance_valid: C
     pss_alliance = FromAPI.to_pss_alliance(api_alliance)
     assert_pss_alliance_valid(pss_alliance)
 
+    pss_alliance = FromAPI.to_pss_alliance(None)
+    assert pss_alliance is None
+
 
 @pytest.mark.usefixtures("api_collection")
 @pytest.mark.usefixtures("assert_collection_valid")
@@ -41,3 +44,6 @@ def test_to_collection_metadata_9(api_collection_metadata_9: ApiCollectionMetada
 def test_to_pss_user(api_user: ApiUser, assert_pss_user_valid: Callable[[PssAlliance], None]):
     pss_user = FromAPI.to_pss_user(api_user)
     assert_pss_user_valid(pss_user)
+
+    pss_user = FromAPI.to_pss_user(None)
+    assert pss_user is None

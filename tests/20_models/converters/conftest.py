@@ -7,6 +7,21 @@ from pss_fleet_data.models.api_models import ApiAllianceHistory, ApiCollection, 
 
 
 @pytest.fixture(scope="function")
+def response_text_none() -> Response:
+    return Response(204, text=None)
+
+
+@pytest.fixture(scope="function")
+def response_text_empty() -> Response:
+    return Response(204, text="")
+
+
+@pytest.fixture(scope="function")
+def response_json_empty() -> Response:
+    return Response(204, json={})
+
+
+@pytest.fixture(scope="function")
 def response_alliance_history(api_alliance_history: ApiAllianceHistory) -> Response:
     return Response(200, json=json.loads(api_alliance_history.model_dump_json()))
 
