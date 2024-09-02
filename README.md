@@ -18,10 +18,12 @@
 
 ## Built with
 
+- [httpx](https://www.python-httpx.org/)
 - [pssapi.py](https://pypi.org/project/pssapi)
 - [pydantic V2](https://docs.pydantic.dev/latest/)
 
 # ✨ Features
+
 - **Fully typehinted** so your favorite IDE can assist you with code completion.
 - **Easy access** to any instance of a **PSS Fleet Data API** server.
 - **Fast setup** to get you started quickly.
