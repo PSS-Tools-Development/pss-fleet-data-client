@@ -1,27 +1,21 @@
 # Pixel Starships Fleet Data API client
 
-<a href="https://discord.gg/kKguSec" target="_blank">
-    <img src="https://discord.com/api/guilds/565819215731228672/embed.png" alt="Support Discord server invite">
-</a>
-<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank">
-    <img src="https://img.shields.io/pypi/status/pss-fleet-data-client?color=%23DAB420&label=status" alt="Development status">
-</a>
-<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank">
-    <img src="https://img.shields.io/pypi/v/pss-fleet-data-client?color=%23DAB420&label=pypi%20package" alt="Package version">
-</a>
-<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank">
-    <img src="https://img.shields.io/pypi/pyversions/pss-fleet-data-client.svg?color=%23DAB420" alt="Supported Python versions">
-</a>
+<a href="https://discord.gg/kKguSec" target="_blank"><img src="https://discord.com/api/guilds/565819215731228672/embed.png" alt="Support Discord server invite"></a>
+<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/status/pss-fleet-data-client?color=%23DAB420&label=status" alt="Development status"></a>
+<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/v/pss-fleet-data-client?color=%23DAB420&label=pypi%20package" alt="Package version"></a>
+<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/pyversions/pss-fleet-data-client.svg?color=%23DAB420" alt="Supported Python versions"></a>
 <img src="https://img.shields.io/codecov/c/github/pss-tools-development/pss-fleet-data-client" alt="Code coverage">
 
-> An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api). Currently supported API version is **1.4.1**.
+> An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api). Currently supported API version is **1.5.0**.
 
 ## Built with
 
+- [httpx](https://www.python-httpx.org/)
 - [pssapi.py](https://pypi.org/project/pssapi)
 - [pydantic V2](https://docs.pydantic.dev/latest/)
 
 # ✨ Features
+
 - **Fully typehinted** so your favorite IDE can assist you with code completion.
 - **Easy access** to any instance of a **PSS Fleet Data API** server.
 - **Fast setup** to get you started quickly.
@@ -89,11 +83,11 @@ If you ran across a bug or have a feature request, please check if there's [alre
 If you want to fix a bug or add a feature, please check out the [Contribution Guide](CONTRIBUTING.md).
 
 # 🆘 Support
-If you need help using the library or want to contribute, you can join my support Discord at: [discord.gg/kKguSec](https://https://discord.gg/kKguSec)
+If you need help using the library or want to contribute, you can join my support Discord at: [discord.gg/kKguSec](https://discord.gg/kKguSec)
 
 # 🔗 Links
 - Documentation (tbd)
-- [Official Support Discord server](https://https://discord.gg/kKguSec)
+- [Official Support Discord server](https://discord.gg/kKguSec)
 - [PSS Fleet Data API](https://fleetdata.dolores2.xyz)
 - [Buy me a can of cat food](https://buymeacoffee.com/the_worst_pss)
 - [Or a coffee](https://ko-fi.com/theworstpss)
