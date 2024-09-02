@@ -517,11 +517,55 @@ class PssFleetDataClient:
         response = await self._get("/ping")
         return response.json()["ping"]
 
+    async def update_collection(self, collection_id: int, file_path: Union[str, Path], api_key: Optional[str] = None) -> CollectionMetadata:
+        """Uploads the `Collection` at the given `file_path` to overwrite the data of the specified `collection_id`.
+
+        Args:
+            colection_id (int): The `collectionId` of the `Collection` file to be updated.
+            file_path (str | Path): The path to the `Collection` file to be uploaded.
+            api_key (str, optional): The API key to send for authorization. Defaults to the `api_key` passed to the constructor of `PssFleetDataClient`.
+
+        Raises:
+            ConflictError: Raised, if the `timestamp` of the file to be uploaded differs from the `timestamp` of the `Collection` to be updated.\n
+            InvalidBoolError: Raised, if a parameter expecting a value of type `bool` received a value that can't be parsed to `bool`. Can also be part of a body parameter.\n
+            InvalidDateTimeError: Raised, if a parameter expecting a value of type `datetime` received a value that can't be parsed to `datetime`. Can also be part of a body parameter.\n
+            InvalidJsonUpload: Raised, if the uploaded JSON file is invalid.\n
+            InvalidNumberError: Raised, if a parameter expecting a value of type `int` or `float` received a value that can't be parsed to `int` or `float`. Can also be part of a body parameter.\n
+            MissingAccessError: Raised, if the client is not allowed to access the requested endpoint.\n
+            NonUniqueCollectionIdError: Raised, if a `Collection` with its `collection_id` already exists in the database.\n
+            NotAuthenticatedError: Raised, if the requested endpojnt requires authentication, but the client is not authenticated.\n
+            ParameterValidationError: Raised, if a body, path or query parameter or header received an invalid value.\n
+            ParameterValueError: Raised, if a body, path or query parameter or header received an invalid value.\n
+            TooManyRequestsError: Raised, if the client is sending too many requests and is getting rate-limited.\n
+            SchemaVersionMismatch: Raised, if the request contains a `Collection` in a schema that doesn't match the expected or specified `schema_version`.\n
+            ServerError: Raised, if an internal server error occurs.\n
+            UnsupportedMediaTypeError: Raised, if the requested endpoint received a body parameter of an unsupported media type.\n
+            UnsupportedSchemaError: Raised, if the requested endpoint received a `Collection` of an unknown schema.
+
+        Returns:
+            CollectionMetadata: The metadata of the `Collection` created.
+        """
+        if not isinstance(file_path, (str, Path)):
+            raise TypeError("Parameter `file` must be of type `str`.")
+
+        api_key = api_key or self.api_key
+
+        with open(file_path, "rb") as fp:
+            files = {"collection_file": ("collection", fp, "application/json")}
+            response = await self._put_with_api_key(
+                f"/collections/upload/{collection_id}",
+                api_key=api_key,
+                files=files,
+            )
+
+        result = FromResponse.to_collection_metadata(response)
+        return result
+
     async def upload_collection(self, file_path: Union[str, Path], api_key: Optional[str] = None) -> CollectionMetadata:
         """Uploads the `Collection` at the given `file_path`.
 
         Args:
-            file_path (str): The path to the `Collection` file to be uploaded.
+            file_path (str | Path): The path to the `Collection` file to be uploaded.
             api_key (str, optional): The API key to send for authorization. Defaults to the `api_key` passed to the constructor of `PssFleetDataClient`.
 
         Raises:
@@ -829,6 +873,104 @@ class PssFleetDataClient:
         headers["Authorization"] = api_key or self.__api_key or ""
 
         response = await self._post(path, json=json, files=files, params=params, headers=headers)
+        return response
+
+    async def _put(
+        self,
+        path: str,
+        json: Optional[dict[str, Any]] = None,
+        files: Optional[dict[str, tuple]] = None,
+        params: Optional[dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
+    ) -> Response:
+        """Puts an HTTP request to the given API endpoint.
+
+        Args:
+            path (str): The path of the endpoint relative to the API server's base URL.
+            json (dict[str, Any], optional): A request body to be sent with the request. Defaults to `None`.
+            files (dict[str, tuple], optional): A collection of file to be sent with the request. Defaults to `None`.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
+
+        Raises:
+            ConflictError: Raised, if a resource could not be created due to conflicting data.\n
+            InvalidBoolError: Raised, if a parameter expecting a value of type `bool` received a value that can't be parsed to `bool`. Can also be part of a body parameter.\n
+            InvalidDateTimeError: Raised, if a parameter expecting a value of type `datetime` received a value that can't be parsed to `datetime`. Can also be part of a body parameter.\n
+            InvalidDescError: Raised, if the query parameter `desc` received a value that can't be parsed to `bool`.\n
+            InvalidIntervalError: Raised, if the query parameter `interval` received a value that can't be parsed to `ParameterInterval`.\n
+            InvalidJsonUpload: Raised, if the uploaded JSON file is invalid.\n
+            InvalidNumberError: Raised, if a parameter expecting a value of type `int` or `float` received a value that can't be parsed to `int` or `float`. Can also be part of a body parameter.\n
+            MethodNotAllowedError: Raised, if the request method is not allowed for the requested endpoint.\n
+            MissingAccessError: Raised, if the client is not allowed to access the requested endpoint.\n
+            NonUniqueCollectionIdError: Raised, if a `Collection` with its `collection_id` already exists in the database.\n
+            NonUniqueTimestampError: Raised, if a `Collection` with its `timestamp` already exists in the database.\n
+            NotAuthenticatedError: Raised, if the requested endpojnt requires authentication, but the client is not authenticated.\n
+            ParameterValidationError: Raised, if a body, path or query parameter or header received an invalid value.\n
+            ParameterFormatError: Raised, if a body, path or query parameter or header received a value in a format that can't be parsed to the expected type.\n
+            ParameterValueError: Raised, if a body, path or query parameter or header received an invalid value.\n
+            TooManyRequestsError: Raised, if the client is sending too many requests and is getting rate-limited.\n
+            SchemaVersionMismatch: Raised, if the request contains a `Collection` in a schema that doesn't match the expected or specified `schema_version`.\n
+            ServerError: Raised, if an internal server error occurs.\n
+            UnsupportedMediaTypeError: Raised, if the requested endpoint received a body parameter of an unsupported media type.\n
+            UnsupportedSchemaError: Raised, if the requested endpoint received a `Collection` of an unknown schema.
+
+        Returns:
+            httpx.Response: The response from the API.
+        """
+        request_headers = utils.merge_headers(self.__http_client.headers, headers)
+
+        response = await self.__http_client.put(path, json=json, files=files, params=params, headers=request_headers)
+        _raise_on_error(response)
+        return response
+
+    async def _put_with_api_key(
+        self,
+        path: str,
+        api_key: Optional[str] = None,
+        json: Optional[dict[str, Any]] = None,
+        files: Optional[dict[str, tuple]] = None,
+        params: Optional[dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
+    ) -> Response:
+        """Posts an HTTP request to the given API endpoint.
+
+        Args:
+            path (str): The path of the endpoint relative to the API server's base URL.
+            api_key (str, optional): The api key to be sent with the request for authorization. Defaults to `None`.
+            json (dict[str, Any], optional): A request body to be sent with the request. Defaults to `None`.
+            files (dict[str, tuple], optional): A collection of file to be sent with the request. Defaults to `None`.
+            params (dict[str, Any], optional): A collection of query parameters to be sent with the request. Defaults to `None`.
+            headers (dict[str, Any], optional): A collection of headers to be sent with the request. Defaults to `None`.
+
+        Raises:
+            ConflictError: Raised, if a resource could not be created due to conflicting data.\n
+            InvalidBoolError: Raised, if a parameter expecting a value of type `bool` received a value that can't be parsed to `bool`. Can also be part of a body parameter.\n
+            InvalidDateTimeError: Raised, if a parameter expecting a value of type `datetime` received a value that can't be parsed to `datetime`. Can also be part of a body parameter.\n
+            InvalidDescError: Raised, if the query parameter `desc` received a value that can't be parsed to `bool`.\n
+            InvalidIntervalError: Raised, if the query parameter `interval` received a value that can't be parsed to `ParameterInterval`.\n
+            InvalidJsonUpload: Raised, if the uploaded JSON file is invalid.\n
+            InvalidNumberError: Raised, if a parameter expecting a value of type `int` or `float` received a value that can't be parsed to `int` or `float`. Can also be part of a body parameter.\n
+            MethodNotAllowedError: Raised, if the request method is not allowed for the requested endpoint.\n
+            MissingAccessError: Raised, if the client is not allowed to access the requested endpoint.\n
+            NonUniqueCollectionIdError: Raised, if a `Collection` with its `collection_id` already exists in the database.\n
+            NonUniqueTimestampError: Raised, if a `Collection` with its `timestamp` already exists in the database.\n
+            NotAuthenticatedError: Raised, if the requested endpojnt requires authentication, but the client is not authenticated.\n
+            ParameterValidationError: Raised, if a body, path or query parameter or header received an invalid value.\n
+            ParameterFormatError: Raised, if a body, path or query parameter or header received a value in a format that can't be parsed to the expected type.\n
+            ParameterValueError: Raised, if a body, path or query parameter or header received an invalid value.\n
+            TooManyRequestsError: Raised, if the client is sending too many requests and is getting rate-limited.\n
+            SchemaVersionMismatch: Raised, if the request contains a `Collection` in a schema that doesn't match the expected or specified `schema_version`.\n
+            ServerError: Raised, if an internal server error occurs.\n
+            UnsupportedMediaTypeError: Raised, if the requested endpoint received a body parameter of an unsupported media type.\n
+            UnsupportedSchemaError: Raised, if the requested endpoint received a `Collection` of an unknown schema.
+
+        Returns:
+            httpx.Response: The response from the API.
+        """
+        headers = headers or {}
+        headers["Authorization"] = api_key or self.__api_key or ""
+
+        response = await self._put(path, json=json, files=files, params=params, headers=headers)
         return response
 
 
