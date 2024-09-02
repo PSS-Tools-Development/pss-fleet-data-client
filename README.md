@@ -1,17 +1,9 @@
 # Pixel Starships Fleet Data API client
 
-<a href="https://discord.gg/kKguSec" target="_blank">
-    <img src="https://discord.com/api/guilds/565819215731228672/embed.png" alt="Support Discord server invite">
-</a>
-<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank">
-    <img src="https://img.shields.io/pypi/status/pss-fleet-data-client?color=%23DAB420&label=status" alt="Development status">
-</a>
-<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank">
-    <img src="https://img.shields.io/pypi/v/pss-fleet-data-client?color=%23DAB420&label=pypi%20package" alt="Package version">
-</a>
-<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank">
-    <img src="https://img.shields.io/pypi/pyversions/pss-fleet-data-client.svg?color=%23DAB420" alt="Supported Python versions">
-</a>
+<a href="https://discord.gg/kKguSec" target="_blank"><img src="https://discord.com/api/guilds/565819215731228672/embed.png" alt="Support Discord server invite"></a>
+<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/status/pss-fleet-data-client?color=%23DAB420&label=status" alt="Development status"></a>
+<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/v/pss-fleet-data-client?color=%23DAB420&label=pypi%20package" alt="Package version"></a>
+<a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/pyversions/pss-fleet-data-client.svg?color=%23DAB420" alt="Supported Python versions"></a>
 <img src="https://img.shields.io/codecov/c/github/pss-tools-development/pss-fleet-data-client" alt="Code coverage">
 
 > An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api). Currently supported API version is **1.5.0**.
