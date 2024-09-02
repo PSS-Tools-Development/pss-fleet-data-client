@@ -89,11 +89,11 @@ If you ran across a bug or have a feature request, please check if there's [alre
 If you want to fix a bug or add a feature, please check out the [Contribution Guide](CONTRIBUTING.md).
 
 # 🆘 Support
-If you need help using the library or want to contribute, you can join my support Discord at: [discord.gg/kKguSec](https://https://discord.gg/kKguSec)
+If you need help using the library or want to contribute, you can join my support Discord at: [discord.gg/kKguSec](https://discord.gg/kKguSec)
 
 # 🔗 Links
 - Documentation (tbd)
-- [Official Support Discord server](https://https://discord.gg/kKguSec)
+- [Official Support Discord server](https://discord.gg/kKguSec)
 - [PSS Fleet Data API](https://fleetdata.dolores2.xyz)
 - [Buy me a can of cat food](https://buymeacoffee.com/the_worst_pss)
 - [Or a coffee](https://ko-fi.com/theworstpss)
