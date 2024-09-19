@@ -167,7 +167,7 @@ ApiUser = tuple[
     STR_LENGTH_GE_0,
     INT_GE_0,
     INT_GE_0,
-    INT_GE_0,
+    int,
     UserAllianceMembershipEncoded,
     OPTIONAL_INT_GE_0,
     OPTIONAL_INT_GE_0,
