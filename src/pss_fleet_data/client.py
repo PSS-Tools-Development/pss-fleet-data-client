@@ -209,7 +209,7 @@ class PssFleetDataClient:
         alliance_histories = FromResponse.to_alliance_history_list(response)
         return alliance_histories
 
-    async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> tuple[CollectionMetadata, PssAlliance]:
+    async def get_alliance_from_collection(self, collection_id: int, alliance_id: int) -> AllianceHistory:
         """Retrieves data of a specific `Alliance` from a specific `Collection`. Includes the `Alliance`'s members, if applicable.
 
         Args:
@@ -229,7 +229,7 @@ class PssFleetDataClient:
         """
         response = await self._get(f"/collections/{collection_id}/alliances/{alliance_id}")
         alliance_history = FromResponse.to_alliance_history(response)
-        return (alliance_history.collection, alliance_history.alliance)
+        return alliance_history
 
     async def get_alliances_from_collection(self, collection_id: int) -> tuple[Optional[CollectionMetadata], list[PssAlliance]]:
         """Retrieves all `Alliance` data from a the specified `Collection` without their members.

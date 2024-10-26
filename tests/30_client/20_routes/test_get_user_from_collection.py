@@ -12,7 +12,7 @@ async def test_get_user_from_collection_200(
     user_history: UserHistory,
     test_client: PssFleetDataClient,
     assert_user_history_valid: Callable[[UserHistory], None],
-    assert_user_histories_equal: Callable[[UserHistory, UserHistory, bool, bool], None],
+    assert_user_histories_equal: Callable[[UserHistory, UserHistory], None],
 ):
     user_history_response = await test_client.get_user_from_collection(1, 1)
 
@@ -25,7 +25,7 @@ async def test_get_user_from_collection_200_with_fleet(
     user_history_with_alliance: UserHistory,
     test_client: PssFleetDataClient,
     assert_user_history_with_alliance_valid: Callable[[UserHistory], None],
-    assert_user_histories_equal: Callable[[UserHistory, UserHistory, bool, bool], None],
+    assert_user_histories_equal: Callable[[UserHistory, UserHistory], None],
 ):
     user_history_response = await test_client.get_user_from_collection(1, 1)
 
