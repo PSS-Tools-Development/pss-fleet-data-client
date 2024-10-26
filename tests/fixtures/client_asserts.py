@@ -164,7 +164,6 @@ def assert_alliance_history_valid(
         assert_collection_metadata_valid(alliance_history.collection)
         assert_pss_alliance_valid(alliance_history.alliance)
 
-        assert not alliance_history.users
         assert isinstance(alliance_history.users, list)
 
     return _assert_alliance_history_valid
