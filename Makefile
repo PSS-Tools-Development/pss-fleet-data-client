@@ -47,7 +47,7 @@ test:
 # build & publish
 .PHONY: build
 build:
-	uv build --clean
+	uv build --clear
 
 .PHONY: publish
 publish:
