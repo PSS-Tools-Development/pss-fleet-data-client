@@ -69,9 +69,8 @@ exclude = [
   "src/pss_fleet_data/pss_fleet_data_client.egg-info",
 ]
 
-[tool.uv]
-managed = true
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "coverage>=7.6.0",
     "pre-commit>=3.8.0",
     "pyment>=0.3.3",

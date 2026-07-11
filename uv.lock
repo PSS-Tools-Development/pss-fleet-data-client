@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 
 [[package]]
@@ -813,7 +813,7 @@ dev = [
     { name = "pytest-env", specifier = ">=1.1.3" },
     { name = "pytest-httpx", specifier = ">=0.30.0" },
     { name = "pytest-vcr", specifier = ">=1.0.2" },
-    { name = "ruff" },
+    { name = "ruff", specifier = ">=0.15.21" },
     { name = "vulture", specifier = ">=2.11" },
 ]
 
