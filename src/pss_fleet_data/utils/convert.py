@@ -4,6 +4,19 @@ from pssapi.enums import AllianceMembership
 
 from ..models.enums import UserAllianceMembershipEncoded
 
+ALLIANCE_MEMBERSHIP_ENCODED_TO_MEMBERSHIP = {
+    UserAllianceMembershipEncoded.NONE: AllianceMembership.NONE,
+    UserAllianceMembershipEncoded.CANDIDATE: AllianceMembership.CANDIDATE,
+    UserAllianceMembershipEncoded.ENSIGN: AllianceMembership.ENSIGN,
+    UserAllianceMembershipEncoded.LIEUTENANT: AllianceMembership.LIEUTENANT,
+    UserAllianceMembershipEncoded.MAJOR: AllianceMembership.MAJOR,
+    UserAllianceMembershipEncoded.COMMANDER: AllianceMembership.COMMANDER,
+    UserAllianceMembershipEncoded.VICE_ADMIRAL: AllianceMembership.VICE_ADMIRAL,
+    UserAllianceMembershipEncoded.FLEET_ADMIRAL: AllianceMembership.FLEET_ADMIRAL,
+}
+
+ALLIANCE_MEMBERSHIP_MEMBERSHIP_TO_ENCODED = {value: key for key, value in ALLIANCE_MEMBERSHIP_ENCODED_TO_MEMBERSHIP.items()}
+
 
 def decode_alliance_membership(membership: Union[int, UserAllianceMembershipEncoded]) -> AllianceMembership:
     """Converts an `int` or `UserCreateAllianceMembership` enum into a `AllianceMembership`.
@@ -27,23 +40,7 @@ def decode_alliance_membership(membership: Union[int, UserAllianceMembershipEnco
     if isinstance(membership, int):
         membership = UserAllianceMembershipEncoded(membership)
 
-    match membership:
-        case UserAllianceMembershipEncoded.NONE:
-            return AllianceMembership.NONE
-        case UserAllianceMembershipEncoded.CANDIDATE:
-            return AllianceMembership.CANDIDATE
-        case UserAllianceMembershipEncoded.ENSIGN:
-            return AllianceMembership.ENSIGN
-        case UserAllianceMembershipEncoded.LIEUTENANT:
-            return AllianceMembership.LIEUTENANT
-        case UserAllianceMembershipEncoded.MAJOR:
-            return AllianceMembership.MAJOR
-        case UserAllianceMembershipEncoded.COMMANDER:
-            return AllianceMembership.COMMANDER
-        case UserAllianceMembershipEncoded.VICE_ADMIRAL:
-            return AllianceMembership.VICE_ADMIRAL
-        case UserAllianceMembershipEncoded.FLEET_ADMIRAL:
-            return AllianceMembership.FLEET_ADMIRAL
+    return ALLIANCE_MEMBERSHIP_ENCODED_TO_MEMBERSHIP[membership]
 
 
 def encode_alliance_membership(membership: Union[str, AllianceMembership]) -> int:
@@ -68,20 +65,4 @@ def encode_alliance_membership(membership: Union[str, AllianceMembership]) -> in
     if isinstance(membership, str):
         membership = AllianceMembership(membership)
 
-    match membership:
-        case AllianceMembership.NONE:
-            return int(UserAllianceMembershipEncoded.NONE)
-        case AllianceMembership.CANDIDATE:
-            return int(UserAllianceMembershipEncoded.CANDIDATE)
-        case AllianceMembership.ENSIGN:
-            return int(UserAllianceMembershipEncoded.ENSIGN)
-        case AllianceMembership.LIEUTENANT:
-            return int(UserAllianceMembershipEncoded.LIEUTENANT)
-        case AllianceMembership.MAJOR:
-            return int(UserAllianceMembershipEncoded.MAJOR)
-        case AllianceMembership.COMMANDER:
-            return int(UserAllianceMembershipEncoded.COMMANDER)
-        case AllianceMembership.VICE_ADMIRAL:
-            return int(UserAllianceMembershipEncoded.VICE_ADMIRAL)
-        case AllianceMembership.FLEET_ADMIRAL:
-            return int(UserAllianceMembershipEncoded.FLEET_ADMIRAL)
+    return ALLIANCE_MEMBERSHIP_MEMBERSHIP_TO_ENCODED[membership]

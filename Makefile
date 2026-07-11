@@ -1,29 +1,38 @@
 .PHONY: all
 all: format check test
 
+
 # setup
 .PHONY: init-dev
 init-dev:
-	rye self update
-	rye sync --no-lock
+	uv self update
+	uv sync
 	pre-commit install
 	pre-commit run --all-files
 
 .PHONY: update
 update:
-	rye sync --update-all
+	uv sync --upgrade
+
 
 # formatting and linting
 .PHONY: check
 check:
-	flake8 ./src
-	vulture
+	uv run --no-project ruff check ./src
+	uv run --no-project vulture ./src
 
 .PHONY: format
 format:
-	autoflake .
-	isort .
-	black .
+	uv run --no-project ruff check --fix ./src ./tests
+	uv run --no-project ruff format ./src ./tests
+
+
+# dev tools
+.PHONY: lock
+lock:
+	uv export --no-hashes --no-header --no-annotate --no-dev --format requirements.txt > requirements.txt
+	uv export --no-hashes --no-header --no-annotate --format requirements.txt > requirements-dev.txt
+
 
 # testing
 .PHONY: coverage
@@ -34,12 +43,13 @@ coverage:
 test:
 	pytest ./tests
 
+
 # build & publish
 .PHONY: build
 build:
-	rye build --clean
+	uv build --clean
 
 .PHONY: publish
 publish:
-	rye build --clean
-	rye publish --yes
+	$(MAKE) build
+	uv publish
