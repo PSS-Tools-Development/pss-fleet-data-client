@@ -5,7 +5,6 @@ import pytest
 
 from pss_fleet_data.models.api_models import ApiAlliance, ApiCollection, ApiCollectionMetadata, ApiUser
 
-
 # Equal
 
 
@@ -123,7 +122,7 @@ def assert_api_collection_with_fleets_valid(
 
 
 @pytest.fixture(scope="session")
-def assert_api_collection_with_fleets_valid(
+def assert_api_collection_with_users_valid(
     assert_api_collection_metadata_valid: Callable[[ApiCollectionMetadata], None],
     assert_api_user_valid: Callable[[ApiUser], None],
 ) -> Callable[[ApiCollection], None]:

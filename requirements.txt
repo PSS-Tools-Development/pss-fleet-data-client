@@ -1,0 +1,28 @@
+-e .
+aiohappyeyeballs==2.7.1
+aiohttp==3.14.1
+aiosignal==1.4.0
+annotated-types==0.7.0
+anyio==4.14.1
+apscheduler==3.11.3
+attrs==26.1.0
+certifi==2026.6.17
+frozenlist==1.8.0
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.18
+multidict==6.7.1
+propcache==0.5.2
+pssapi==0.6.0
+pydantic==2.13.4
+pydantic-core==2.46.4
+python-dateutil==2.9.0.post0
+pytz==2026.2
+six==1.17.0
+typing-extensions==4.16.0
+typing-inspection==0.4.2
+tzdata==2026.3 ; sys_platform == 'win32'
+tzlocal==5.4.4
+websockets==16.1
+yarl==1.24.2
