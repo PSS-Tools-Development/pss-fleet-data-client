@@ -72,7 +72,7 @@ def test_client_creation_proxy(proxy: Optional[str]):
 
 
 @pytest.mark.parametrize(["value", "expected_exception"], client_test_cases.invalid_str_or_url)
-def test_client_creation_proxy(value: Any, expected_exception: Exception):
+def test_client_creation_proxy_fails(value: Any, expected_exception: Exception):
     with pytest.raises(expected_exception):
         _ = PssFleetDataClient(proxy=value)
 
