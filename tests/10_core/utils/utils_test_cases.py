@@ -1,12 +1,10 @@
 from datetime import datetime, timezone
 
-
-utc = timezone.utc
-
 import pytest
 
 from pss_fleet_data.models.enums import ParameterInterval
 
+utc = timezone.utc
 
 from_to_timestamps = [
     # timestamp, interval, expected_from_date, expected_to_date

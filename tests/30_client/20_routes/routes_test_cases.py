@@ -7,6 +7,7 @@ from pss_fleet_data.core.exceptions import (
     FromDateTooEarlyError,
     InvalidFromDateError,
     InvalidIntervalError,
+    InvalidOnMissingError,
     InvalidSkipError,
     InvalidTakeError,
     InvalidToDateError,
@@ -41,6 +42,7 @@ invalid_filter_parameters = [
     pytest.param({"skip": -1}, InvalidSkipError, id="skip_negative"),
     pytest.param({"take": -1}, InvalidTakeError, id="take_negative"),
     pytest.param({"take": 101}, InvalidTakeError, id="take_too_big"),
+    pytest.param({"on_missing": "invalid"}, InvalidOnMissingError, id="on_missing_invalid"),
 ]
 """parameters, expected_exception"""
 

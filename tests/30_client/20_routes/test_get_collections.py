@@ -15,7 +15,7 @@ async def test_get_collections_200(
     collection_metadata_9: CollectionMetadata,
     test_client: PssFleetDataClient,
     assert_collection_metadata_valid: Callable[[CollectionMetadata], None],
-    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata, bool, bool], None],
+    assert_collection_metadatas_equal: Callable[[CollectionMetadata, CollectionMetadata], None],
 ):
     collection_metadatas = await test_client.get_collections()
     assert collection_metadatas
@@ -32,7 +32,7 @@ async def test_get_collections_204(test_client: PssFleetDataClient):
     assert len(response) == 0
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(record_mode="all")
 @pytest.mark.usefixtures("vcr_config_match_on")
 @pytest.mark.parametrize(["parameters", "expected_exception"], routes_test_cases.invalid_filter_parameters)
 async def test_get_collections_422(

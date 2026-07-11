@@ -8,7 +8,6 @@ from .core.exceptions import ApiError
 from .models import Collection, CollectionMetadata, enums
 from .models.enums import ErrorCode, ParameterInterval
 
-
 __all__ = [
     # Modules
     core.__name__,
@@ -30,4 +29,4 @@ __all__ = [
 ]
 
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"

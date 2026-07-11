@@ -22,6 +22,7 @@ from ..core.exceptions import (
     InvalidIntervalError,
     InvalidJsonUpload,
     InvalidNumberError,
+    InvalidOnMissingError,
     InvalidSkipError,
     InvalidTakeError,
     InvalidToDateError,
@@ -54,7 +55,7 @@ class FromAPI:
     """
 
     @staticmethod
-    def to_pss_alliance(source: ApiAlliance) -> PssAlliance:
+    def to_pss_alliance(source: ApiAlliance) -> Optional[PssAlliance]:
         """Converts an `Alliance` returned by the API to a `pssapi.entities.Alliance`.
 
         Args:
@@ -155,14 +156,14 @@ class FromAPI:
         return result
 
     @staticmethod
-    def to_pss_user(source: Optional[ApiUser]) -> PssUser:
+    def to_pss_user(source: Optional[ApiUser]) -> Optional[PssUser]:
         """Converts a `User` returned by the API to a `pssapi.entities.User`.
 
         Args:
             source (ApiUser, optional): A `User` returned by the API.
 
         Returns:
-            pss.entities.User: The converted `User`.
+            Optional[pss.entities.User]: The converted `User`.
         """
         if source is None:
             return None
@@ -482,6 +483,7 @@ _error_code_lookup = {
     ErrorCode.PARAMETER_FROM_DATE_INVALID: InvalidFromDateError,
     ErrorCode.PARAMETER_FROM_DATE_TOO_EARLY: FromDateTooEarlyError,
     ErrorCode.PARAMETER_INTERVAL_INVALID: InvalidIntervalError,
+    ErrorCode.PARAMETER_ONMISSING_INVALID: InvalidOnMissingError,
     ErrorCode.PARAMETER_SKIP_INVALID: InvalidSkipError,
     ErrorCode.PARAMETER_TAKE_INVALID: InvalidTakeError,
     ErrorCode.PARAMETER_TO_DATE_INVALID: InvalidToDateError,
@@ -495,3 +497,10 @@ _error_code_lookup = {
     ErrorCode.USER_NOT_FOUND: UserNotFoundError,
 }
 """A lookup from an API `ErrorCode` to a specific `Exception` type."""
+
+
+__all__ = [
+    "FromAPI",
+    "FromResponse",
+    "ToAPI",
+]
