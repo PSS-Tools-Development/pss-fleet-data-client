@@ -12,7 +12,7 @@ from .core.config import get_config
 from .models.api_models import ApiErrorResponse
 from .models.client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 from .models.converters import FromAPI, FromResponse, ToAPI
-from .models.enums import ParameterInterval
+from .models.enums import ParameterInterval, ParameterOnMissing
 
 
 class PssFleetDataClient:
@@ -167,6 +167,7 @@ class PssFleetDataClient:
         desc: Optional[bool] = False,
         skip: Optional[int] = 0,
         take: Optional[int] = 100,
+        on_missing: Optional[ParameterOnMissing] = ParameterOnMissing.SKIP,
     ) -> list[AllianceHistory]:
         """Retrieves the history of the `Alliance` with the specified `alliance_id`.
 
@@ -178,6 +179,7 @@ class PssFleetDataClient:
             desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
             skip (int, optional): The number of results to skip in the response. Defaults to `0`.
             take (int, optional): The number of results to be returned. Defaults to `100`.
+            on_missing (ParameterOnMissing, optional): Determines what to do, if a collection is missing for a given timestamp. This is only relevant for API endpoints having an `interval` parameter, which is set to `day` or `month`. Defaults to `ParameterOnMissing.SKIP`.
 
         Raises:
             AllianceNotFoundError: Raised, if an `Alliance` with the provided `alliance_id` was not found.\n
@@ -205,6 +207,7 @@ class PssFleetDataClient:
             desc=desc,
             skip=skip,
             take=take,
+            on_missing=on_missing,
         )
         alliance_histories = FromResponse.to_alliance_history_list(response)
         return alliance_histories
@@ -281,6 +284,7 @@ class PssFleetDataClient:
         desc: Optional[bool] = False,
         skip: Optional[int] = 0,
         take: Optional[int] = 100,
+        on_missing: Optional[ParameterOnMissing] = ParameterOnMissing.SKIP,
     ) -> list[CollectionMetadata]:
         """Retrieves a list of metadatas of `Collections` meeting the specified criteria.
 
@@ -291,6 +295,7 @@ class PssFleetDataClient:
             desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
             skip (int, optional): The number of results to skip in the response. Defaults to `0`.
             take (int, optional): The number of results to be returned. Defaults to `100`.
+            on_missing (ParameterOnMissing, optional): Determines what to do, if a collection is missing for a given timestamp. This is only relevant for API endpoints having an `interval` parameter, which is set to `day` or `month`. Defaults to `ParameterOnMissing.SKIP`.
 
         Raises:
             FromDateAfterToDateError: Raised, if the parameters `fromDate` and `toDate` have been specified and `fromDate` is greater than `toDate`.\n
@@ -309,13 +314,7 @@ class PssFleetDataClient:
             list[CollectionMetadata]: A list of metadatas of `Collections` meeting the specified criteria. Might be empty.
         """
         response = await self._get_with_filter_parameters(
-            "/collections/",
-            from_date=from_date,
-            to_date=to_date,
-            interval=interval,
-            desc=desc,
-            skip=skip,
-            take=take,
+            "/collections/", from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take, on_missing=on_missing
         )
         collections = FromResponse.to_collection_metadata_list(response)
         return collections
@@ -466,6 +465,7 @@ class PssFleetDataClient:
         desc: Optional[bool] = False,
         skip: Optional[int] = 0,
         take: Optional[int] = 100,
+        on_missing: Optional[ParameterOnMissing] = ParameterOnMissing.SKIP,
     ) -> list[UserHistory]:
         """Retrieves the history of the `User` with the specified `user_id`.
 
@@ -477,6 +477,7 @@ class PssFleetDataClient:
             desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
             skip (int, optional): The number of results to skip in the response. Defaults to `0`.
             take (int, optional): The number of results to be returned. Defaults to `100`.
+            on_missing (ParameterOnMissing, optional): Determines what to do, if a collection is missing for a given timestamp. This is only relevant for API endpoints having an `interval` parameter, which is set to `day` or `month`. Defaults to `ParameterOnMissing.SKIP`.
 
         Raises:
             FromDateAfterToDateError: Raised, if the parameters `fromDate` and `toDate` have been specified and `fromDate` is greater than `toDate`.\n
@@ -504,6 +505,7 @@ class PssFleetDataClient:
             desc=desc,
             skip=skip,
             take=take,
+            on_missing=on_missing,
         )
         user_histories = FromResponse.to_user_history_list(response)
         return user_histories
@@ -731,6 +733,7 @@ class PssFleetDataClient:
         desc: Optional[bool] = False,
         skip: Optional[int] = 0,
         take: Optional[int] = 100,
+        on_missing: Optional[ParameterOnMissing] = ParameterOnMissing.SKIP,
     ) -> Response:
         """Sends a request to get resources from the API with query parameters for filtering the results.
 
@@ -742,6 +745,7 @@ class PssFleetDataClient:
             desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to `False`.
             skip (int, optional): The number of results to skip in the response. Defaults to `0`.
             take (int, optional): The number of results to be returned. Defaults to `100`.
+            on_missing (ParameterOnMissing, optional): Determines what to do, if a collection is missing for a given timestamp. This is only relevant for API endpoints having an `interval` parameter, which is set to `day` or `month`. Defaults to `ParameterOnMissing.SKIP`.
 
         Raises:
             AllianceNotFoundError: Raised, if an `Alliance` with the provided `alliance_id` was not found.\n
@@ -773,7 +777,9 @@ class PssFleetDataClient:
         Returns:
             httpx.Response: The response from the API.
         """
-        parameters = utils.create_parameter_dict(from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take)
+        parameters = utils.create_parameter_dict(
+            from_date=from_date, to_date=to_date, interval=interval, desc=desc, skip=skip, take=take, on_missing=on_missing
+        )
         response = await self._get(path, params=parameters)
         return response
 

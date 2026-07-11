@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, MutableMapping, Optional
 
-from ..models.enums import ParameterInterval
+from ..models.enums import ParameterInterval, ParameterOnMissing
 
 
 def create_parameter_dict(
@@ -12,6 +12,7 @@ def create_parameter_dict(
     desc: Optional[bool] = None,
     skip: Optional[int] = None,
     take: Optional[int] = None,
+    on_missing: Optional[ParameterOnMissing] = None,
 ) -> dict[str, Any]:
     """Creates a dictionary of query parameters.
 
@@ -22,6 +23,7 @@ def create_parameter_dict(
         desc (bool, optional): Determines, if the results should be returned in descending order. Defaults to None.
         skip (int, optional): The number of results to skip in the response. Defaults to None.
         take (int, optional): The number of results to be returned. Defaults to None.
+        on_missing (ParameterOnMissing, optional): Determines what to do, if a collection is missing for a given timestamp. This is only relevant for API endpoints having an `interval` parameter, which is set to `day` or `month`. Defaults to None.
 
     Returns:
         dict[str, Any]: A dictionary of query parameters. Only includes the specified parameters.
@@ -39,6 +41,8 @@ def create_parameter_dict(
         parameters["skip"] = skip
     if take is not None:
         parameters["take"] = take
+    if on_missing is not None:
+        parameters["onMissing"] = on_missing
     return parameters
 
 
