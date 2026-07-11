@@ -6,7 +6,7 @@
 <a href="https://pypi.org/project/pss-fleet-data-client" target="_blank"><img src="https://img.shields.io/pypi/pyversions/pss-fleet-data-client.svg?color=%23DAB420" alt="Supported Python versions"></a>
 <img src="https://img.shields.io/codecov/c/github/pss-tools-development/pss-fleet-data-client" alt="Code coverage">
 
-> An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api). Currently supported API version is **1.5.0**.
+> An async client library to access the [PSS Fleet Data API](https://github.com/Zukunftsmusik/pss-fleet-data-api). Currently supported API version is **1.6.x**.
 
 ## Built with
 
