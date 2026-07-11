@@ -52,4 +52,4 @@ build:
 .PHONY: publish
 publish:
 	$(MAKE) build
-	uv publish
+	uv publish --username __token__
