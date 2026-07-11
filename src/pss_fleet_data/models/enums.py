@@ -30,6 +30,7 @@ class ErrorCode(StrEnum):
     PARAMETER_FROM_DATE_INVALID = "PARAMETER_FROM_DATE_INVALID"
     PARAMETER_FROM_DATE_TOO_EARLY = "PARAMETER_FROM_DATE_TOO_EARLY"
     PARAMETER_INTERVAL_INVALID = "PARAMETER_INTERVAL_INVALID"
+    PARAMETER_ONMISSING_INVALID = "PARAMETER_ONMISSING_INVALID"
     PARAMETER_SKIP_INVALID = "PARAMETER_SKIP_INVALID"
     PARAMETER_TAKE_INVALID = "PARAMETER_TAKE_INVALID"
     PARAMETER_TO_DATE_INVALID = "PARAMETER_TO_DATE_INVALID"
@@ -54,6 +55,21 @@ class ParameterInterval(StrEnum):
     """Return daily data recorded 1 minute before daily reset, if possible. Daily data may not be available."""
     MONTHLY = "month"
     """Return monthly data recorded 1 minute before monthly reset, if possible. Monthly data may not be available."""
+
+
+class ParameterOnMissing(StrEnum):
+    """
+    Determines what to do, if a collection is missing for a given timestamp. This is only relevant for API endpoints having an `interval` parameter, which is set to `day` or `month`.
+    """
+
+    SKIP = "skip"
+    """Skip the missing collection and return the next one matching the query parameters. This is the default behaviour and the behaviour of the API <v1.6.0."""
+    LAST = "last"
+    """Return the most recent available collection of the given day or month."""
+    EMPTY = "empty"
+    """Return an empty collection with the given timestamp of the most recent available collection of the given day or month."""
+    NULL = "null"
+    """Return `null` for the given timestamp of the most recent available collection of the given day or month."""
 
 
 class UserAllianceMembership(StrEnum):
@@ -100,3 +116,12 @@ class UserAllianceMembershipEncoded(IntEnum):
     """This User is of rank Ensign."""
     CANDIDATE = 6
     """This User is of rank Candidate."""
+
+
+__all__ = [
+    "ErrorCode",
+    "ParameterInterval",
+    "ParameterOnMissing",
+    "UserAllianceMembership",
+    "UserAllianceMembershipEncoded",
+]

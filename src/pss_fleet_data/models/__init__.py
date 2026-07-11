@@ -1,14 +1,15 @@
-from . import api_models, converters
+from . import api_models, converters, enums
 from .client_models import AllianceHistory, Collection, CollectionMetadata, UserHistory
 
 
 __all__ = [
     # modules
-    api_models.__name__,
-    converters.__name__,
+    "api_models",
+    "converters",
+    "enums",
     # classes
-    AllianceHistory.__name__,
-    Collection.__name__,
-    CollectionMetadata.__name__,
-    UserHistory.__name__,
+    "AllianceHistory",
+    "Collection",
+    "CollectionMetadata",
+    "UserHistory",
 ]
